@@ -5,6 +5,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //import { createDrawerNavigator } from '@react-navigation/drawer';
+import {scale, verticalScale, moderateScale } from "react-native-size-matters";
 
 import InitScreen from './src/pages/InitScreen/index';
 import LoginScreen from './src/pages/LoginScreen/index';
@@ -36,10 +37,10 @@ const App = () => {
           headerTransparent:true,
           headerTitleAlign:'center',
           headerTitleStyle:{
-            fontSize:34,
+            fontSize:scale(34),
             fontWeight:"600",
-            color:"#000000"
-          }
+            color:"#000000",
+          },
         }}
         />
         <Stack.Screen name="LoginScreen" component={LoginScreen}

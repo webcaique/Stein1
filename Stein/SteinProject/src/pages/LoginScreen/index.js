@@ -15,7 +15,7 @@ export default function LoginScreen({navigation}){
             onPress={Keyboard.dismiss}>
             <View style={styles.conteiner}>
                 
-                <TextInput
+                <TextInput 
                 placeholder="Email"
                 placeholderTextColor={"#000000"}
                 style={styles.textInput1} 
@@ -38,7 +38,7 @@ export default function LoginScreen({navigation}){
                         value={toggleCheckBox}
                         onValueChange={(newValue) => setToggleCheckBox(newValue)}
                         tintColors={{true: "#000000"}}
-                        style={styles.checkbox}
+                        style={{padding: 10}}
                     />
                     <Text style={styles.textCheckbox}> Salve a senha</Text>
                 </View>

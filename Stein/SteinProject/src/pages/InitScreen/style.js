@@ -7,11 +7,11 @@ const styles = ScaledSheet.create({
           justifyContent: 'flex-start',
           alignItems: 'center',
           padding: 55,
-          marginTop:scale(13),
+          marginTop:scale(24),
     },
     backgroundLogo:{
-      width: 250,
-      height: 250,
+      width: "100%",
+      height: "50%",
       alignItems:"center",
       justifyContent:"center",
     },
@@ -19,7 +19,7 @@ const styles = ScaledSheet.create({
       flex:1,
       width: "100%",
       resizeMode: "contain",
-      marginTop:scale(30),
+      marginTop:30,
       },
       circle:{
         flex:1,

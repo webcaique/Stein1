@@ -48,12 +48,12 @@ const SinginScreen = ({navigation}) => {
                     onPress={()=> navigation.navigate("LoginScreen")}>
                         <Text style={styles.textButtons}>Cadastrar</Text>
                     </TouchableOpacity>
-                    <View style={styles.singinLink}>    
-                        <Text style={styles.textSigin}> Já possui cadastro? </Text>
-                        <TouchableOpacity style={styles.siginButton}
+                    <View style={styles.loginLink}>    
+                        <Text style={styles.textLogin}> Já possui cadastro? </Text>
+                        <TouchableOpacity style={styles.loginButton}
                         onPress={()=> navigation.navigate("LoginScreen")}
                         >
-                                <Text style={styles.textSiginButton}>
+                                <Text style={styles.textLoginButton}>
                                     Entrar
                                 </Text>
                         </TouchableOpacity>
