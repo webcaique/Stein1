@@ -79,7 +79,8 @@ const App = () => {
           fontSize:34,
           fontWeight:"900",
           color:"#563595"
-        }
+        },
+        headerBackVisible:false,
       }}
         />
         <Stack.Screen name="Objetivo" component={Objetivo}
@@ -90,7 +91,8 @@ const App = () => {
           fontSize:34,
           fontWeight:"900",
           color:"#563595"
-        }
+        },
+        headerBackVisible:false,
       }}
         />
         <Stack.Screen name="QuemSomos" component={QuemSomos}
@@ -100,8 +102,10 @@ const App = () => {
         headerTitleStyle:{
           fontSize:34,
           fontWeight:"900",
-          color:"#563595"
-        }
+          color:"#563595",
+          
+        },
+        headerBackVisible:false,
       }}
         />
         <Stack.Screen name="UserScreen" component={UserScreen}

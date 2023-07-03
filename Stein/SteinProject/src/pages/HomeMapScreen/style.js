@@ -1,7 +1,8 @@
 import {StyleSheet} from "react-native";
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
 
-const estilos=StyleSheet.create({
+const estilos=ScaledSheet.create({
  
     inferior:{
       flex:1,
@@ -43,24 +44,25 @@ const estilos=StyleSheet.create({
         height:'100%',
         borderBottomLeftRadius:5,
         borderBottomRightRadius:5,
+
         
       },
      iconBoltBg:{
-      height: 100,
-      width: 100,
+      height: moderateVerticalScale(100),
+      width: moderateVerticalScale(100),
       resizeMode:'contain',
       position:  'absolute',
       top:'70%', 
-      left:'70%'
+      right:'5%',
      },
      iconBolt:{
-      height: 100, 
-      width: 100, 
+      height: moderateVerticalScale(100), 
+      width: moderateVerticalScale(100), 
       resizeMode:'contain' ,
      },
      steinLogoBg:{
       width:"100%",
-      height:100,
+      height:moderateVerticalScale(100),
       flexDirection:"row",
       justifyContent:"center",
       alignItems:"center",
@@ -70,41 +72,41 @@ const estilos=StyleSheet.create({
       flex:1,
       width:"100%",
       height:"100%",
-      alignItems:"center",
       justifyContent:"flex-start",
+      
      },
      steinLogo:{
-      width:80,
-      height:80,
+      width:moderateVerticalScale(80),
+      height:moderateVerticalScale(80),
       resizeMode:"contain",
      },
      textLogo:{
-      fontSize:60,
+      fontSize:moderateVerticalScale(60),
       color:"#000000"
      },
      links:{
       width:"100%",
-      height:40,
+      height:moderateVerticalScale(40),
       borderColor:"#ffffff",
       borderBottomColor:"#000000",
       borderWidth:2,
       marginVertical:10,
      },
      imagemIcon1:{
-      width:25,
-      height:25,
+      width:moderateVerticalScale(25),
+      height:moderateVerticalScale(25),
       resizeMode:"contain",
       marginHorizontal:10,
      },
      imagemIcon2:{
-      width:25,
-      height:25,
+      width:moderateVerticalScale(25),
+      height:moderateVerticalScale(25),
       resizeMode:"contain",
       marginHorizontal:10,
       transform: [{rotate:'90deg'}],
      },
      textLink:{
-      fontSize:18,
+      fontSize:moderateScale(18),
      },
      containerLink:{
       flexDirection:"row",

@@ -20,12 +20,12 @@ const QuemSomos=({navigation})=>{
             <View style={styles.spot2}/>
         </View>
         <View style={styles.alinhar2}>
-        <TouchableOpacity onPress={()=>navigation.navigate("Stein")} title="teste">
+        <TouchableOpacity onPress={()=>navigation.navigate("Stein")}>
             <Text style={styles.navigation}>
                 Pular
             </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigation.navigate("OQueFazemos")} title="teste">
+        <TouchableOpacity onPress={()=>navigation.navigate("OQueFazemos")} style={styles.buttons}>
             <Text style={styles.navigation}>
                 Próximo
             </Text>

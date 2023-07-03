@@ -1,5 +1,5 @@
 import { ScaledSheet } from 'react-native-size-matters';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { verticalScale, scale, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
 const styles = ScaledSheet.create({
     conteiner:{
@@ -44,7 +44,7 @@ const styles = ScaledSheet.create({
           width: scale(265),
           height: verticalScale(60),
           backgroundColor: "purple",
-          borderRadius:moderateScale(25),
+          borderRadius:moderateVerticalScale(25),
           justifyContent:"center",
           alignItems:"center",
           margin: (30),

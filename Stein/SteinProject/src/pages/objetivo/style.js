@@ -1,30 +1,34 @@
 import {StyleSheet} from "react-native";
-const styles = StyleSheet.create({
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+
+
+const styles = ScaledSheet.create({
     background:{
         backgroundColor:'#ffffff',
         flex:1,
         height:'100%',
         width:'100%',
-        paddingHorizontal:10,
+        justifyContent:"space-around",
+        paddingBottom:15,
     },
     titulo:{
         fontWeight:'bold',
         color:'#000000',
-        fontSize:25,
-        paddingVertical:25,
-        paddingLeft:30,
+        fontSize:moderateScale(25),
+        paddingVertical:35,
+        paddingLeft:moderateScale(30),
     },
     paragrafo:{
         fontWeight:'500',
         color:'#000000',
-        fontSize:17,
-        paddingLeft:30,
+        fontSize:moderateScale(17),
+        paddingLeft:moderateScale(30),
         paddingBottom:30,
     },
     navigation:{
         fontWeight:'bold',
         color:'#000000',
-        fontSize:20,
+        fontSize:moderateScale(20),
         marginRight:175,
     },
     alinhar1:{
@@ -36,43 +40,40 @@ const styles = StyleSheet.create({
     alinhar2:{
         flexDirection:'row',
         width:'100%',
-        justifyContent:'center',
-        marginLeft:90,
+        justifyContent:'space-around',
+        marginHorizontal:moderateVerticalScale(90),
     },
     spot1:{
         backgroundColor:'#000000',
-        width:10,
-        height:10,
-        borderRadius:10/2,
+        width:moderateVerticalScale(10),
+        height:moderateVerticalScale(10),
+        borderRadius:moderateScale(10/2),
         marginRight:12,
     },
     spot2:{
         backgroundColor:'#563595',
-        width:10,
-        height:10,
-        borderRadius:10/2,
+        width:moderateVerticalScale(10),
+        height:moderateVerticalScale(10),
+        borderRadius:moderateScale(10/2),
         marginRight:12,
     },
     spot3:{
         backgroundColor:'#751BAE',
-        width:354,
-        height:354,
-        borderRadius:354/2,
+        width:moderateVerticalScale(354),
+        height:moderateVerticalScale(354),
+        borderRadius:scale(354/2),
         justifyContent:'center',
         alignItems:'center',
         borderWidth:2,
     },
     imagem:{
-        width:225,
-        weight:255,
+        width:scale(225),
+        height:moderateVerticalScale(255),
         resizeMode:'contain',
     },
     centralizar:{
         width:'100%',
         alignItems:'center',
     },
-    texto:{
-        width:'90%'
-    }
 })
 export default styles

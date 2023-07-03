@@ -1,7 +1,7 @@
 import {StyleSheet} from "react-native";
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     conteiner:{
         flex:1,
         backgroundColor:"#ffffff",
