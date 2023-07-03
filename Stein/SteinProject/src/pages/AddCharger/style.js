@@ -1,6 +1,5 @@
-import { StyleSheet } from "react-native";
-
-const styles = StyleSheet.create({
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+const styles = ScaledSheet.create({
     container:{
         flex:1,
         width:"100%",
@@ -13,28 +12,30 @@ const styles = StyleSheet.create({
     },
     textInput:{
         width:"100%",
-        height:60,
+        height: verticalScale(60),
         backgroundColor:"rgba(0,0,0,0.10)",
         borderRadius:10,
         padding:10,
         marginVertical:15,
-        fontSize:16,
+        fontSize:moderateVerticalScale(16),
         fontWeight:"400",
         color:"#000000"
     },
     button:{
         flex:1,
-        alignItems:'center',
-        width:"20%",
-        height:40,
+        width:moderateScale(100),
+        height:verticalScale(50),
         backgroundColor:"rgba(0,0,0,0.10)",
-        borderRadius:10,
-        padding:10,
         marginVertical:15,
+        padding:moderateScale(10),
+        backgroundColor: "purple",
+        borderRadius: moderateVerticalScale(10),
+        justifyContent:"center",
+        alignItems:"center",
     },
     charger:{
         width:"100%",
-        height:60,
+        height:verticalScale(60),
         backgroundColor:"rgba(0,0,0,0.10)",
         borderRadius:10,
         padding:10,
@@ -42,10 +43,15 @@ const styles = StyleSheet.create({
         justifyContent:"center",
     },
     placeholder:{
-        fontSize:16,
+        fontSize:moderateVerticalScale(16),
         fontWeight:"400",
         color:"rgba(0,0,0,0.4)"
-    }
+    },
+    textButtons:{
+        fontSize: moderateScale(20),
+        fontWeight:"900",
+        color: "white",
+      },
 
 })
 export default styles;

@@ -42,7 +42,7 @@ const AddCharger = ({navigation}) => {
                     <TouchableOpacity style={styles.button}
                     onPress={()=> navigation.navigate("Stein")}
                     >
-                        <Text>
+                        <Text style={styles.textButtons}>
                             Enviar
                         </Text>
                 
