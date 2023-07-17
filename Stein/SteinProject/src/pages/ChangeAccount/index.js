@@ -1,4 +1,4 @@
-/*import React from "react";
+import React from "react";
 import {View, Text, ScrollView, Image, TouchableOpacity} from "react-native";
 import styles from "./style"
 
@@ -10,7 +10,9 @@ const ChangeAccount = ({navigation}) => {
                 <View style={styles.box1}>
                     <Text>Atualmente em:</Text>
                     <View style={styles.inBox1}>
-                        <Image source={require("../../../assets/Icons/image.png")}/>
+                        <Image
+                        style={styles.image2}
+                        source={require("../../../assets/Icons/image.png")}/>
                         <View>
                             <Text>Daniel Santana</Text>
                             <Text>Usuário</Text>
@@ -26,11 +28,11 @@ const ChangeAccount = ({navigation}) => {
                         style={styles.image2}
                         source={require("../../../assets/Icons/image1.png")}/>
                         <View style={styles.textInBox}>
-                            <Text style={styles.textsInBoxStyles}>Estação de Carregamento Porsche - Quinta do Marquês</Text>
-                            <Text style={styles.textsInBoxStyles}>Administrador</Text>
-                            <Text style={styles.textsInBoxStyles}>danielmartins@gmail.com</Text>
+                            <Text >Estação de Carregamento Porsche - Quinta do Marquês</Text>
+                            <Text >Administrador</Text>
+                            <Text >danielmartins@gmail.com</Text>
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity style={styles.site}>
                             <Image 
                             source={require("../../../assets/Icons/site.png")}
                             style={styles.linkImage}
@@ -59,9 +61,9 @@ const ChangeAccount = ({navigation}) => {
     )
 }
 
-export default ChangeAccount;*/
+export default ChangeAccount;
 
-
+/*
 import React,{useState} from 'react';
 import {Text, View, Image, TouchableOpacity } from 'react-native';
 import estilos from './style';
@@ -118,4 +120,4 @@ return (
 
 
 )
-}
+}*/

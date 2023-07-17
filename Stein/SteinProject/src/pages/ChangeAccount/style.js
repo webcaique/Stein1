@@ -1,5 +1,5 @@
 import {StyleSheet} from "react-native"
-/*
+
 const styles = StyleSheet.create({
     mainContainer:{
         flex:1,
@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     box1:{
         width:"80%",
         height:"auto",
-        marginHorizontal:50,
+        marginHorizontal:10,
         marginTop:20,
     },
     inBox1:{
@@ -34,9 +34,6 @@ const styles = StyleSheet.create({
         marginTop:20,
         
         alignItems:"center",
-    },
-    textInBox:{
-        width:"80%",
     },
     textsInBoxStyles:{
         fontSize:12,
@@ -80,11 +77,17 @@ const styles = StyleSheet.create({
         alignItems:"center",
         marginHorizontal:10,
         
+    },
+    site:{
+        marginLeft:10,
+    },
+    textInBox:{
+        width:200,
     }
 })
 
-export default styles;*/
-
+export default styles;
+/*
 const estilos= StyleSheet.create({
     usuario:{
   flex:1,
@@ -119,4 +122,4 @@ const estilos= StyleSheet.create({
   })
 
   export default estilos
-
+*/
