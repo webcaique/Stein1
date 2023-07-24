@@ -1,7 +1,9 @@
 import React from "react";
 import { StyleSheet } from "react-native";
+import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
 
-const styles = StyleSheet.create({
+
+const styles = ScaledSheet.create({
     container:{
         flex:1,
         width:"100%",
@@ -42,10 +44,10 @@ const styles = StyleSheet.create({
         marginVertical:5,
     },
     textTitle:{
-        fontSize:30,
+        fontSize:moderateScale(30),
     },
     textContent:{
-        fontSize:16,
+        fontSize:moderateScale(16),
         fontWeight:"600",
         marginVertical:5,
     },
