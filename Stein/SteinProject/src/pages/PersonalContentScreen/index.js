@@ -1,10 +1,12 @@
 import React from "react";
-import {View, Text, TouchableOpacity, Image} from "react-native";
+import {View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
 import styles  from "./style";
 
 const PersonalContentScreen = () => {
     return(
+        
         <View style={styles.container}>
+            <ScrollView>
             <Text style={styles.textOutBox}>
                 Edite as informações da sua conta pessoal.
             </Text>
@@ -116,6 +118,8 @@ const PersonalContentScreen = () => {
                     <Text style={styles.textButton}>Editar</Text>
                 </TouchableOpacity>
             </View>
+            
+            </ScrollView>
         </View>
     )
 }

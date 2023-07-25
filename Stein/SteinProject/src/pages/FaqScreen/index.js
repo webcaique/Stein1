@@ -11,7 +11,7 @@ const FaqScreen = () => {
                 </View>
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Quem somos?</Text>
+                        <Text  style={styles.txt}>Quem somos?</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}
@@ -24,7 +24,7 @@ const FaqScreen = () => {
 
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Como ganhar Pontos EV</Text>
+                        <Text style={styles.txt}>Como ganhar Pontos EV</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}
@@ -37,7 +37,7 @@ const FaqScreen = () => {
 
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Contato</Text>
+                        <Text style={styles.txt}>Contato</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}
@@ -50,7 +50,7 @@ const FaqScreen = () => {
 
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Quais são os benéficios do Stein</Text>
+                        <Text style={styles.txt}>Quais são os benéficios do Stein</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}
@@ -63,7 +63,7 @@ const FaqScreen = () => {
 
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Como funcionam os pontos Ev</Text>
+                        <Text style={styles.txt}>Como funcionam os pontos Ev</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}
@@ -76,7 +76,7 @@ const FaqScreen = () => {
 
                 <View style={styles.spaceBetweenBoxes}>
                     <View style={styles.boxes}>
-                        <Text>Como mudar minha senha</Text>
+                        <Text style={styles.txt}>Como mudar minha senha</Text>
                         <TouchableOpacity style={styles}>
                             <Image 
                             source={require("../../../assets/Icons/seta-direita.png")}

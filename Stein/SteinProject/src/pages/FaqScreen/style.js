@@ -1,6 +1,7 @@
 import {StyleSheet} from "react-native";
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     container:{
         flex:1,
         width:"100%",
@@ -14,8 +15,8 @@ const styles = StyleSheet.create({
         marginBottom:20,
     },
     imagem:{
-        width:25,
-        height:25,
+        width:moderateScale(25),
+        height:moderateScale(25),
         resizeMode:"contain",
         transform: [{rotate:'90deg'}],
     },
@@ -32,6 +33,9 @@ const styles = StyleSheet.create({
     },
     spaceBetweenBoxes:{
         marginVertical:20,
+    },
+    txt:{
+        fontSize:moderateScale(16),
     }
     
 })

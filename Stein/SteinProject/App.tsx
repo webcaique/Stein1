@@ -22,6 +22,7 @@ import ChangeAccount from "./src/pages/ChangeAccount/index"
 import OQueFazemos from "./src/pages/oQueFazemos/index"
 import Objetivo from "./src/pages/objetivo/index"
 import QuemSomos from "./src/pages/quemSomos/index"
+import AddHome from "./src/pages/AddHome/index"
 
 const Stack = createNativeStackNavigator();
 //const Drawer = createDrawerNavigator();
@@ -204,6 +205,20 @@ const App = () => {
         <Stack.Screen name="ChangeAccount" component={ChangeAccount}
         options={{
           title:"Alternar Conta",
+          headerTitleAlign:"center",
+          headerTitleStyle:{
+            fontSize:30,
+            fontWeight:"900"
+          },
+          headerStyle:{
+            backgroundColor:"#ffffff"
+          },
+        }}
+        />
+        
+        <Stack.Screen name="AddHome" component={AddHome}
+        options={{
+          title:"Adicionar Casa",
           headerTitleAlign:"center",
           headerTitleStyle:{
             fontSize:30,

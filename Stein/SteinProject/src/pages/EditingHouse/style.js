@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     textButton:{
         fontSize:25,
         fontWeight:"900",
-        color:"#000000",
+        color:"#ffffff",
     }
 })
 

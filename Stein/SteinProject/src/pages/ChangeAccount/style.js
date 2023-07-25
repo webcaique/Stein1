@@ -1,6 +1,7 @@
 import {StyleSheet} from "react-native"
+import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     mainContainer:{
         flex:1,
         width:"100%",
@@ -16,14 +17,15 @@ const styles = StyleSheet.create({
     },
     inBox1:{
         flexDirection:"row",
-        justifyContent:"space-between",
+        justifyContent:"flex-start",
+        alignItems:"center",
         width:"80%",
         marginTop:20,
         marginBottom:10,
 
     },
     lines:{
-        height:5,
+        height:moderateVerticalScale(5),
         width:"100%",
         backgroundColor:"#000000",
         marginVertical:10,
@@ -36,27 +38,30 @@ const styles = StyleSheet.create({
         alignItems:"center",
     },
     textsInBoxStyles:{
-        fontSize:12,
+        fontSize:scale(12),
     },
     image2:{
-        marginRight:10
+        marginRight:scale(10),
+        width:scale(60),
+        resizeMode:"contain",
+        height:scale(60)
     },
     linkImage:{
-        width:30,
-        height:30,
+        width:scale(30),
+        height:scale(30),
         resizeMode:"contain",
-        marginLeft:10,
+        marginLeft:(10),
         
     },
     plusImage:{
-        width:50,
-        height:50,
+        width:moderateVerticalScale(50),
+        height:moderateVerticalScale(50),
         resizeMode:"contain",
         borderRadius:50/2,
     },
     leaveImage:{
-        width:40,
-        height:40,
+        width:moderateVerticalScale(40),
+        height:moderateVerticalScale(40),
         resizeMode:"contain",
     },
     plusButton:{
@@ -65,13 +70,13 @@ const styles = StyleSheet.create({
         justifyContent:"center",
         alignItems:"center",
         flexDirection:"row",
-        marginVertical:10,
+        marginVertical:scale(10),
     },
     circuleButton:{
-        width:50,
-        height:50,
+        width:moderateScale(50),
+        height:moderateScale(50),
         backgroundColor:"rgba(78,18,194,0.75)",
-        borderRadius:50/2,
+        borderRadius:moderateScale(50/2),
         borderWidth:1,
         justifyContent:"center",
         alignItems:"center",
@@ -79,10 +84,19 @@ const styles = StyleSheet.create({
         
     },
     site:{
-        marginLeft:10,
+        marginLeft:moderateScale(10),
     },
     textInBox:{
-        width:200,
+        width:scale(200),
+    },
+    texts:{
+        fontSize:moderateScale(16),
+    },
+    account:{
+        fontSize:moderateScale(20)
+    },
+    titleText:{
+        fontSize:scale(18)
     }
 })
 

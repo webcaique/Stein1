@@ -2,7 +2,7 @@ import React from "react";
 import {View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
 import styles  from "./style";
 
-const EditingHouse = () => {
+const EditingHouse = ({navigation}) => {
     return(
         
         <View style={styles.container}>
@@ -130,6 +130,13 @@ const EditingHouse = () => {
             <View style={styles.editionButtonContainer}>
                 <TouchableOpacity style={styles.editionButton}>
                     <Text style={styles.textButton}>Editar</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.editionButtonContainer}>
+                <TouchableOpacity style={styles.editionButton}
+                onPressIn={()=> navigation.navigate("AddHome")}
+                >
+                    <Text style={styles.textButton}>Adicionar</Text>
                 </TouchableOpacity>
             </View>
             </ScrollView>

@@ -1,20 +1,4 @@
-/*import React from "react"
-import {View, Text, TouchableOpacity} from "react-native"
-
-const HomeMapScreen = ({navigation}) => {
-    return(
-        <View>
-            <TouchableOpacity style={{margin:120}}
-                    onPress={()=> navigation.navigate("UserScreen")}>
-                        <Text>Cadastrar</Text>
-                    </TouchableOpacity>
-        </View>
-    )
-}
-
-export default HomeMapScreen;*/
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -36,6 +20,7 @@ const Img = "../../../assets/mapa.jpeg";
 
 export default function Stein({navigation}){
   const [modal, setModal] = useState(false);
+
 
     return(
         <View style={estilos.superior}>
