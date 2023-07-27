@@ -58,9 +58,9 @@ export default function AddHome({navigation}){
                     </View>
                 </View>
                 <TouchableOpacity style={styles.editionButton}
-                onPressIn={()=> navigation.navigate("EditingHouse")}
+                onPressIn={()=> navigation.navigate("HouseAndWork")}
                 >
-                    <Text style={styles.textButton}>Adicionar</Text>
+                    <Text style={styles.textButton}>Editar</Text>
                 </TouchableOpacity>
                 </View>
             </ScrollView>

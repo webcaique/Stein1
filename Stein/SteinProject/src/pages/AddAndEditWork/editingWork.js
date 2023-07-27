@@ -16,7 +16,7 @@ export default function AddHome({navigation}){
                     <Text>Insira os dados, para que possamos recomendar pontos mais próximos.</Text>
                 </View>
                 <View style={styles.row2}>
-                    <Text style={styles.textIsInput}>Nome da residência:</Text>
+                    <Text style={styles.textIsInput}>Nome da empresa:</Text>
                     <TextInput style={styles.textInput}/>
                 </View>
 
@@ -58,7 +58,7 @@ export default function AddHome({navigation}){
                     </View>
                 </View>
                 <TouchableOpacity style={styles.editionButton}
-                onPressIn={()=> navigation.navigate("EditingHouse")}
+                onPressIn={()=> navigation.navigate("HouseAndWork")}
                 >
                     <Text style={styles.textButton}>Editar</Text>
                 </TouchableOpacity>

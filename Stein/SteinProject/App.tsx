@@ -1,10 +1,8 @@
 import React from 'react';
-import {Image, TouchableOpacity, StyleSheet} from "react-native";
-//import "react-native-reanimated";
+import {StyleSheet} from "react-native";
 import "react-native-gesture-handler"; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-//import { createDrawerNavigator } from '@react-navigation/drawer';
 import {scale, verticalScale, moderateScale } from "react-native-size-matters";
 
 import InitScreen from './src/pages/InitScreen/index';
@@ -17,17 +15,18 @@ import ShareToAFriendScreen from "./src/pages/ShareToAFriendScreen/index";
 import AddCharger from "./src/pages/AddCharger/index";
 import FaqScreen from "./src/pages/FaqScreen/index";
 import PersonalContentScreen from "./src/pages/PersonalContentScreen/index"
-import EditingHouse from "./src/pages/EditingHouse/index"
+import HouseAndWork from "./src/pages/HouseAndWork/index"
 import ChangeAccount from "./src/pages/ChangeAccount/index"
 import OQueFazemos from "./src/pages/oQueFazemos/index"
 import Objetivo from "./src/pages/objetivo/index"
 import QuemSomos from "./src/pages/quemSomos/index"
-import AddHome from "./src/pages/AddHome/index"
-import EditHome from "./src/pages/AddHome/editingHouse"
+import AddHome from "./src/pages/AddAndEditHome/AddHouse"
+import EditHome from "./src/pages/AddAndEditHome/editingHouse"
+import AddWork from "./src/pages/AddAndEditWork/AddWork"
+import EditWork from "./src/pages/AddAndEditWork/editingWork"
 
 
 const Stack = createNativeStackNavigator();
-//const Drawer = createDrawerNavigator();
 
 const App = () => {
 
@@ -191,7 +190,7 @@ const App = () => {
           },
         }}
         />
-        <Stack.Screen name="EditingHouse" component={EditingHouse}
+        <Stack.Screen name="HouseAndWork" component={HouseAndWork}
         options={{
           title:"Editar casa",
           headerTitleAlign:"center",
@@ -244,11 +243,40 @@ const App = () => {
           },
         }}
         />
+
+<Stack.Screen name="AddWork" component={AddWork}
+        options={{
+          title:"Adicionar trabalho",
+          headerTitleAlign:"center",
+          headerTitleStyle:{
+            fontSize:30,
+            fontWeight:"900"
+          },
+          headerStyle:{
+            backgroundColor:"#ffffff"
+          },
+        }}
+        />
+        <Stack.Screen name="EditWork" component={EditWork}
+        options={{
+          title:"Editar trabalho",
+          headerTitleAlign:"center",
+          headerTitleStyle:{
+            fontSize:30,
+            fontWeight:"900"
+          },
+          headerStyle:{
+            backgroundColor:"#ffffff"
+          },
+        }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-//ChangeAccount
+
+
+
 const styles = StyleSheet.create({
   backArrow:{
     width:20,
@@ -257,5 +285,7 @@ const styles = StyleSheet.create({
     marginRight:20,
   }
 })
+
+
 
 export default App;

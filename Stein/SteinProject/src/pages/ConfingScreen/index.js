@@ -79,7 +79,7 @@ const ConfigScreen = ({navigation}) => {
                     <View style={styles.rowText}>
                         <Text style={styles.textContent}>Editar casa/trabalho </Text>
                         <TouchableOpacity
-                        onPress={()=> navigation.navigate("EditingHouse")}
+                        onPress={()=> navigation.navigate("HouseAndWork")}
                         >
                             <Image
                             source={require("../../../assets/Icons/seta-direita.png")}
