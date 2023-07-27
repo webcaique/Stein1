@@ -51,6 +51,7 @@ const EditingHouse = ({navigation}) => {
                         </View>
                     </View>
 
+                    
 
                     <View>
                         <View style={styles.content}>
@@ -67,6 +68,21 @@ const EditingHouse = ({navigation}) => {
                         </View>
                     </View>
 
+            </View>
+
+            <View style={styles.editionButtonContainer}>
+                <TouchableOpacity style={styles.editionButton}
+                    onPress={()=>{navigation.navigate("EditHome")}}
+                >
+                    <Text style={styles.textButton}>Editar</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.editionButtonContainer}>
+                <TouchableOpacity style={styles.editionButton}
+                onPressIn={()=> navigation.navigate("AddHome")}
+                >
+                    <Text style={styles.textButton}>Adicionar</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.box1}>
