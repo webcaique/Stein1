@@ -66,11 +66,83 @@ const styles = ScaledSheet.create({
         justifyContent:"space-between"
     },
     column3:{
-        width:"100%",
+        width:125,
     },
+
     textInputCep:{
-        basicInput
+        borderWidth:1,
+        backgroundColor:"#fff",
+        marginVertical:10,
+        borderRadius:10,
+    },
+    textInputBairro:{
+        borderWidth:1,
+        backgroundColor:"#fff",
+        marginVertical:10,
+        borderRadius:10,
+        width:200,
+    },
+    row6:{
+        width:"100%",
+        flexDirection:"row",
+        justifyContent:"space-between"
+    },
+    textInputMunicipio:{
+        borderWidth:1,
+        backgroundColor:"#fff",
+        marginVertical:10,
+        borderRadius:10,
+        width:200,
+    },
+    textIsInputEstado:{
+        fontSize:16,
+        fontWeight:"700",
+    },
+    column5:{
+        width:125,
+    },
+    list:{
+        backgroundColor:"#fff",
+        borderWidth:1,
+        backgroundColor:"#fff",
+        marginVertical:10,
+        borderRadius:10,
+    },
+    item:{
+        borderWidth:1,
+        backgroundColor:"#fff",
+        marginVertical:10,
+        borderRadius:10,
+    },
+    editionButton:{
+        width:200,
+        height:75,
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#8429AE",
+        borderRadius:15,
+        borderWidth:2,
+    },
+    textButton:{
+        fontSize:25,
+        fontWeight:"900",
+        color:"#ffffff",
+    },
+    btnSwitch:{
+        width:200,
+        height:75,
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#8429AE",
+        borderRadius:15,
+        borderWidth:2,
+    },
+    textBtnSwicth:{
+        fontSize:25,
+        fontWeight:"900",
+        color:"#ffffff",
     }
+    
 })
 
 export default styles;

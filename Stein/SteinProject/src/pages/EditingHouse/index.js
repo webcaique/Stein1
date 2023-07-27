@@ -128,7 +128,9 @@ const EditingHouse = ({navigation}) => {
                 
             </View>
             <View style={styles.editionButtonContainer}>
-                <TouchableOpacity style={styles.editionButton}>
+                <TouchableOpacity style={styles.editionButton}
+                    onPress={()=>{navigation.navigate("EditHome")}}
+                >
                     <Text style={styles.textButton}>Editar</Text>
                 </TouchableOpacity>
             </View>
