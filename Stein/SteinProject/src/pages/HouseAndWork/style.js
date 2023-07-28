@@ -3,110 +3,65 @@ import {StyleSheet} from "react-native";
 const styles = StyleSheet.create({
     container:{
         flex:1,
+        width:"100%",
         height:"100%",
-        paddingTop:10,
-        paddingRight:10,
-        paddingLeft:10,
-        width:"100%",
-        
-    },
-    textOutBox:{
-        fontSize:16,
-        marginBottom:20,
-    },
-    box1:{
-        width:"100%",
-        height:250,
         padding:10,
-        borderWidth:2,
-        marginVertical:10,
     },
-    content:{
-        width:"100%",
-        height:50,
-        flexDirection:"row",
-        justifyContent:"space-between",
-        marginVertical:5,
-        alignItems:"center",
+    titleContainer:{
+        fontSize:16,
+        marginBottom:44,
+        color:"black",
     },
-    boxImageWithText:{
-        width:90,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    boxImage:{
-        width:30,
-        height:25,
-    },
-    boxImageWith2Image:{
-        width:55,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    boxImageWith3Image:{
-        width:80,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    boxImageWithTextAndress1:{
-        width:230,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },boxImageWithTextAndress2:{
-        width:180,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    boxImageWithTextPassword:{
-        width:90,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    boxImageWithTextUsername:{
-        width:130,
-        height:25,
-        flexDirection:"row",
-        justifyContent:"space-around",
-        alignItems:"center",
-    },
-    image:{
-        height:25,
-        width:25,
-        resizeMode:"contain",
-    },
-    textContent:{
-        fontSize:20,
-        color:"#000000",
-
+    box:{
+        borderWidth:1,
+        padding:18,
+        marginBottom:25,
     },
     titleBox:{
         fontSize:25,
-        color:"#000000",
-        fontWeight:"700",
+        marginBottom:30,
+        color:"black",
+        fontWeight:"800",
     },
-    editionButtonContainer:{
-        width:"100%",
-        height:100,
-        justifyContent:"center",
+    line:{
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"space-between",
         alignItems:"center",
+        height:30,
+        marginBottom:11,
+    },
+    titleLine:{
+        fontSize:20,
+        color:"black",
+        fontWeight:"600",
+    },
+    link:{
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",
+    },
+    textLink:{
+        fontSize:10,
+        color:"black",
+    },
+    iconLinkView:{
+        width:22,
+        height:22,
+    },
+    iconLink:{
+        width:22,
+        height:22,
+        resizeMode:"contain",
+        marginLeft:5,
+    },
+    iconLinkView:{
+        display:"flex",
+        flexDirection:"row",
     },
     editionButton:{
         width:200,
-        height:"80%",
+        height:75,
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#8429AE",
@@ -117,6 +72,11 @@ const styles = StyleSheet.create({
         fontSize:25,
         fontWeight:"900",
         color:"#ffffff",
+    },
+    buttonBox:{
+        width:"100%",
+        alignItems:"center",
+        marginBottom:25,
     }
 })
 
