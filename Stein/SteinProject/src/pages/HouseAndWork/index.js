@@ -1,8 +1,12 @@
 import React from "react";
 import {View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
 import styles  from "./style";
+import { FlatList } from "react-native-gesture-handler";
+import BoxData from "./boxData.js"
 
 const EditingHouse = ({navigation}) => {
+
+
     return(
         
         <View style={styles.container}>
@@ -11,6 +15,10 @@ const EditingHouse = ({navigation}) => {
                     <Text style={styles.titleContainer}>Edite as informações da sua casa ou trabalho.</Text>    
                 </View>
 
+                <FlatList
+                data={house}
+                keyExtractor={item=>item.id}
+                renderItem={({item})=>
                 <View style={styles.box}> 
 
                     <View style={styles.titleBoxView}>
@@ -86,6 +94,8 @@ const EditingHouse = ({navigation}) => {
 
                     </View>
                 </View>
+            }
+                />
 
                 <View style={styles.buttonBox}>
                     <TouchableOpacity style={styles.editionButton}
