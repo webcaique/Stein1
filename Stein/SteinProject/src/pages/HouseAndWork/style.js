@@ -1,6 +1,6 @@
-import {StyleSheet} from "react-native";
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
     container:{
         flex:1,
         width:"100%",
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         padding:10,
     },
     titleContainer:{
-        fontSize:16,
+        fontSize:moderateScale(16),
         marginBottom:44,
         color:"black",
     },
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         marginBottom:25,
     },
     titleBox:{
-        fontSize:25,
+        fontSize:moderateScale(25),
         marginBottom:30,
         color:"black",
         fontWeight:"800",
@@ -28,11 +28,11 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
-        height:30,
+        height:moderateScale(30),
         marginBottom:11,
     },
     titleLine:{
-        fontSize:20,
+        fontSize:moderateScale(20),
         color:"black",
         fontWeight:"600",
     },
@@ -42,16 +42,16 @@ const styles = StyleSheet.create({
         alignItems:"center",
     },
     textLink:{
-        fontSize:10,
+        fontSize:moderateScale(10),
         color:"black",
     },
     iconLinkView:{
-        width:22,
-        height:22,
+        width:moderateScale(22),
+        height:moderateScale(22),
     },
     iconLink:{
-        width:22,
-        height:22,
+        width:moderateScale(22),
+        height:moderateScale(22),
         resizeMode:"contain",
         marginLeft:5,
     },
@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
         flexDirection:"row",
     },
     editionButton:{
-        width:200,
-        height:75,
+        width:moderateScale(200),
+        height:moderateScale(75),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#8429AE",
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         borderWidth:2,
     },
     textButton:{
-        fontSize:25,
+        fontSize:moderateScale(25),
         fontWeight:"900",
         color:"#ffffff",
     },
@@ -77,6 +77,9 @@ const styles = StyleSheet.create({
         width:"100%",
         alignItems:"center",
         marginBottom:25,
+    },
+    textLink:{
+        fontSize: moderateVerticalScale(16),
     }
 })
 

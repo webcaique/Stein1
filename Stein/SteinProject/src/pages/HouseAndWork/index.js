@@ -4,54 +4,58 @@ import styles  from "./style";
 import BoxData from "./boxData.js"
 
 var house = [];
-    var work = [];
-    var exampleAppHouse = [
-        {
-            id:"00",
-            rua: "Rua Reinado do Cavalo Marinho, 564",
-            carregador:[
-                "carregador1.png",
-                "carregador2.png",
-            ],
-            nomeUser: "Daniel",
+var work = [];
+var exampleAppHouse = [
+    {
+        id:"00",
+        rua: "Rua Reinado do Cavalo Marinho, 564",
+        carregador:[
+            "carregador1.png",
+            "carregador2.png",
+        ],
+        nomeUser: "Daniel",
 
-        },
-        {
-            id:"01",
-            rua: "Rua Eduardo Alves, 117",
-            carregador:[
-                "carregador3.png",
-                "carregador4.png",
-            ],
-            nomeUser: "Caique",
+    },
+    {
+        id:"01",
+        rua: "Rua Eduardo Alves, 117",
+        carregador:[
+            "carregador3.png",
+            "carregador4.png",
+        ],
+        nomeUser: "Caique",
 
-        },
-        {
-            id:"02",
-            rua: "Rua Jupiter, 65",
-            carregador:[
-                
-            ],
-            nomeUser: "Caique",
+    },
+    {
+        id:"02",
+        rua: "Rua Jupiter, 65",
+        carregador:[
+            
+        ],
+        nomeUser: "Caique",
 
-        }
-    ]
-    var exampleAppWork = [
-        {
-            id:"00",
-            rua: "Rua Reinado do Cavalo Marinho, 564",
-            carregador:[
-                "carregador1.png",
-                "carregador2.png",
-            ],
-            nomeUser: "Daniel",
+    }
+]
+var exampleAppWork = [
+    {
+        id:"00",
+        rua: "Rua Reinado do Cavalo Marinho, 111",
+        carregador:[
+            "carregador1.png",
+            "carregador2.png",
+        ],
+        nomeUser: "Daniel",
 
-        }
-    ]
+    }
+]
 
-    exampleAppHouse.forEach((desc,id) => {
-        house.push(desc)
-    });
+exampleAppHouse.forEach((desc,id) => {
+    house.push(desc)
+});
+
+exampleAppWork.forEach((desc,id) => {
+    work.push(desc)
+});
 
 const EditingHouse = ({navigation}) => {
 
@@ -68,9 +72,9 @@ const EditingHouse = ({navigation}) => {
                 data={house}
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
-                vi
+                
                 renderItem={({item})=>
-                <BoxData rua={item.rua} carregador={item.carregador} user={item.nomeUser}/>
+                <BoxData titulo={"Residência"} rua={item.rua} carregador={item.carregador} user={item.nomeUser}/>
             }
                 />
 
@@ -95,81 +99,15 @@ const EditingHouse = ({navigation}) => {
 
 
 
-                <View style={styles.box}> 
-
-                    <View style={styles.titleBoxView}>
-                        <Text style={styles.titleBox}>Trabalho</Text>
-                    </View>
-
-                    <View style={styles.content}>
-
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Endereço</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.textLinkView}> 
-                                    <Text style={styles.textLink}>Rua Reinado do Cavalo Marinho, 564 </Text>
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/pin-de-localizacao.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-                        
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Tipo de carregador</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.iconLinkView}> 
-                                <Image source={require("../../../assets/VetoresPNG/carregador1.png")} style={styles.iconLink}/>
-                                <Image source={require("../../../assets/VetoresPNG/carregador2.png")} style={styles.iconLink}/>
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/seta-direita.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Nome de usuário</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.textLinkView}> 
-                                    <Text style={styles.textLink}>Daniel</Text>
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/seta-direita.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-
-
-                    </View>
-                </View>
+                <FlatList
+                data={work}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                
+                renderItem={({item})=>
+                <BoxData titulo={"Trabalho"} rua={item.rua} carregador={item.carregador} user={item.nomeUser}/>
+            }
+                />
 
                 <View style={styles.buttonBox}>
                     <TouchableOpacity style={styles.editionButton}

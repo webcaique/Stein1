@@ -13,7 +13,7 @@ export default function AddHome({navigation}){
             <ScrollView>
             <View style={styles.container}>
                 <View style={styles.row1}>
-                    <Text>Insira os dados, para que possamos recomendar pontos mais próximos.</Text>
+                    <Text style={styles.textTitle}>Insira os dados, para que possamos recomendar pontos mais próximos.</Text>
                 </View>
                 <View style={styles.row2}>
                     <Text style={styles.textIsInput}>Nome da residência:</Text>
@@ -48,7 +48,7 @@ export default function AddHome({navigation}){
                 </View>
 
                 <View style={styles.row6}>
-                    <View>
+                    <View style={styles.column6}>
                         <Text style={styles.textIsInput}>Município:</Text>
                         <TextInput style={styles.textInputMunicipio}/>
                     </View>

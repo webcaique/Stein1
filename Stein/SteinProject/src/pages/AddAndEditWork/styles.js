@@ -10,11 +10,17 @@ const styles = ScaledSheet.create({
     },
 
     row1:{
-        width:"80%",
+        width:scale(300),
+        display:"flex",
         alignItems:"center",
         justifyContent:"center",
         marginBottom:10,
         
+    },
+    textTitle:{
+        fontSize:scale(16),
+        alignItems:"center",
+        justifyContent:"center",
     },
     row2:{
         width:"100%",
@@ -31,28 +37,32 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
+        height:moderateVerticalScale(50),
 
     },
     textIsInput:{
-        fontSize:16,
+        fontSize:scale(16),
         fontWeight:"700",
     },
     column1:{
-        width:"65%",
+        width:scale(225),
     },
     textInputLogradouro:{
         borderWidth:1,
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:"100%"
+        width:"100%",
+        height:moderateVerticalScale(50),
+
     },
     textInputNumber:{
         borderWidth:1,
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:100
+        width:scale(100),
+        height:moderateVerticalScale(50),
     },
 
     row4:{
@@ -66,7 +76,7 @@ const styles = ScaledSheet.create({
         justifyContent:"space-between"
     },
     column3:{
-        width:125,
+        width:scale(125),
     },
 
     textInputCep:{
@@ -74,13 +84,17 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
+        height:moderateVerticalScale(50),
+
     },
     textInputBairro:{
         borderWidth:1,
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:200,
+        width:scale(200),
+        height:moderateVerticalScale(50),
+
     },
     row6:{
         width:"100%",
@@ -92,14 +106,19 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:200,
+        height:moderateVerticalScale(50),
+        
+
     },
     textIsInputEstado:{
-        fontSize:16,
+        fontSize:scale(16),
         fontWeight:"700",
     },
     column5:{
-        width:125,
+        width:scale(125),
+        height:moderateVerticalScale(50),
+
+        
     },
     list:{
         backgroundColor:"#fff",
@@ -107,16 +126,22 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
+        height:moderateVerticalScale(50),
+
+        
     },
     item:{
         borderWidth:1,
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
+        height:moderateVerticalScale(50),
+
+        
     },
     editionButton:{
-        width:200,
-        height:75,
+        width:moderateScale(200),
+        height:moderateVerticalScale(75),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#8429AE",
@@ -124,25 +149,17 @@ const styles = ScaledSheet.create({
         borderWidth:2,
     },
     textButton:{
-        fontSize:25,
+        fontSize:moderateVerticalScale(25),
         fontWeight:"900",
         color:"#ffffff",
+        
     },
-    btnSwitch:{
-        width:200,
-        height:75,
-        justifyContent:"center",
-        alignItems:"center",
-        backgroundColor:"#8429AE",
-        borderRadius:15,
-        borderWidth:2,
+    fontList:{
+        fontSize:moderateScale(16),
     },
-    textBtnSwicth:{
-        fontSize:25,
-        fontWeight:"900",
-        color:"#ffffff",
+    column6:{
+        width:moderateScale(200),
     }
-    
 })
 
 export default styles;

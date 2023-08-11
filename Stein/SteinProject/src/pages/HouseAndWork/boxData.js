@@ -1,14 +1,50 @@
 import React from "react";
-import {View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
+import {View, Text, TouchableOpacity, Image, ScrollView, FlatList} from "react-native";
 import styles  from "./style";
 
+
+/* 
+https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/CARREGADOR?alt=media&token=3d2de5d3-bbec-48e2-84b8-20ebfef94f72` 
+
+CAMINHO DOS ARQUIVOS, SOMENTE SUBSTITUIR O "CARREGADOR" PELO NOME DE ARQUIVO
+*/
+
 export default function(props){
-    var link = "../../../assets/VetoresPNG/"
+    var link = "../../../assets/VetoresPNG/";
+    var linksCarr = [];
+    function imgCarr(){
+        props.carregador.forEach((carr, id) => {
+            link = link+carr;
+            console.log(link);
+            console.log(carr);
+            linksCarr.push(link)
+            link = "../../../assets/VetoresPNG/"
+            
+        } );
+        return(
+            <FlatList
+            style={{flexDirection:"row"}}
+            data={props.carregador}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                renderItem={({item})=>
+                <Image source={{
+                    uri:
+                    `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/${item}?alt=media&token=3d2de5d3-bbec-48e2-84b8-20ebfef94f72`
+                }} style={styles.iconLink}/>
+            }
+                
+            />
+        )
+    /* <Image source={require(`../../../assets/VetoresPNG/${props.carregador}`)} style={styles.iconLink}/>
+    <Image source={require(`../../../assets/VetoresPNG/${props.carregador}`)} style={styles.iconLink}/>*/
+    
+    }
     return(
         <View style={styles.box}> 
 
                     <View style={styles.titleBoxView}>
-                        <Text style={styles.titleBox}>Residência</Text>
+                        <Text style={styles.titleBox}>{props.titulo}</Text>
                     </View>
 
                     <View style={styles.content}>
@@ -44,17 +80,7 @@ export default function(props){
 
                                 <View style={styles.iconLinkView}>
                                     {
-                                        ()=>{
-                                            props.carregador.forEach((carr, id) => {
-                                                link = link+carr;
-                                                return(
-                                                        <Image source={require("../../../assets/VetoresPNG/carregador1.png")} style={styles.iconLink}/>
-                                                );
-                                            } );
-                                        /* <Image source={require(`../../../assets/VetoresPNG/${props.carregador}`)} style={styles.iconLink}/>
-                                    <Image source={require(`../../../assets/VetoresPNG/${props.carregador}`)} style={styles.iconLink}/>*/
-                                    
-                                        }
+                                        imgCarr()
                                         
                                     }
                                     
