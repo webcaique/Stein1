@@ -24,6 +24,7 @@ import Objetivo from "./src/pages/objetivo/index"
 import QuemSomos from "./src/pages/quemSomos/index"
 import AddHome from "./src/pages/AddHome/index"
 import EditHome from "./src/pages/AddHome/editingHouse"
+import EsquecerSenha from "./src/pages/EsquecerSenha/index"
 
 
 const Stack = createNativeStackNavigator();
@@ -35,6 +36,16 @@ const App = () => {
     
     <NavigationContainer>
       <Stack.Navigator>
+      <Stack.Screen name="EsquecerSenha" component={EsquecerSenha}
+        options={{ title:"ENTRAR",
+        headerTitleAlign:'left',
+        headerTitleStyle:{
+          fontSize:34,
+          fontWeight:"900",
+          color:"#563595"
+        }
+      }}
+        />
         <Stack.Screen name="InitScreen" component={InitScreen} 
           options={{ title:"STEIN",
           headerTransparent:true,
@@ -48,7 +59,6 @@ const App = () => {
         />
         <Stack.Screen name="LoginScreen" component={LoginScreen}
         options={{ title:"ENTRAR",
-        headerTransparent:true,
         headerTitleAlign:'left',
         headerTitleStyle:{
           fontSize:34,

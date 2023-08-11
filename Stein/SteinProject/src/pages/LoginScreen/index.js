@@ -3,18 +3,18 @@ import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, K
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
 
-
-
 export default function LoginScreen({navigation}){
     const [checked, setChecked] = useState(true);
     const toggleCheckbox = () => setChecked(!checked);
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     return(
-        <Pressable style={{width:"100%", height:"100%"}}
+        <View>
+            <ScrollView>
+            <Pressable style={{width:"100%", height:"100%"}}
             onPress={Keyboard.dismiss}>
             <View style={styles.conteiner}>
-                
+
                 <TextInput 
                 placeholder="Email"
                 placeholderTextColor={"#000000"}
@@ -51,17 +51,28 @@ export default function LoginScreen({navigation}){
             <TouchableOpacity>
                 <Image source={require("../../../assets/Icons/facebookIcon.png")} style={styles.img1}/>
             </TouchableOpacity>
-            
+
             <TouchableOpacity>
                 <Image source={require("../../../assets/Icons/googleIcon.png")} style={styles.img2}/>
             </TouchableOpacity>
-            
-            </View>
+                </View>
             <TouchableOpacity style={styles.buttons} 
             onPress={()=> navigation.navigate("QuemSomos")}>
                 <Text style={styles.textButtons}>Entrar</Text>
             </TouchableOpacity>
-            <View style={styles.singinLink}>    
+            <View style={styles.singinLink}>
+                <TouchableOpacity style={styles.siginButton}
+                onPress={()=> navigation.navigate("EsquecerSenha")}
+                >
+                    <Text style={styles.textPasswordButton}>
+                        Esqueceu sua senha?
+                    </Text>
+                </TouchableOpacity>
+            </View>
+                <Text style={styles.textou}>
+                    ou
+                </Text>
+            <View style={styles.singinLink}>
                 <Text style={styles.textSigin}> Não possui conta? </Text>
                 <TouchableOpacity style={styles.siginButton}
                 onPress={()=> navigation.navigate("SinginScreen")}
@@ -69,11 +80,11 @@ export default function LoginScreen({navigation}){
                         <Text style={styles.textSiginButton}>
                             Cadastrar-se
                         </Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
             </View>
         </View>
         </Pressable>
+            </ScrollView>
+        </View>
     )
 }
-
-

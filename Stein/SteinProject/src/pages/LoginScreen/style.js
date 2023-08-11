@@ -27,7 +27,7 @@ const style = ScaledSheet.create({
         flexDirection:"row",
         alignItems:"center",
         justifyContent: "space-evenly"
-        
+
     },
     linha1:{
         width:"40%",
@@ -38,9 +38,9 @@ const style = ScaledSheet.create({
         width:"40%",
         backgroundColor:"#000000",
         height:verticalScale(3),
-        
+
     },
-    textBetweenLines:{
+textBetweenLines:{
       fontSize: moderateScale(12),
       marginHorizontal: moderateScale(10)
     },
@@ -75,15 +75,15 @@ const style = ScaledSheet.create({
         width:moderateScale(75),
         resizeMode:"contain",
         marginRight:20,
-        
-        
+
+
     },
     img2:{
         width:moderateScale(75),
         resizeMode:"contain",
         marginLeft:20
-        
-        
+
+
     },
     buttons:{
         width: scale(265),
@@ -106,14 +106,23 @@ const style = ScaledSheet.create({
       },
       siginButton:{
         marginLeft:1,
-        
+
       },
       textSiginButton:{
         fontWeight:"900",
         fontSize:moderateScale(17),
       },
+      textPasswordButton:{
+        fontWeight:"900",
+        fontSize:moderateScale(17),
+        textDecorationLine:"underline",
+      },
       textSigin:{
         fontSize:moderateScale(17),
+      },
+      textou:{
+        fontSize:moderateScale(17),
+        marginTop:20,
       },
 })
 export default style;
