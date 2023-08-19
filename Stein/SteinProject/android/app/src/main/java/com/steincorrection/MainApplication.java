@@ -1,4 +1,4 @@
-package com.steinproject;
+package com.steincorrection;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

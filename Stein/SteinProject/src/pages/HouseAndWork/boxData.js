@@ -13,14 +13,7 @@ export default function(props){
     var link = "../../../assets/VetoresPNG/";
     var linksCarr = [];
     function imgCarr(){
-        props.carregador.forEach((carr, id) => {
-            link = link+carr;
-            console.log(link);
-            console.log(carr);
-            linksCarr.push(link)
-            link = "../../../assets/VetoresPNG/"
-            
-        } );
+        
         return(
             <FlatList
             style={{flexDirection:"row"}}
@@ -30,7 +23,7 @@ export default function(props){
                 renderItem={({item})=>
                 <Image source={{
                     uri:
-                    `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/${item}?alt=media&token=3d2de5d3-bbec-48e2-84b8-20ebfef94f72`
+                    `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${item}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`
                 }} style={styles.iconLink}/>
             }
                 

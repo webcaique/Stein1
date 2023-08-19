@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.steinproject"
+    namespace "com.steincorrection"
     defaultConfig {
-        applicationId "com.steinproject"
+        applicationId "com.steincorrection"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -11,7 +11,9 @@ export default function LoginScreen({navigation}){
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     return(
-        <Pressable style={{width:"100%", height:"100%"}}
+        <View style={{backgroundColor:"#fff", height:"100%"}}>
+            <ScrollView>
+            <Pressable style={{width:"100%", height:"100%"}}
             onPress={Keyboard.dismiss}>
             <View style={styles.conteiner}>
                 
@@ -73,6 +75,8 @@ export default function LoginScreen({navigation}){
             </View>
         </View>
         </Pressable>
+            </ScrollView>
+        </View>
     )
 }
 
