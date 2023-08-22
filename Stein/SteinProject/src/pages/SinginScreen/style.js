@@ -8,12 +8,14 @@ const styles = ScaledSheet.create({
         width:"100%",
         height:"100%",
         alignItems:"center",
-        padding: "5.5%",
-        justifyContent: "space-around"
+        padding: 20,
+        paddingTop:100,
+        justifyContent: "center",
+
 
     },
     textInput1:{
-      marginTop:100,
+
       backgroundColor:"#ffff",
       borderRadius: moderateVerticalScale(10),
       borderWidth:scale(1),

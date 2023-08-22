@@ -1,5 +1,10 @@
+/*
+
+TELA PARA CONECTAR AS PÁGINAS
+
+*/
+
 import React from 'react';
-import {StyleSheet} from "react-native";
 import "react-native-gesture-handler"; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -274,18 +279,5 @@ const App = () => {
     </NavigationContainer>
   );
 }
-
-
-
-const styles = StyleSheet.create({
-  backArrow:{
-    width:20,
-    height:20,
-    transform: [{rotate:'180deg'}],
-    marginRight:20,
-  }
-})
-
-
 
 export default App;

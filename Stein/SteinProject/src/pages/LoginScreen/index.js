@@ -7,17 +7,25 @@ import CheckBox from '@react-native-community/checkbox';
 
 export default function LoginScreen({navigation}){
     const [checked, setChecked] = useState(true);
-    const toggleCheckbox = () => setChecked(!checked);
+    const toggleCheckbox = () => setChecked(!checked); // Deixar marcado ou não o checkBox
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     return(
-        <View style={{backgroundColor:"#fff", height:"100%"}}>
-            <ScrollView>
+        <View style={{backgroundColor:"#fff", height:"100%"}} 
+        //Container para fazer a página ocupar toda tela
+        >
+            <ScrollView 
+            //Caso a página fique maior que a tela, objetivo de responsividade 
+            >
             <Pressable style={{width:"100%", height:"100%"}}
-            onPress={Keyboard.dismiss}>
-            <View style={styles.conteiner}>
+            onPress={Keyboard.dismiss} 
+            // Deixa a página clicável para desativar o teclado do usuário
+            > 
+            <View style={styles.conteiner}
+            //Container principal
+            >
                 
-                <TextInput 
+                <TextInput //Campo para colocar o email
                 placeholder="Email"
                 placeholderTextColor={"#000000"}
                 style={styles.textInput1} 
@@ -25,7 +33,8 @@ export default function LoginScreen({navigation}){
                 returnKeyLabel="email"
                 autoCapitalize="none"
                 />
-                <TextInput style={styles.textInput2} 
+                <TextInput //Campo para colocar a senha
+                style={styles.textInput2} 
                 placeholder="Senha"
                 placeholderTextColor={"#000000"}
                 returnKeyLabel="Senha"
@@ -35,37 +44,58 @@ export default function LoginScreen({navigation}){
                 autoCorrect={false}
                 textContentType={'password'}/>
                 <View style={styles.checkBox}>
-                    <CheckBox
+                    <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
                         disabled={false}
                         value={toggleCheckBox}
                         onValueChange={(newValue) => setToggleCheckBox(newValue)}
                         tintColors={{true: "#000000"}}
                         style={{padding: 10}}
+                        //Os textos abaixos compõem a CheckBox
                     />
                     <Text style={styles.textCheckbox}> Salve a senha</Text>
                 </View>
                 <View style={styles.linhas}>
-                    <View style={styles.linha1}></View>
-                    <Text style={styles.textBetweenLines}>OU</Text>
-                    <View style={styles.linha2}></View>
+                    <View style={styles.linha1}
+                    //Linhas para centralizar o ou na tela
+                    ></View>
+                    <Text style={styles.textBetweenLines}
+                    //Texto para mostrar outra forma de logar
+                    >OU</Text>
+                    <View style={styles.linha2}
+                    //Linhas para centralizar o ou na tela
+                    ></View>
                 </View>
                 <View style={styles.logos}>
-            <TouchableOpacity>
-                <Image source={require("../../../assets/Icons/facebookIcon.png")} style={styles.img1}/>
+            <TouchableOpacity
+            // Botão para logar com o Facebook
+            >
+                <Image source={{
+                    uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FfacebookIcon.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6"
+                    }} style={styles.img1}/>
             </TouchableOpacity>
             
-            <TouchableOpacity>
-                <Image source={require("../../../assets/Icons/googleIcon.png")} style={styles.img2}/>
+            <TouchableOpacity
+            // Botão para logar com o Google
+            >
+                <Image source={{
+                    uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FgoogleIcon.png?alt=media&token=ce712efb-d006-47bf-8228-d81d4944bfff"
+                    }} style={styles.img2}/>
             </TouchableOpacity>
             
             </View>
             <TouchableOpacity style={styles.buttons} 
+            //Botão para fazer o login e fazer a verificação de dados
             onPress={()=> navigation.navigate("QuemSomos")}>
                 <Text style={styles.textButtons}>Entrar</Text>
             </TouchableOpacity>
-            <View style={styles.singinLink}>    
-                <Text style={styles.textSigin}> Não possui conta? </Text>
+            <View style={styles.singinLink}
+            //Container do link
+            >    
+                <Text style={styles.textSigin}
+                //Texto para "explicar" o link
+                > Não possui conta? </Text>
                 <TouchableOpacity style={styles.siginButton}
+                // Link para direcionar para a tela de cadastro
                 onPress={()=> navigation.navigate("SinginScreen")}
                 >
                         <Text style={styles.textSiginButton}>

@@ -8,6 +8,7 @@ export default function selectList(){
     return(
         <View style={styles.list}>
             <Picker
+            // É uma lista com os estados do brasil
                 selectedValue={selectCountry}
                 onValueChange={(itemValue, itemIndex) =>
                     setSelectCountry(itemValue)

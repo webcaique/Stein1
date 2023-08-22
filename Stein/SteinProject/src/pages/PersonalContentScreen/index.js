@@ -1,125 +1,136 @@
 import React from "react";
-import {View, Text, TouchableOpacity, Image, ScrollView} from "react-native";
+import {View, Text, TouchableOpacity, Image, FlatList} from "react-native";
 import styles  from "./style";
 
 const PersonalContentScreen = () => {
+    const carregador = [1,3,5,6];
+    
     return(
-        
-        <View style={styles.container}>
-            <ScrollView>
-            <Text style={styles.textOutBox}>
-                Edite as informações da sua conta pessoal.
-            </Text>
+        <View style={styles.mainContainer}>
+            <View style={styles.containerTextTop}>
+                <Text style={styles.textTop}>Edite as informações de sua conta pessoal.</Text>
+            </View>
+
             <View style={styles.box}>
-                    <Text style={styles.titleBox}>Suas informações pessoais</Text>
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>Data de nascimento</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWith2Image}
-                            >
-                                <Image 
-                                source={require("../../../assets/Icons/calender.png")}
-                                style={styles.image}
-                                />
-                                <Image 
-                                source={require("../../../assets/Icons/seta-direita.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    
+                <View style={styles.containerMainText}>
+                    <Text style={styles.mainText}>Suas informações pessoais</Text>
+                </View>
 
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>Estado</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWithText}
-                            >
-                                <Text>São Paulo</Text>
-                                <Image 
-                                source={require("../../../assets/Icons/pin-de-localizacao.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
 
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>Tipo de carregador</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWith3Image}
-                            >
-                                <Image 
-                                source={require("../../../assets/VetoresPNG/carregador6.png")}
-                                style={styles.image}
-                                />
-                                <Image 
-                                source={require("../../../assets/VetoresPNG/carregador7.png")}
-                                style={styles.image}
-                                />
-                                <Image 
-                                source={require("../../../assets/Icons/seta-direita.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Data de Nascimento</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                            <Image source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fcalender.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                } style={styles.imgs}/>
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                } style={styles.imgs} />
                         </View>
                     </View>
+                </View>
 
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>E-mail</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWithTextEmail}
-                            >
-                                <Text>danielsantana@gmail.com</Text>
-                                <Image 
-                                source={require("../../../assets/Icons/seta-direita.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Estado</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                            <Text style={styles.text}>São Paulo</Text>
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fpin-de-localizacao.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                } style={styles.imgs} />
                         </View>
                     </View>
+                </View>
 
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>Senha</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWithTextPassword}
-                            >
-                                <Text>********</Text>
-                                <Image 
-                                source={require("../../../assets/Icons/seta-direita.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Tipo de Carregador</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                        <FlatList
+                        
+                        contentContainerStyle={{ justifyContent: 'flex-end', alignItems: 'flex-end',  }} // Alinhar à direita
+                        horizontal={true}
+            data={carregador}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                
+                renderItem={(item)=>
+                <Image source={{
+                    uri:
+                    `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${item.item}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`
+                }} style={styles.imgs}/>
+            }
+                
+            />
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                } style={styles.imgs} />
                         </View>
                     </View>
+                </View>
 
-                    <View>
-                        <View style={styles.content}>
-                            <Text style={styles.textContent}>Nome de usuário</Text>
-                            <TouchableOpacity 
-                            style={styles.boxImageWithTextUsername}
-                            >
-                                <Text>Daniel Martins</Text>
-                                <Image 
-                                source={require("../../../assets/Icons/seta-direita.png")}
-                                style={styles.image}
-                                />
-                            </TouchableOpacity>
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Email</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                        <Text style={styles.text}>caique@sola.com</Text>
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                } style={styles.imgs} />
                         </View>
                     </View>
+                </View>
+
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Senha</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                        <Text style={styles.text}>********</Text>
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}} style={styles.imgs} />
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.line}>
+                    <View style={styles.containerTextLine}>
+                        <Text style={styles.textLine}>Nome usuário</Text>
+                    </View>
+                    <View style={styles.iconsLine}>
+                        <View style={styles.imageSet}>
+                        <Text style={styles.text}>Caique</Text>
+                        </View>
+                        <View style={styles.lastImg}>
+                            <Image source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}} style={styles.imgs} />
+                        </View>
+                    </View>
+                </View>
             </View>
-            <View style={styles.editionButtonContainer}>
-                <TouchableOpacity style={styles.editionButton}>
-                    <Text style={styles.textButton}>Editar</Text>
-                </TouchableOpacity>
-            </View>
+
             
-            </ScrollView>
+
+
+
         </View>
     )
 }

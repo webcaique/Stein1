@@ -1,113 +1,63 @@
-import {StyleSheet} from "react-native";
 import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
 
 const styles = ScaledSheet.create({
-    container:{
-        flex:1,
+    mainContainer:{
+        padding:10,
         width:"100%",
         height:"100%",
-        padding:10,
-        
+        flex:1,
+
     },
-    textOutBox:{
-        fontSize:scale(16),
-        marginBottom:20,
+    textTop:{
+        fontSize: 16,
+        marginBottom:10,
+    },
+    containerTextTop:{
+        width:"100%",
     },
     box:{
         width:"100%",
-        height:moderateVerticalScale(410),
+        height:"auto",
         padding:10,
-        borderWidth:2,
+        alignItems:"center",
+        borderWidth:1,
     },
-    content:{
+    containerMainText:{
+        marginBottom:10,
+    },
+    mainText:{
+        fontSize:20,
+        fontWeight:"700",
+    },
+    line:{
         width:"100%",
-        height:moderateVerticalScale(50),
         flexDirection:"row",
         justifyContent:"space-between",
-        marginVertical:5,
-        alignItems:"center",
-    },
-    boxImageWithText:{
-        width:scale(90),
-        height:scale(25),
-        flexDirection:"row",
-        alignItems:"center",
-        justifyContent:"flex-end"
-    },
-    boxImage:{
-        width:scale(30),
-        height:scale(25),
-    },
-    boxImageWith2Image:{
-        width:scale(55),
-        height:scale(25),
-        flexDirection:"row",
-        justifyContent:"flex-end",
-        alignItems:"center",
-    },
-    boxImageWith3Image:{
-        width:scale(80),
-        height:scale(25),
-        flexDirection:"row",
-        justifyContent:"flex-end",
-        alignItems:"center",
-    },
-    boxImageWithTextEmail:{
-        width:scale(200),
-        height:scale(25),
-        flexDirection:"row",
-        justifyContent:"flex-end",
-        alignItems:"center",
-    },
-    boxImageWithTextPassword:{
-        width:scale(90),
-        height:scale(25),
-        flexDirection:"row",
-        justifyContent:"flex-end",
-        alignItems:"center",
-    },
-    boxImageWithTextUsername:{
-        width:scale(130),
-        height:scale(25),
-        flexDirection:"row",
-        justifyContent:"flex-end",
-        alignItems:"center",
-    },
-    image:{
-        height:moderateVerticalScale(25),
-        width:moderateScale(25),
-        resizeMode:"contain",
-        
-    },
-    textContent:{
-        fontSize:scale(16),
-        color:"#000000",
+        marginVertical:10,
 
     },
-    titleBox:{
-        fontSize:scale(20),
-        color:"#000000",
-    },
-    editionButtonContainer:{
-        width:"100%",
-        height:moderateVerticalScale(100),
-        justifyContent:"center",
+    iconsLine:{
+        flexDirection:"row",
         alignItems:"center",
     },
-    editionButton:{
-        width:scale(200),
-        height:"80%",
-        justifyContent:"center",
-        alignItems:"center",
-        backgroundColor:"#8429AE",
-        borderRadius:15,
-        borderWidth:2,
+    imageSet:{
+        alignItems:"flex-end",
+        width:125,
+        height:25,
     },
-    textButton:{
-        fontSize:scale(25),
-        fontWeight:"900",
-        color:"#ffffff",
-    }
+    imgs:{
+        marginLeft:5,
+        width:25,
+        resizeMode:"contain",
+        height:25,
+    },
+    textLine:{
+        fontSize:18,
+    },
+    containerTextLine:{
+        width:"auto",
+}
+
 })
 
 export default styles;

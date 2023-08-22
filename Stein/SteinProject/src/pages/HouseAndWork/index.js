@@ -52,30 +52,14 @@ const EditingHouse = ({navigation}) => {
             const trabalho = [];
     
             // Itera sobre cada documento em 'locais'
-            await Promise.all(locais.map(async (data) => {
-              // Obtém os dados do logradouro referenciado por IDLogradouro
-              const tabelaEndereco = firestore.collection("logradouro").doc(data.IDLogradouro);
-    
-              try {
-                const doc = await tabelaEndereco.get();
-    
-                if (doc.exists) {
-                  const logradouroData = doc.data();
-                  // Atualiza o estado 'listLogra' com dados do logradouro
-                  setListLogra(prevListLogra => [...prevListLogra, logradouroData]);
-                } else {
-                  console.log("Documento não encontrado!");
-                }
-              } catch (error) {
-                console.log('Erro ao buscar documentos: ', error);
-              }
-    
+            await Promise.all(locais.map(async (data) => {    
               // Classifica os dados em 'casa' ou 'trabalho' com base em nomeLocal
-              if ("Residência" === data.nomeLocal) {
+              if ("Residência" === data.tipoLocal) {
                 casa.push({ id: data.id, ...data });
-              } else if ("Trabalho" === data.nomeLocal) {
+              } else if ("Trabalho" === data.tipoLocal) {
                 trabalho.push({ id: data.id, ...data });
               }
+
             }));
     
             // Atualiza os estados 'house' e 'work'
@@ -90,43 +74,32 @@ const EditingHouse = ({navigation}) => {
         // Chama a função para buscar os dados
         fetchLocalData();
 
-        console.log();
-        console.log(listLogra)
-        console.log();
 
-        console.log();
-        console.log(local)
-        console.log();
-
+        
 
       }, []);
 
+      
+
     return(
-        
         <View style={styles.container}>
             <ScrollView>
                 <View style={styles.titleContainerView}>
                     <Text style={styles.titleContainer}>Edite as informações da sua casa ou trabalho.</Text>    
                 </View>
 
-                <FlatList
-                  data={house}
-                  keyExtractor={(item) => item.id}
-                  accessibilityElementsHidden={true}
-                  renderItem={({ item }) => {
-                    const houseElements = listLogra.map((logra, index) => (
-                      <BoxData
-                        key={`${item.id}_${index}`}
-                        titulo={item.nomeLocal}
-                        rua={`${logra.tipoLogradouro} ${logra.logradouro}, nº ${logra.numero}`}
-                        carregador={item.IDTipoCarregador}
-                        user={"Caique"}
-                      />
-                    ));
 
-                    return houseElements;
-                  }}
+                <FlatList
+                data={house}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                renderItem={({item})=>{
+                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}/>
+
+                  return enderecos;
+                }}
                 />
+                
 
 
                 <View style={styles.buttonBox}>
@@ -147,24 +120,17 @@ const EditingHouse = ({navigation}) => {
 
 
 
-
                 <FlatList
                 data={work}
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
-                
                 renderItem={({item})=>{
+                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}/>
 
-                
-                  for(var i = 0; i < listLogra.length; i++){
-                    
-                    return(
-                      <BoxData titulo={item.nomeLocal} rua={`${listLogra[i].tipoLogradouro} ${listLogra[i].logradouro}, nº ${listLogra[i].numero}`} carregador={item.IDTipoCarregador} user={"Caique"}/>
-                    )
-                  }
-                }
-            }
+                  return enderecos;
+                }}
                 />
+                
 
                 
 
@@ -193,3 +159,75 @@ const EditingHouse = ({navigation}) => {
 }
 
 export default EditingHouse;
+
+/*
+
+<FlatList
+                data={house}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                
+                renderItem={({item})=>{
+                  const end = [];
+                
+                  for(var i = 0; i < listLogra.length; i++){
+
+                    end.push(
+                      <BoxData titulo={item.nomeLocal} rua={`${listLogra[i].tipoLogradouro} ${listLogra[i].logradouro}, nº ${listLogra[i].numero}`} carregador={item.IDTipoCarregador} user={"Caique"}/>
+                    )
+                  }
+                  if(house.length > item.id){
+                    console.log();
+                    console.log("");
+                    console.log(item.IDTipoCarregador);
+                    console.log("TIPO CARR");
+                    console.log();
+                    return end;
+                  }
+                  
+                  
+                  
+                }
+            }
+                />
+
+
+
+
+
+
+
+
+
+<FlatList
+                data={work}
+                keyExtractor={item=>item.id}
+                accessibilityElementsHidden={true}
+                
+                renderItem={({item})=>{
+                  const end = [];
+                  
+                  console.log();
+                  console.log("TESTE");
+                  console.log(item.id);
+                  console.log("TESTE");
+                  console.log();
+                
+                  for(var i = 0; i < listLogra.length; i++){
+                    
+                    end.push(
+                      <BoxData titulo={item.nomeLocal} rua={`${listLogra[i].tipoLogradouro} ${listLogra[i].logradouro}, nº ${listLogra[i].numero}`} carregador={item.IDTipoCarregador} user={"Caique"}/>
+                    )
+                  }
+                  if(work.length >= item.id){
+                    return end;
+                  }
+                  
+                  
+                  
+                }
+            }
+                />
+
+
+*/

@@ -16,7 +16,10 @@ const ShareToAFriendScreen = () => {
                 >
                     <Image 
                     style={styles.icons}
-                    source={require("../../../assets/Icons/enviar.png")}/>
+                    source={{
+                        uri:
+                        "https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=ce712efb-d006-47bf-8228-d81d4944bfff"
+                        }}/>
                 </TouchableOpacity>
                 <View>
                     <Text style={styles.textContent}>Convide um amigo</Text>
@@ -27,7 +30,9 @@ const ShareToAFriendScreen = () => {
                 <TouchableOpacity style={styles.circule}>
                     <Image 
                     style={styles.icons}
-                    source={require("../../../assets/Icons/favorito.png")}/>
+                    source={{
+                        uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ffavorito.png?alt=media&token=ce712efb-d006-47bf-8228-d81d4944bfff"
+                        }}/>
                 </TouchableOpacity>
                 <View>
                     <Text style={styles.textContent}>Nos avalie</Text>
@@ -37,7 +42,9 @@ const ShareToAFriendScreen = () => {
                 <TouchableOpacity style={styles.circule}>
                     <Image 
                     style={styles.icons}
-                    source={require("../../../assets/Icons/apoie.png")}/>
+                    source={
+                        {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fapoie.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                    }/>
                 </TouchableOpacity>
                 <View>
                     <Text style={styles.textContent}>Contribua</Text>

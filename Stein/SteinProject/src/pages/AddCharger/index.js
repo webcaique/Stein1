@@ -11,8 +11,10 @@ const AddCharger = ({navigation}) => {
         <Pressable style={styles.container} onPress={()=>Keyboard.dismiss()}>
             <View>
                 <ScrollView>
-                    <TextInput placeholder="Nome do local*" style={styles.textInput}/>
-                    <TextInput placeholder="Endereço completo*" style={styles.textInput}/>
+                    <TextInput placeholder="Nome do local*" style={styles.textInput}
+                    />
+                    <TextInput placeholder="Endereço completo*" style={styles.textInput}
+                    />
                     <TextInput placeholder="Descriçao*" style={styles.textInput}/>
                     <TextInput placeholder="Horário*" style={styles.textInput}/>
                     <View style={styles.acceptPay}>

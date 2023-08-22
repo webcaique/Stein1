@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect,useState } from "react";
 import {View, Text, TouchableOpacity, Image, ScrollView, FlatList} from "react-native";
 import styles  from "./style";
-
+import {firestore} from "../../config/configFirebase";
 
 /* 
 https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/CARREGADOR?alt=media&token=3d2de5d3-bbec-48e2-84b8-20ebfef94f72` 
@@ -9,10 +9,41 @@ https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/CARREGADOR
 CAMINHO DOS ARQUIVOS, SOMENTE SUBSTITUIR O "CARREGADOR" PELO NOME DE ARQUIVO
 */
 
+
 export default function(props){
-    var link = "../../../assets/VetoresPNG/";
-    var linksCarr = [];
+    const [endereco, setEndereco] = useState([]);
+    const [logra, setLogra] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(()=>{
+        const fetchEndereco = async () => {
+            const ends = firestore.collection("logradouro");
+      
+            try {
+              const logras = await ends.get();
+              const listLogra = [];
+      
+              logras.forEach(itens => {
+                listLogra.push({ id: itens.id, ...itens.data() });
+              });
+      
+              setEndereco(listLogra);
+      
+              const locais = listLogra.filter(locaisSalvos => locaisSalvos.id === props.logradouro);
+              setLogra(locais);
+              setLoading(false); // Indica que os dados foram carregados
+            } catch (error) {
+              console.log('Erro ao buscar documentos: ', error);
+              setLoading(false); // Em caso de erro, também indicamos que o carregamento foi concluído
+            }
+          }
+      
+          fetchEndereco();
+    }, []);
+
+    
     function imgCarr(){
+
         
         return(
             <FlatList
@@ -20,6 +51,7 @@ export default function(props){
             data={props.carregador}
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
+                
                 renderItem={({item})=>
                 <Image source={{
                     uri:
@@ -33,84 +65,90 @@ export default function(props){
     <Image source={require(`../../../assets/VetoresPNG/${props.carregador}`)} style={styles.iconLink}/>*/
     
     }
-    return(
-        <View style={styles.box}> 
+    if(loading){
+        return <Text>Carregando..</Text>
+    } else{
+        //ELEMENTOS PARA SER REDENRIZADOS PELO FLATLIST NA PÁGINA
 
-                    <View style={styles.titleBoxView}>
-                        <Text style={styles.titleBox}>{props.titulo}</Text>
+
+        const renderItem = ({ item }) => (
+            <View style={styles.box}>
+              <View style={styles.titleBoxView}>
+                <Text style={styles.titleBox}>{props.titulo} - {props.nome}</Text>
+              </View>
+          
+              <View style={styles.content}>
+                <View style={styles.line}>
+                  <View style={styles.textLinkView}>
+                    <Text style={styles.titleLine}>Endereço</Text>
+                  </View>
+          
+                  <View style={styles.link}>
+                    <View style={styles.textLinkView}>
+                      <Text style={styles.textLink}>
+                        {`${item.tipoLogradouro} ${item.logradouro}, nº ${item.numero}`}
+                      </Text>
                     </View>
-
-                    <View style={styles.content}>
-
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Endereço</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.textLinkView}> 
-                                    <Text style={styles.textLink}>{props.rua} </Text>
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/pin-de-localizacao.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-                        
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Tipo de carregador</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.iconLinkView}>
-                                    {
-                                        imgCarr()
-                                        
-                                    }
-                                    
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/seta-direita.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-
-                        <View style={styles.line}> 
-
-                            <View style={styles.titleLineView}>
-                                <Text style={styles.titleLine}>Nome de usuário</Text>
-                            </View>
-
-                            <View style={styles.link}>
-
-                                <View style={styles.textLinkView}> 
-                                    <Text style={styles.textLink}>{props.user}</Text>
-                                </View>
-
-                                <View style={styles.iconLinkView}> 
-                                    <Image source={require("../../../assets/Icons/seta-direita.png")} style={styles.iconLink}/>
-                                </View>
-                            
-                            </View>
-
-                        </View>
-
-
-
+          
+                    <View style={styles.iconLinkView}>
+                      <Image
+                        source={require('../../../assets/Icons/pin-de-localizacao.png')}
+                        style={styles.iconLink}
+                      />
                     </View>
+                  </View>
                 </View>
+          
+                <View style={styles.line}>
+                  <View style={styles.titleLineView}>
+                    <Text style={styles.titleLine}>Tipo de carregador</Text>
+                  </View>
+          
+                  <View style={styles.link}>
+                    <View style={styles.iconLinkView}>{imgCarr()}</View>
+          
+                    <View style={styles.iconLinkView}>
+                      <Image
+                        source={require('../../../assets/Icons/seta-direita.png')}
+                        style={styles.iconLink}
+                      />
+                    </View>
+                  </View>
+                </View>
+          
+                <View style={styles.line}>
+                  <View style={styles.titleLineView}>
+                    <Text style={styles.titleLine}>Nome de usuário</Text>
+                  </View>
+          
+                  <View style={styles.link}>
+                    <View style={styles.textLinkView}>
+                      <Text style={styles.textLink}>{props.user}</Text>
+                    </View>
+          
+                    <View style={styles.iconLinkView}>
+                      <Image
+                        source={require('../../../assets/Icons/seta-direita.png')}
+                        style={styles.iconLink}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          );
+    
+    
+        //
+
+
+    return (
+            <FlatList
+            data={logra}
+            keyExtractor={item=>item.id}
+            renderItem={renderItem}
+            />
     )
+    }
+
 }

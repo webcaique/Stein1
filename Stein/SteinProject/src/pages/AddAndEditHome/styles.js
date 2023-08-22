@@ -28,7 +28,6 @@ const styles = ScaledSheet.create({
     },
     row3:{
         width:"100%",
-        flexDirection:"row",
         justifyContent:"space-between"
 
     },
@@ -45,7 +44,8 @@ const styles = ScaledSheet.create({
         fontWeight:"700",
     },
     column1:{
-        width:scale(225),
+        width:"100%",
+        justifyContent:"center",
     },
     textInputLogradouro:{
         borderWidth:1,
@@ -99,7 +99,8 @@ const styles = ScaledSheet.create({
     row6:{
         width:"100%",
         flexDirection:"row",
-        justifyContent:"space-between"
+        justifyContent:"space-between",
+        
     },
     textInputMunicipio:{
         borderWidth:1,
@@ -159,6 +160,24 @@ const styles = ScaledSheet.create({
     },
     column6:{
         width:moderateScale(200),
+    },
+    logradouro:{
+        width:"100%",
+        flexDirection:"column",
+        justifyContent:"space-between",
+        alignItems:"center",
+    },
+    list:{
+        width:"100%",
+        borderRadius:5,
+        borderWidth:1,
+        backgroundColor:"#fff",
+        justifyContent:"center",
+        height:50,
+        marginTop:10,
+    },
+    row7:{
+        width:"100%",
     }
 })
 

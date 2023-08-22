@@ -79,7 +79,7 @@ const styles = ScaledSheet.create({
         marginBottom:25,
     },
     textLink:{
-        fontSize: moderateVerticalScale(16),
+        fontSize: moderateVerticalScale(12),
     }
 })
 

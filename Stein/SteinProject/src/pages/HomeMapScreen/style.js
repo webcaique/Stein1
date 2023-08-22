@@ -1,4 +1,3 @@
-import {StyleSheet} from "react-native";
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
 
@@ -111,7 +110,30 @@ const estilos=ScaledSheet.create({
      containerLink:{
       flexDirection:"row",
       alignItems:"center",
+    },
+    imgs:{
+      width: moderateVerticalScale(50),
+      height:moderateVerticalScale(50),
+      resizeMode:"contain",
+    },
+    nomesCarregadores:{
+      fontSize:8,
+      maxWidth:50,
+      textAlign: "center"    
+    },
+    carregadores:{
+      padding:10,
+      alignItems:"center",
+      justifyContent:"center",
+      borderWidth:3,
+    },
+    carregador:{
+      padding:10,
+      alignItems:"center",
+      justifyContent:"center",
+      
     }
+
 
     })
 

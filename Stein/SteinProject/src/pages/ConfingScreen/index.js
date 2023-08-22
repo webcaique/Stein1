@@ -23,7 +23,9 @@ const ConfigScreen = ({navigation}) => {
                         </View>
                         <TouchableOpacity>
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                }
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -35,7 +37,9 @@ const ConfigScreen = ({navigation}) => {
                         onPress={()=> navigation.navigate("ShareToAFriendScreen")}
                         >
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={
+                                {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
+                                }
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -59,7 +63,7 @@ const ConfigScreen = ({navigation}) => {
                         onPress={()=> navigation.navigate("PersonalContentScreen")}
                         >
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -70,7 +74,7 @@ const ConfigScreen = ({navigation}) => {
                         <TouchableOpacity
                         onPress={()=> navigation.navigate("ChangeAccount")}>
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -82,7 +86,7 @@ const ConfigScreen = ({navigation}) => {
                         onPress={()=> navigation.navigate("HouseAndWork")}
                         >
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -99,7 +103,7 @@ const ConfigScreen = ({navigation}) => {
                         <Text style={styles.textContent}>Enviar feedback</Text>
                         <TouchableOpacity>
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}
                             />
                         </TouchableOpacity>
@@ -107,9 +111,11 @@ const ConfigScreen = ({navigation}) => {
                     <View style={styles.line}/>
                     <View style={styles.rowText}>
                         <Text style={styles.textContent}>Sobre, termos e privacidade</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                        
+                        >
                             <Image
-                            source={require("../../../assets/Icons/seta-direita.png")}
+                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}
                             />
                         </TouchableOpacity>

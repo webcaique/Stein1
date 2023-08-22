@@ -69,19 +69,21 @@ const style = ScaledSheet.create({
     logos:{
         display:"flex",
         flexDirection:"row",
-        alignItems:"center",
+        justifyContent:"space-around",
+        width:"100%",
     },
     img1:{
-        width:moderateScale(75),
+        width:moderateScale(100),
         resizeMode:"contain",
-        marginRight:20,
-        
+        height:moderateScale(100),
+        marginVertical:20,
         
     },
     img2:{
-        width:moderateScale(75),
-        resizeMode:"contain",
-        marginLeft:20
+      width:moderateScale(100),
+      resizeMode:"contain",
+      height:moderateScale(100),
+      marginVertical:20,
         
         
     },
