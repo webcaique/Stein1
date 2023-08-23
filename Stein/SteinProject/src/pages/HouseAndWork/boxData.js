@@ -72,6 +72,7 @@ export default function(props){
 
 
         const renderItem = ({ item }) => (
+
             <View style={styles.box}>
               <View style={styles.titleBoxView}>
                 <Text style={styles.titleBox}>{props.titulo} - {props.nome}</Text>
@@ -140,8 +141,6 @@ export default function(props){
     
     
         //
-
-
     return (
             <FlatList
             data={logra}

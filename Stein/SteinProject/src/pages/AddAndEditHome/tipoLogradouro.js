@@ -3,16 +3,19 @@ import styles from "./styles"
 import { View } from "react-native"
 import {Picker} from '@react-native-picker/picker';
 
-export default function tipoLogradouro(){
-    const [selectCountry, setSelectCountry] = useState();
-    return(
+export default function tipoLogradouro({onTipoLograChange}){
+    const [tipoLogra, setTipoLogra] = useState();
+    
+    const handleTipoLograChange = (itemValue) => {
+        setTipoLogra(itemValue);
+        onTipoLograChange(itemValue); // Chama a função de retorno com o valor selecionado
+    };
+
+    return (
         <View style={styles.list}>
-            <Picker 
-            // É uma lista com os estados do brasil
-                selectedValue={selectCountry}
-                onValueChange={(itemValue, itemIndex) =>
-                    setSelectCountry(itemValue)
-            }
+            <Picker
+                selectedValue={tipoLogra}
+                onValueChange={handleTipoLograChange}
             >
                 <Picker.Item label="Aeroporto" value="Aeroporto" style={styles.fontList} />
                 <Picker.Item label="Alameda" value="Alameda" style={styles.fontList} />
