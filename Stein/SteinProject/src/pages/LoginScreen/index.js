@@ -41,6 +41,14 @@ export default function LoginScreen({navigation}){
                         style={{padding: 10}}
                     />
                     <Text style={styles.textCheckbox}> Salve a senha</Text>
+                    
+                </View>
+                <View> 
+                    <TouchableOpacity style={styles.siginButton}
+                onPress={()=> navigation.navigate("ForgotPassword")}
+                >
+                    <Text style={styles.tx1}>esqueci a senha</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.linhas}>
                     <View style={styles.linha1}></View>

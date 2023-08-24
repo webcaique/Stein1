@@ -115,5 +115,10 @@ const style = ScaledSheet.create({
       textSigin:{
         fontSize:moderateScale(17),
       },
+      tx1:{
+        position:'relative',
+        right: moderateScale(100),
+        borderBottomWidth:1
+      }
 })
 export default style;
