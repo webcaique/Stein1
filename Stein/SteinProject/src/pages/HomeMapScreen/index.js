@@ -11,119 +11,26 @@ import {
 } from 'react-native';
 import estilos from './style';
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+import TabelaCarregadores from "../componenteTabelaCarregadores.js"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-const nomeCarregadores = [
-  "Wall",
-  "Nema 14-50",
-  "Tesla",
-  "CCS/SAE",
-  "J-1772",
-  "Tesla (Roadster)",
-  "Type 2",
-  "Type 3",
-  "Three Phase",
-  "Caravan Mains Socket",
-  "Commando",
-  "GB/T",
-  "GB/T 2",
-  "CHAdeMO",
-  "Tesla (Fast)",
-];
 
 const Img = 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 export default function Stein({navigation}) {
   const [modal, setModal] = useState(false);
   const [filtros, setFiltros]= useState(false);
-  function line1(){
-    const lista = []
-    for(var i = 1; i <= 3; i++){
-      lista.push(<TouchableOpacity style={estilos.carregadores}>
-        <View style={estilos.carregador}>
-        <Image
-        source={
-          {uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${i}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`}
-        }
-        style={estilos.imgs}
-        /> 
-        <Text style={estilos.nomesCarregadores}>{nomeCarregadores[i-1]}</Text>
-        </View>
-      </TouchableOpacity>);
-    }
-    return lista;
-  }
-  function line2(){
-    const lista = []
-    for(var i = 4; i <= 6; i++){
-      lista.push(<TouchableOpacity style={estilos.carregadores}>
-        <View style={estilos.carregador}>
-        <Image
-        source={
-          {uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${i}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`}
-        }
-        style={estilos.imgs}
-        /> 
-        <Text style={estilos.nomesCarregadores}>{nomeCarregadores[i-1]}</Text>
-        </View>
-      </TouchableOpacity>);
-    }
-    return lista;
+  const [selecFiltros, setSelectFiltros] = useState();
+  const listaFiltros = async ()=>{
+    var filtro = await AsyncStorage.getItem("1");
+    setSelectFiltros(filtro);
   }
 
-  function line3(){
-    const lista = []
-    for(var i = 7; i <= 9; i++){
-      lista.push(<TouchableOpacity style={estilos.carregadores}>
-        <View style={estilos.carregador}>
-        <Image
-        source={
-          {uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${i}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`}
-        }
-        style={estilos.imgs}
-        /> 
-        <Text style={estilos.nomesCarregadores}>{nomeCarregadores[i-1]}</Text>
-        </View>
-      </TouchableOpacity>);
-    }
-    return lista;
-  }
+  useEffect(()=>{
+    listaFiltros();
+  },[])
 
-  function line4(){
-    const lista = []
-    for(var i = 10; i <= 12; i++){
-      lista.push(<TouchableOpacity style={estilos.carregadores}>
-        <View style={estilos.carregador}>
-        <Image
-        source={
-          {uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${i}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`}
-        }
-        style={estilos.imgs}
-        /> 
-        <Text style={estilos.nomesCarregadores}>{nomeCarregadores[i-1]}</Text>
-        </View>
-      </TouchableOpacity>);
-    }
-    return lista;
-  }
-
-  function line5(){
-    const lista = []
-    for(var i = 13; i <= 15; i++){
-      lista.push(<TouchableOpacity style={estilos.carregadores}>
-        <View style={estilos.carregador}>
-        <Image
-        source={
-          {uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${i}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`}
-        }
-        style={estilos.imgs}
-        /> 
-        <Text style={estilos.nomesCarregadores}>{nomeCarregadores[i-1]}</Text>
-        </View>
-      </TouchableOpacity>);
-    }
-    return lista;
-  }
+  
 
   return (
     <View style={estilos.superior}>
@@ -138,7 +45,6 @@ export default function Stein({navigation}) {
               display: 'flex',
               flexDirection: 'row',
               width: '100%',
-              height: moderateScale(645),
             }}>
             <View
              
@@ -149,6 +55,7 @@ export default function Stein({navigation}) {
                 borderBottomEndRadius: 5,
                 borderTopEndRadius: 5,
                 padding: 10,
+                height: filtros? "auto":moderateScale(645),
               }}>
               <View style={estilos.modal}>
                 <View style={estilos.steinLogoBg}>
@@ -194,30 +101,9 @@ export default function Stein({navigation}) {
                 </TouchableOpacity>
                 {
                   filtros?
-                  <View>
-                   <View>
-                    
-                    <Text>Mostrando filtros para</Text>
-                   </View>
-                   <View>
-                    <Text>conectores</Text>
-                    <View style={{flexDirection:"row",}}>
-                    {line1()}
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                    {line2()}
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                    {line3()}
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                    {line4()}
-                    </View>
-                    <View style={{flexDirection:"row"}}>
-                    {line5()}
-                    </View>
-                      
-                   </View>
+                  
+                  <View >
+                   <TabelaCarregadores/>
                   </View>:
                   <View></View>
                 }

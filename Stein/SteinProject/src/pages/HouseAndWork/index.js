@@ -68,6 +68,7 @@ const EditingHouse = ({navigation}) => {
     
           } catch (error) {
             console.log('Erro ao buscar documentos: ', error);
+            console.log("NESSE DOCUMENTO!");
           }
         };
     
@@ -94,21 +95,11 @@ const EditingHouse = ({navigation}) => {
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
                 renderItem={({item})=>{
-                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}/>
+                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"} localID={item.id} navegacao={()=> navigation.navigate("EditHome")}/>
 
                   return enderecos;
                 }}
                 />
-                
-
-
-                <View style={styles.buttonBox}>
-                    <TouchableOpacity style={styles.editionButton}
-                    onPressIn={()=> navigation.navigate("EditHome")}
-                    >
-                        <Text style={styles.textButton}>Editar</Text>
-                    </TouchableOpacity>
-                </View>
 
                 <View style={styles.buttonBox}>
                     <TouchableOpacity style={styles.editionButton}
@@ -125,22 +116,12 @@ const EditingHouse = ({navigation}) => {
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
                 renderItem={({item})=>{
-                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}/>
+                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}
+                  localID={item.id} navegacao={()=> navigation.navigate("EditWork")}/>
 
                   return enderecos;
                 }}
                 />
-                
-
-                
-
-                <View style={styles.buttonBox}>
-                    <TouchableOpacity style={styles.editionButton}
-                    onPressIn={()=> navigation.navigate("EditWork")}
-                    >
-                        <Text style={styles.textButton}>Editar</Text>
-                    </TouchableOpacity>
-                </View>
 
                 <View style={styles.buttonBox}>
                     <TouchableOpacity style={styles.editionButton}
@@ -159,75 +140,3 @@ const EditingHouse = ({navigation}) => {
 }
 
 export default EditingHouse;
-
-/*
-
-<FlatList
-                data={house}
-                keyExtractor={item=>item.id}
-                accessibilityElementsHidden={true}
-                
-                renderItem={({item})=>{
-                  const end = [];
-                
-                  for(var i = 0; i < listLogra.length; i++){
-
-                    end.push(
-                      <BoxData titulo={item.nomeLocal} rua={`${listLogra[i].tipoLogradouro} ${listLogra[i].logradouro}, nº ${listLogra[i].numero}`} carregador={item.IDTipoCarregador} user={"Caique"}/>
-                    )
-                  }
-                  if(house.length > item.id){
-                    console.log();
-                    console.log("");
-                    console.log(item.IDTipoCarregador);
-                    console.log("TIPO CARR");
-                    console.log();
-                    return end;
-                  }
-                  
-                  
-                  
-                }
-            }
-                />
-
-
-
-
-
-
-
-
-
-<FlatList
-                data={work}
-                keyExtractor={item=>item.id}
-                accessibilityElementsHidden={true}
-                
-                renderItem={({item})=>{
-                  const end = [];
-                  
-                  console.log();
-                  console.log("TESTE");
-                  console.log(item.id);
-                  console.log("TESTE");
-                  console.log();
-                
-                  for(var i = 0; i < listLogra.length; i++){
-                    
-                    end.push(
-                      <BoxData titulo={item.nomeLocal} rua={`${listLogra[i].tipoLogradouro} ${listLogra[i].logradouro}, nº ${listLogra[i].numero}`} carregador={item.IDTipoCarregador} user={"Caique"}/>
-                    )
-                  }
-                  if(work.length >= item.id){
-                    return end;
-                  }
-                  
-                  
-                  
-                }
-            }
-                />
-
-
-*/

@@ -53,7 +53,9 @@ export default function AddHome({navigation}){
                     // Campo para pegar o número
                     >
                         <Text style={styles.textIsInput}>Número:</Text>
-                        <TextInput style={styles.textInputNumber}/>
+                        <TextInput style={styles.textInputNumber}
+                        keyboardType="number-pad"
+                        />
                     </View>
                 </View>
 
@@ -69,7 +71,9 @@ export default function AddHome({navigation}){
                     // Campo para pegar o CEP
                     }>
                         <Text style={styles.textIsInput}>CEP:</Text>
-                        <TextInput style={styles.textInputCep}/>
+                        <TextInput style={styles.textInputCep}
+                        keyboardType="number-pad"
+                        />
                     </View>
                     <View style={styles.column4}
                     // Campo para pegar o bairro

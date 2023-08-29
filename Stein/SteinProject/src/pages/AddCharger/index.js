@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {View, Text, ScrollView, TextInput, Image, Pressable, TouchableOpacity, Switch, Keyboard} from "react-native";
 import styles from "./style"
+import TabelaCarregadores from "../componenteTabelaCarregadores.js"
 
 
 
@@ -28,11 +29,7 @@ const AddCharger = ({navigation}) => {
                         <Text style={styles.placeholder}>Carregador</Text>
                     </TouchableOpacity>
                     {carregadores?
-                        <Image
-                        source={require("../../../assets/ImagensTeste/carregadores.png")}
-                        resizeMode="contain"
-                        style={{width:"100%"}}
-                        />:
+                        <TabelaCarregadores/>:
                         <Text></Text>
                         }
                     <View style={styles.acceptPay}>

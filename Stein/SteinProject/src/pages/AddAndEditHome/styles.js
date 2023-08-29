@@ -47,6 +47,22 @@ const styles = ScaledSheet.create({
         width:"100%",
         justifyContent:"center",
     },
+    column2:{
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"space-between",
+    },
+    btnCarregadores:{
+        marginTop:20,
+        width:200,
+        height:moderateVerticalScale(50),
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"#fff",
+        borderWidth:1,
+        borderRadius:10,
+
+    },
     textInputLogradouro:{
         borderWidth:1,
         backgroundColor:"#fff",

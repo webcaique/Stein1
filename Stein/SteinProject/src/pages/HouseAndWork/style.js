@@ -80,7 +80,30 @@ const styles = ScaledSheet.create({
     },
     textLink:{
         fontSize: moderateVerticalScale(12),
-    }
+    },
+    topBottom:{
+        flexDirection:"row-reverse",
+        justifyContent:"space-between",
+        marginBottom:10,
+    },
+    btnEditar:{
+        flexDirection:"row",
+        alignItems:"center",
+    }, 
+    txtEditar:{
+        marginLeft:5,
+        fontWeight:"900",
+    },
+    btnExcluir:{
+        flexDirection:"row",
+        alignItems:"center",
+        
+    },
+    txtExcluir:{
+        marginRight:10,
+        fontWeight:"900",
+        color:"#f00",
+    },
 })
 
 export default styles;

@@ -4,19 +4,22 @@ import styles from "./styles"
 import SelectList from "./selectList"
 import TipoLogradouro from "./tipoLogradouro.js";
 import { firestore } from "../../config/configFirebase";
+import TabelaCarregadores from "../componenteTabelaCarregadores.js"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function AddHome({navigation}){
 
-
+    
     const tabelaLogra = firestore.collection("logradouro");
     const tabelaLocal = firestore.collection("local");
 
+    const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(true);
     const [name, setName] = useState();
     const [logra, setLogra] = useState();
     const [numero, setNumero] = useState();
     const [complemento, setComplemento] = useState();
-    const [cep, setCep] = useState();
+    const [cepInput, setCep] = useState();
     const [bairro, setBairro] = useState();
     const [cidade, setCidade] = useState();
     const [selectedUf, setSelectedUf] = useState("");
@@ -36,20 +39,27 @@ export default function AddHome({navigation}){
     console.log(logra);
     console.log(numero);
     console.log(complemento);
-    console.log(cep);
+    console.log(cepInput);
     console.log(bairro);
     console.log(cidade);
 
     const addData = async () =>{
-        if(selectedTipoLogra != undefined && selectedUf != undefined && name != undefined && logra != undefined && numero != undefined && cep != undefined && bairro != undefined && cidade != undefined ){
+        if(selectedTipoLogra != undefined && selectedUf != undefined && name != undefined && logra != undefined && numero != undefined && cepInput != undefined && bairro != undefined && cidade != undefined ){
             let count = 0;
-            const snapshot = await tabelaLogra.get();
-            snapshot.forEach(()=>{
-                count++;
+            const snapshotLogra = await tabelaLogra.get();
+            const listaLogra = [];
+            const testarExistente = [];
+            snapshotLogra.forEach((doc)=>{
+                listaLogra.push({id: doc.id, ...doc.data() });
             });
-            count++
-            tabelaLogra.doc(`${count}`).set({
-                CEP: `${cep}`,
+            listaLogra.forEach((doc)=>{
+                if(count < doc.id){
+                    count = doc.id;
+                };
+            });
+            count++;
+            let testeLogra = {
+                CEP: `${cepInput}`,
                 UF: `${selectedUf}`,
                 bairro: `${bairro}`,
                 cidade: `${cidade}`,
@@ -61,10 +71,29 @@ export default function AddHome({navigation}){
                 logradouro: `${logra}`,
                 numero: `${numero}`,
                 tipoLogradouro: `${selectedTipoLogra}`,
-            }). 
+            };
+            console.log(listaLogra.length);
+            listaLogra.forEach(
+                (datas)=>{
+                    if(datas.CEP == testeLogra.CEP && datas.numero == testeLogra.numero){
+                        return;
+                    };
+                }
+            )
+
+
+            console.log("TESTE LOGRA");
+            console.log(testeLogra);
+            console.log("TESTE LOGRA");
+            console.log("BD");
+            console.log(testarExistente);
+            console.log("BD");
+
+            tabelaLogra.doc(`${count}`).set(testeLogra). 
             then(()=>{
                 console.log("ADICIONADO!");
-            })
+            });
+
         }
     }
     
@@ -118,11 +147,24 @@ export default function AddHome({navigation}){
                 <View style={styles.column2}
                     // Campo para pegar o número
                     >
+                        <View>
                         <Text style={styles.textIsInput}>Número:</Text>
                         <TextInput style={styles.textInputNumber}
                         onChangeText={setNumero}
                         value={numero}
+                        keyboardType="number-pad"
                         />
+                        </View>
+                        <TouchableOpacity style={styles.btnCarregadores}
+                        onPress={()=>{
+                            setligarTabelaCarregadores(!ligarTabelaCarregadores)
+                        }}
+                        >
+                            <Text style={styles.textIsInput}>Carregadores</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{width:"100%", alignItems:"center"}}>
+                        {ligarTabelaCarregadores?<TabelaCarregadores notFiltro={true}/>:<View/>}
                     </View>
                 </View>
 
@@ -143,7 +185,8 @@ export default function AddHome({navigation}){
                         <Text style={styles.textIsInput}>CEP:</Text>
                         <TextInput style={styles.textInputCep}
                         onChangeText={setCep}
-                        value={cep}
+                        value={cepInput}
+                        keyboardType="number-pad"
                         />
                     </View>
                     <View style={styles.column4}
