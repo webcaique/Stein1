@@ -43,21 +43,20 @@ export default function AddHome({navigation}){
     console.log(bairro);
     console.log(cidade);
 
-    const addData = async () =>{
+    const addDataLogradouro = async () =>{
         if(selectedTipoLogra != undefined && selectedUf != undefined && name != undefined && logra != undefined && numero != undefined && cepInput != undefined && bairro != undefined && cidade != undefined ){
-            let count = 0;
+            let countLogra = 0;
             const snapshotLogra = await tabelaLogra.get();
             const listaLogra = [];
-            const testarExistente = [];
             snapshotLogra.forEach((doc)=>{
                 listaLogra.push({id: doc.id, ...doc.data() });
             });
             listaLogra.forEach((doc)=>{
-                if(count < doc.id){
-                    count = doc.id;
+                if(countLogra < doc.id){
+                    countLogra = doc.id;
                 };
             });
-            count++;
+            countLogra++;
             let testeLogra = {
                 CEP: `${cepInput}`,
                 UF: `${selectedUf}`,
@@ -72,30 +71,48 @@ export default function AddHome({navigation}){
                 numero: `${numero}`,
                 tipoLogradouro: `${selectedTipoLogra}`,
             };
-            console.log(listaLogra.length);
-            listaLogra.forEach(
-                (datas)=>{
-                    if(datas.CEP == testeLogra.CEP && datas.numero == testeLogra.numero){
-                        return;
-                    };
-                }
-            )
 
-
-            console.log("TESTE LOGRA");
-            console.log(testeLogra);
-            console.log("TESTE LOGRA");
-            console.log("BD");
-            console.log(testarExistente);
-            console.log("BD");
-
-            tabelaLogra.doc(`${count}`).set(testeLogra). 
+            tabelaLogra.doc(`${countLogra}`).set(testeLogra). 
             then(()=>{
                 console.log("ADICIONADO!");
             });
 
+            const snapshotLocal = await tabelaLocal.get();
+            const listaLocal = [];
+            snapshotLocal.forEach((data)=>{
+                listaLocal.push({id: data.id, ...data.data()});
+            });
+
+            let countLocal = 0;
+            listaLocal.forEach((doc)=>{
+                if(countLocal < doc.id){
+                    countLocal = doc.id;
+                };
+            });
+            countLocal++;
+
+            let testeLocal = {
+                IDLogradouro: `${countLogra}`,
+                IDTipoCarregador: [1,2],
+                nomeLocal: `${name}`,
+                tipoLocal: `Casa`,
+
+
+            }
+            console.log(testeLocal)
+            tabelaLocal.doc(`${countLocal}`).set(testeLocal). 
+            then(()=>{
+                console.log("ADICIONADO!");
+            }).
+            catch((error)=>{
+                console.log(error);
+            });
+
+
+
         }
     }
+
     
 
     return(
@@ -219,8 +236,9 @@ export default function AddHome({navigation}){
                 </View>
                 <TouchableOpacity style={styles.editionButton}
                 onPressIn={()=> {
-                    navigation.navigate("HouseAndWork")
-                    addData();
+                    navigation.navigate("HouseAndWork", {refresh: true})
+                    addDataLogradouro()
+
             
             }}
                 // Direcionar para página de Casa e Trabalho

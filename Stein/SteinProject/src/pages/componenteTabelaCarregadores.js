@@ -3,7 +3,10 @@ import { View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import estilos from "./style";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+
 export default function(props) {
+  const [selectedCarregadores, setSelectedCarregadores] = useState([]); // Use o estado para controlar os carregadores selecionados
   const nomeCarregadores = [
     "Wall",
         "Nema 14-50",
@@ -22,7 +25,7 @@ export default function(props) {
         "Tesla (Fast)",
   ];
 
-  const [selectedCarregadores, setSelectedCarregadores] = useState([]); // Use o estado para controlar os carregadores selecionados
+  
 
   function toggleCarregadorSelection(carregadorIndex) {
     setSelectedCarregadores(prevSelected => {
@@ -34,12 +37,14 @@ export default function(props) {
     });
   }
   
+  
 
   function renderCarregador(i) {
     const carregadorIndex = i + 1;
     const isSelected = selectedCarregadores.includes(carregadorIndex);
-    
+  
     return (
+      
       <TouchableOpacity
         key={i}
         style={[
@@ -63,91 +68,92 @@ export default function(props) {
     );
   }
 
-    AsyncStorage.setItem("1",`${selectedCarregadores}`);
+    const content = <ScrollView>
+    {props.notFiltro?<View/>:
+    [<Text>Mostrando filtros para</Text>,
+    <Text>conectores</Text>]
+    }
+    
+    <View style={{ flexDirection: "row" }}>
+    {Array.from({ length: 15 }, (_, i) => i).map(i => {
+      const lista = [];
+      if(i < 3){
+      lista.push(
+      <View>
+          {renderCarregador(i)} 
+      </View>);
+      }
+      return lista;
+    }
+      
+      
+    )}
+    </View>
+    <View style={{ flexDirection: "row" }}>
+    {Array.from({ length: 15 }, (_, i) => i).map(i => {
+      const lista = [];
+      if(i > 2 && i < 6){
+      lista.push(
+      <View>
+          {renderCarregador(i)} 
+      </View>);
+      }
+      return lista;
+    }
+      
+      
+    )}
+    </View>
+    <View style={{ flexDirection: "row" }}>
+    {Array.from({ length: 15 }, (_, i) => i).map(i => {
+      const lista = [];
+      if(i > 5 && i < 9){
+      lista.push(
+      <View>
+          {renderCarregador(i)} 
+      </View>);
+      }
+      return lista;
+    }
+      
+      
+    )}
+    </View>
+    <View style={{ flexDirection: "row" }}>
+    {Array.from({ length: 15 }, (_, i) => i).map(i => {
+      const lista = [];
+      if(i > 8 && i < 12){
+      lista.push(
+      <View>
+          {renderCarregador(i)} 
+      </View>);
+      }
+      return lista;
+    }
+      
+      
+    )}
+    </View>
+    <View style={{ flexDirection: "row" }}>
+    {Array.from({ length: 15 }, (_, i) => i).map(i => {
+      const lista = [];
+      if(i > 11 && i < 15){
+      lista.push(
+      <View>
+          {renderCarregador(i)} 
+      </View>);
+      }
+      return lista;
+    }
+      
+      
+    )}
+    </View>
+    
+    
+  </ScrollView>
   return (
-    <ScrollView>
-      {props.notFiltro?<View/>:
-      [<Text>Mostrando filtros para</Text>,
-      <Text>conectores</Text>]
-      }
-      
-      <View style={{ flexDirection: "row" }}>
-      {Array.from({ length: 15 }, (_, i) => i).map(i => {
-        const lista = [];
-        if(i < 3){
-        lista.push(
-        <View>
-            {renderCarregador(i)} 
-        </View>);
-        }
-        return lista;
-      }
-        
-        
-      )}
-      </View>
-      <View style={{ flexDirection: "row" }}>
-      {Array.from({ length: 15 }, (_, i) => i).map(i => {
-        const lista = [];
-        if(i > 2 && i < 6){
-        lista.push(
-        <View>
-            {renderCarregador(i)} 
-        </View>);
-        }
-        return lista;
-      }
-        
-        
-      )}
-      </View>
-      <View style={{ flexDirection: "row" }}>
-      {Array.from({ length: 15 }, (_, i) => i).map(i => {
-        const lista = [];
-        if(i > 5 && i < 9){
-        lista.push(
-        <View>
-            {renderCarregador(i)} 
-        </View>);
-        }
-        return lista;
-      }
-        
-        
-      )}
-      </View>
-      <View style={{ flexDirection: "row" }}>
-      {Array.from({ length: 15 }, (_, i) => i).map(i => {
-        const lista = [];
-        if(i > 8 && i < 12){
-        lista.push(
-        <View>
-            {renderCarregador(i)} 
-        </View>);
-        }
-        return lista;
-      }
-        
-        
-      )}
-      </View>
-      <View style={{ flexDirection: "row" }}>
-      {Array.from({ length: 15 }, (_, i) => i).map(i => {
-        const lista = [];
-        if(i > 11 && i < 15){
-        lista.push(
-        <View>
-            {renderCarregador(i)} 
-        </View>);
-        }
-        return lista;
-      }
-        
-        
-      )}
-      </View>
-      
-      
-    </ScrollView>
+    content
+    
   );
 }

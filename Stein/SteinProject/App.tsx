@@ -29,6 +29,7 @@ import AddHome from "./src/pages/AddAndEditHome/AddHouse"
 import EditHome from "./src/pages/AddAndEditHome/editingHouse"
 import AddWork from "./src/pages/AddAndEditWork/AddWork"
 import EditWork from "./src/pages/AddAndEditWork/editingWork"
+import DataBox from "./src/pages/HouseAndWork/boxData"
 
 
 const Stack = createNativeStackNavigator();
@@ -275,6 +276,7 @@ const App = () => {
           },
         }}
         />
+         <Stack.Screen name="DataBox" component={DataBox}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

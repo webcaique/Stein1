@@ -7,28 +7,68 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
-  ScrollView
+  ScrollView,
+  Platform,
+  PermissionsAndroid,
+  Dimensions
 } from 'react-native';
 import estilos from './style';
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 import TabelaCarregadores from "../componenteTabelaCarregadores.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'; 
+import Geolocation from '@react-native-community/geolocation';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const Img = 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
+const {width, height}= Dimensions.get('screen')
+
 export default function Stein({navigation}) {
+
+  const [selectedCarregadores, setSelectedCarregadores] = useState([]);
+
+
   const [modal, setModal] = useState(false);
   const [filtros, setFiltros]= useState(false);
   const [selecFiltros, setSelectFiltros] = useState();
   const listaFiltros = async ()=>{
-    var filtro = await AsyncStorage.getItem("1");
+    var filtro = AsyncStorage.getItem("1");
     setSelectFiltros(filtro);
+    
   }
 
+
+
+
+
+  
+  const [region, setRegion] = useState(null);
+
   useEffect(()=>{
+    getLocation();
     listaFiltros();
   },[])
+
+  function getLocation(){
+    Geolocation.getCurrentPosition(info => {
+      console.log("LAT", info.coords.latitude)
+      console.log("LON", info.coords.longitude)
+      setRegion({
+        latitude: info.coords.latitude, 
+        longitude: info.coords.longitude,
+        longitudeDelta: 0.0922,
+        latitudeDelta: 0.0421,
+      })
+    }, (error)=>{
+      console.log(error)
+      
+    }, {
+      enableHighAccuracy: true,
+      timeout:20000000,
+    })
+  }
+
 
   
 
@@ -242,14 +282,23 @@ export default function Stein({navigation}) {
         </Modal>
       </View>
       <View style={estilos.fundo}>
-        <ImageBackground
-        //IMAGEM DE FUNDO
-          source={{
-            uri: Img,
-          }}
-          resizeMode="repeat"
-          style={estilos.background}
-        />
+      <MapView
+      onMapReady={()=>{
+        Platform.OS === "android"?
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        ).then(()=>{
+          console.log("Ganhomos familia");
+        }):null
+      }}
+        provider={PROVIDER_GOOGLE}
+       style={{width: width, height: height}}
+       region={region}
+       minZoomLevel={17}
+       showsUserLocation={true}
+      loadingEnabled={true}
+     >
+      </MapView>
 
         <TouchableOpacity style={estilos.iconBoltBg}>
           <Image

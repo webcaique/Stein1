@@ -4,6 +4,8 @@ import styles from "./style";
 import { firestore } from "../../config/configFirebase";
 
 export default function(props) {
+    
+
     const [endereco, setEndereco] = useState([]);
     const [logra, setLogra] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,22 +30,26 @@ export default function(props) {
     }
 
     useEffect(() => {
+
         const fetchEndereco = async () => {
             const ends = firestore.collection("logradouro");
 
             try {
-                const logras = await ends.get();
-                const listLogra = [];
-
-                logras.forEach(itens => {
-                    listLogra.push({ id: itens.id, ...itens.data() });
+                const aparecer = ends.onSnapshot(async(logras)=>{
+                    const listLogra = [];
+    
+                    logras.forEach(itens => {
+                        listLogra.push({ id: itens.id, ...itens.data() });
+                    });
+    
+                    setEndereco(listLogra);
+    
+                    const locais = listLogra.filter(locaisSalvos => locaisSalvos.id === props.logradouro);
+                    setLogra(locais);
+                    setLoading(false);
                 });
-
-                setEndereco(listLogra);
-
-                const locais = listLogra.filter(locaisSalvos => locaisSalvos.id === props.logradouro);
-                setLogra(locais);
-                setLoading(false);
+                return ()=>aparecer();
+                
             } catch (error) {
                 console.log('Erro ao buscar documentos: ', error);
                 setLoading(false);
@@ -63,7 +69,10 @@ export default function(props) {
                   <Image source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fexcluir.png?alt=media&token=041b4db5-2277-4ee1-bb92-18a314359154"}} width={20} height={20} resizeMode="contain"/>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnEditar}
-                onPressIn={props.navegacao}
+                onPress={()=>{
+                    
+                    props.navegacao(item.id)
+                }}
                 >
                   <Image source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Feditar.png?alt=media&token=be2ed7a6-393d-4877-87bc-10e72190bf78"}} width={20} height={20} resizeMode="contain"/> 
                   <Text style={styles.txtEditar}>EDITAR</Text>

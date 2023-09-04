@@ -132,8 +132,7 @@ const estilos=ScaledSheet.create({
       alignItems:"center",
       justifyContent:"center",
       
-    }
-
+    },
 
     })
 
