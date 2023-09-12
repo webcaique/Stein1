@@ -16,6 +16,7 @@ import SelectList from './selectList';
 import TipoLogradouro from './tipoLogradouro.js';
 
 const AddCharger = ({navigation}) => {
+
   const [name, setName] = useState();
   const [logra, setLogra] = useState();
   const [numero, setNumero] = useState();
@@ -109,27 +110,48 @@ const AddCharger = ({navigation}) => {
         <ScrollView>
           <TextInput placeholder="Nome do local*" style={styles.textInput} />
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
-          <TextInput placeholder="CEP" style={styles.textInput} />
+          <TextInput 
+          placeholder="CEP" 
+          style={styles.textInput}
+          keyboardType='numeric'
+          />
 
           <View>
             <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
           </View>
 
           <View>
-            <TextInput placeholder="Endereço*" style={[styles.textInput]} />
+            <TextInput 
+            placeholder="Endereço*" 
+            style={[styles.textInput]}
+            onChangeText={setLogra}
+            />
           </View>
           <View>
             <SelectList onUfChange={handleUfChange} />
           </View>
-          <TextInput placeholder="Cidade" style={styles.textInput} onChange={setCidade}/>
-          <TextInput placeholder="Complemento" style={styles.textInput} onChange={setComplemento} />
-          <TextInput placeholder="Bairro" style={styles.textInput} onChange={setBairro} />
-          <TextInput placeholder="Número" style={styles.textInput} onChange={setNumero} />
+          <TextInput 
+          placeholder="Cidade" 
+          style={styles.textInput} 
+          onChange={setCidade}/>
+          <TextInput 
+          placeholder="Complemento" 
+          style={styles.textInput} 
+          onChange={setComplemento} />
+          <TextInput 
+          placeholder="Bairro" 
+          style={styles.textInput} 
+          onChange={setBairro} />
+          <TextInput 
+          placeholder="Número" 
+          style={styles.textInput} 
+          keyboardType='numeric'
+          onChange={setNumero} />
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
 
-          <TextInput placeholder="Horário*" 
-          autoComplete='birthdate-full'
+          <TextInput 
+          placeholder="Horário*"
           style={styles.textInput} />
           <View style={styles.acceptPay}>
             <Switch />
