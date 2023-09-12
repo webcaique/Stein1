@@ -52,6 +52,12 @@ const styles = ScaledSheet.create({
         fontWeight:"900",
         color: "white",
       },
+      list:{
+        backgroundColor:"rgba(0,0,0,0.10)",
+        marginVertical:10,
+        borderRadius:10,
+        height:moderateVerticalScale(50),
+      }
 
 })
 export default styles;

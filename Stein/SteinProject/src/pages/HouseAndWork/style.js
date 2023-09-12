@@ -104,6 +104,11 @@ const styles = ScaledSheet.create({
         fontWeight:"900",
         color:"#f00",
     },
+    /*textLinkView:{
+        width:100,
+        flexDirection:"row",
+        justifyContent:"flex-end",
+    }*/
 })
 
 export default styles;

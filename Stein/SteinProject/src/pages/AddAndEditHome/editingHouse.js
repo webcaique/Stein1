@@ -10,11 +10,6 @@ import TabelaCarregadores from "../componenteTabelaCarregadores";
 
 export default function AddHome(){
 
-    const listaFiltros = async ()=>{
-        var filtro = AsyncStorage.getItem("1");
-        setSelectFiltros(filtro);
-        
-      }
 
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
@@ -26,6 +21,7 @@ export default function AddHome(){
     const tabelaLogra = firestore.collection("logradouro");
     const tabelaLocal = firestore.collection("local");
 
+    const [carregadores, setCarregadores] = useState("");
     const [name, setName] = useState("");
     const [logra, setLogra] = useState("");
     const [numero, setNumero] = useState("");
@@ -37,14 +33,6 @@ export default function AddHome(){
     const [selectedTipoLogra, setSelectedTipoLogra] = useState("");
     const [idLocal, setIdLocal] = useState("");
     const [lograEdit, setLograEdit] = useState("");
-    const [carroCarregador, setCarroCarregador ] = useState()
-
-
-    const listaCarregadores = async()=>{
-        let carr = await AsyncStorage.getItem("1");
-        setCarroCarregador(carr);
-
-    }
 
     const handleUfChange = (uf) => {
         setSelectedUf(uf);
@@ -54,19 +42,12 @@ export default function AddHome(){
         setSelectedTipoLogra(tipoLogra);
     };
 
-
-    /*console.log(selectedUf);
-    console.log(selectedTipoLogra);
-    console.log("NAME: "+name);
-    console.log(logra);
-    console.log(numero);
-    console.log("COMPLEMENTO: "+complemento);
-    console.log(cep);
-    console.log(bairro);
-    console.log(cidade);
-    console.log(route.params.idLocal)*/
+    const toggleCarregadorSelection = (carr)=>{
+        setCarregadores(carr);
+    }
 
     useEffect(()=>{
+        console.log(route.params.idLocal);
         const edit = async ()=>{
             try{
                 const aparecer = tabelaLocal.onSnapshot(async (snapashotLocal)=>{
@@ -95,18 +76,8 @@ export default function AddHome(){
                         setLograEdit(datas)
                     }
                 });
-                setBairro(lograEdit.bairro);
-                setCep(lograEdit.CEP);
-                setName(idLocal.nomeLocal);
-                setCidade(lograEdit.cidade);
-                setLogra(lograEdit.logradouro);
-                setComplemento(lograEdit.complemento);
-                setNumero(lograEdit.numero);
-                setSelectedTipoLogra(lograEdit.tipoLogradouro);
-                setSelectedUf(lograEdit.UF);
 
                 setLoading(false);
-                listaCarregadores();
 
                 });
                 return()=>aparecer();
@@ -128,6 +99,18 @@ export default function AddHome(){
         if(selectedTipoLogra != undefined && selectedUf != undefined && name != undefined && logra != undefined && numero != undefined && cep != undefined && bairro != undefined && cidade != undefined ){
 
 
+
+            
+
+            setBairro(bairro);
+            setCep(cep);
+            setName(name);
+            setCidade(cidade);
+            setLogra(logra);
+            setComplemento(complemento);
+            setNumero(numero);
+            setSelectedTipoLogra(selectedTipoLogra);
+            setSelectedUf(selectedUf);
             
             tabelaLogra.doc(idLocal.IDLogradouro).update({
                 CEP: `${cep}`,
@@ -146,10 +129,12 @@ export default function AddHome(){
             then(()=>{
                 console.log("ADICIONADO!");
             });
-
+            carregadores.sort((a,b)=>a-b)
             tabelaLocal.doc(idLocal.id).update({
                 nomeLocal: `${name}`,
-                IDTipoCarregador: carroCarregador,
+                IDTipoCarregador: carregadores,
+                IDLogradouro: `${idLocal.IDLogradouro}`,
+                tipoLocal: `Casa`,
 
             })
 
@@ -177,7 +162,7 @@ export default function AddHome(){
                     // Campo para pegar o apelido
                     >Nome da residência: </Text>
                     <TextInput style={styles.textInput} 
-                    onChangeText={setName()}
+                    onChangeText={(text)=>{setName(text)}}
                     value={name}
                     />
                 </View>
@@ -206,7 +191,7 @@ export default function AddHome(){
                         <View>
                         <Text style={styles.textIsInput}>Número:</Text>
                         <TextInput style={styles.textInputNumber}
-                        onChangeText={setNumero}
+                        onChangeText={(text)=>{setNumero(text)}}
                         value={numero}
                         keyboardType="number-pad"
                         />
@@ -220,7 +205,7 @@ export default function AddHome(){
                         </TouchableOpacity>
                     </View>
                     <View style={{width:"100%", alignItems:"center"}}>
-                        {ligarTabelaCarregadores?<TabelaCarregadores notFiltro={true}/>:<View/>}
+                        {ligarTabelaCarregadores?<TabelaCarregadores onSelectCarregadores={toggleCarregadorSelection} notFiltro={true}/>:<View/>}
                     </View>
                 </View>
 
@@ -228,7 +213,10 @@ export default function AddHome(){
                 // Campo para pegar o complemento
                 >
                     <Text style={styles.textIsInput}>Complemento:</Text>
-                    <TextInput style={styles.textInput}/>
+                    <TextInput style={styles.textInput}
+                    onChangeText={(text)=>{setComplemento(text)}}
+                    value={complemento}
+                    />
                 </View>
 
                 <View style={styles.row5}>
@@ -238,13 +226,17 @@ export default function AddHome(){
                         <Text style={styles.textIsInput}>CEP:</Text>
                         <TextInput style={styles.textInputCep}
                         keyboardType="number-pad"
+                        onChangeText={(text)=>{setCep(text)}}
                         />
                     </View>
                     <View style={styles.column4}
                     // Campo para pegar o bairro
                     >
                         <Text style={styles.textIsInput}>Bairro:</Text>
-                        <TextInput style={styles.textInputBairro}/>
+                        <TextInput style={styles.textInputBairro}
+                        onChangeText={(text)=>{setBairro(text)}}
+                        value={bairro}
+                        />
                     </View>
                 </View>
 
@@ -253,7 +245,10 @@ export default function AddHome(){
                     // Campo para pegar o município
                     >
                         <Text style={styles.textIsInput}>Município:</Text>
-                        <TextInput style={styles.textInputMunicipio}/>
+                        <TextInput style={styles.textInputMunicipio}
+                        onChangeText={(text)=>{setCidade(text)}}
+                        value={cidade}
+                        />
                     </View>
                     <View style={styles.column5}
                     // Campo para pegar o estado
@@ -264,7 +259,7 @@ export default function AddHome(){
                 </View>
                 <TouchableOpacity style={styles.editionButton}
                 onPressIn={()=>{
-                    addData();
+                    addData()
                      navigation.navigate("HouseAndWork");
                     
                     }}

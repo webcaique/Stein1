@@ -5,8 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-export default function(props) {
+export default function({onSelectCarregadores, ...props} ) {
   const [selectedCarregadores, setSelectedCarregadores] = useState([]); // Use o estado para controlar os carregadores selecionados
+
   const nomeCarregadores = [
     "Wall",
         "Nema 14-50",
@@ -29,13 +30,29 @@ export default function(props) {
 
   function toggleCarregadorSelection(carregadorIndex) {
     setSelectedCarregadores(prevSelected => {
-      if (prevSelected.includes(carregadorIndex)) {
-        return prevSelected.filter(index => index !== carregadorIndex);
+      if (Array.isArray(prevSelected)) {
+        if (prevSelected.includes(carregadorIndex)) {
+          return prevSelected.filter(index => index !== carregadorIndex);
+        } else {
+          return [...prevSelected, carregadorIndex];
+        }
       } else {
-        return [...prevSelected, carregadorIndex];
+        return [carregadorIndex]; // Se prevSelected for undefined, crie um novo array com carregadorIndex
+      }
+    });
+    onSelectCarregadores(prevSelected => {
+      if (Array.isArray(prevSelected)) {
+        if (prevSelected.includes(carregadorIndex)) {
+          return prevSelected.filter(index => index !== carregadorIndex);
+        } else {
+          return [...prevSelected, carregadorIndex];
+        }
+      } else {
+        return [carregadorIndex]; // Se prevSelected for undefined, crie um novo array com carregadorIndex
       }
     });
   }
+  
   
   
 

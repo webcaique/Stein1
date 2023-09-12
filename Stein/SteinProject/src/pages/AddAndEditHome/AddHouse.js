@@ -5,7 +5,7 @@ import SelectList from "./selectList"
 import TipoLogradouro from "./tipoLogradouro.js";
 import { firestore } from "../../config/configFirebase";
 import TabelaCarregadores from "../componenteTabelaCarregadores.js"
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 export default function AddHome({navigation}){
@@ -14,6 +14,7 @@ export default function AddHome({navigation}){
     const tabelaLogra = firestore.collection("logradouro");
     const tabelaLocal = firestore.collection("local");
 
+    const [carregadores, setCarregadores] = useState();
     const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(true);
     const [name, setName] = useState();
     const [logra, setLogra] = useState();
@@ -33,6 +34,11 @@ export default function AddHome({navigation}){
         setSelectedTipoLogra(tipoLogra);
     };
 
+    const toggleCarregadorSelection = (carr)=>{
+        setCarregadores(carr);
+    }
+
+
     console.log(selectedUf);
     console.log(selectedTipoLogra);
     console.log(name);
@@ -44,7 +50,7 @@ export default function AddHome({navigation}){
     console.log(cidade);
 
     const addDataLogradouro = async () =>{
-        if(selectedTipoLogra != undefined && selectedUf != undefined && name != undefined && logra != undefined && numero != undefined && cepInput != undefined && bairro != undefined && cidade != undefined ){
+        if(true){
             let countLogra = 0;
             const snapshotLogra = await tabelaLogra.get();
             const listaLogra = [];
@@ -52,8 +58,9 @@ export default function AddHome({navigation}){
                 listaLogra.push({id: doc.id, ...doc.data() });
             });
             listaLogra.forEach((doc)=>{
-                if(countLogra < doc.id){
-                    countLogra = doc.id;
+                if(countLogra < parseInt(doc.id)){
+                    countLogra = parseInt(doc.id);
+                    console.log(countLogra);
                 };
             });
             countLogra++;
@@ -85,15 +92,15 @@ export default function AddHome({navigation}){
 
             let countLocal = 0;
             listaLocal.forEach((doc)=>{
-                if(countLocal < doc.id){
-                    countLocal = doc.id;
+                if(countLocal < parseInt(doc.id)){
+                    countLocal = parseInt(doc.id);
                 };
             });
             countLocal++;
-
+            carregadores.sort((a,b) => a-b);
             let testeLocal = {
                 IDLogradouro: `${countLogra}`,
-                IDTipoCarregador: [1,2],
+                IDTipoCarregador: carregadores,
                 nomeLocal: `${name}`,
                 tipoLocal: `Casa`,
 
@@ -181,7 +188,7 @@ export default function AddHome({navigation}){
                         </TouchableOpacity>
                     </View>
                     <View style={{width:"100%", alignItems:"center"}}>
-                        {ligarTabelaCarregadores?<TabelaCarregadores notFiltro={true}/>:<View/>}
+                        {ligarTabelaCarregadores?<TabelaCarregadores onSelectCarregadores={toggleCarregadorSelection} notFiltro={true}/>:<View/>}
                     </View>
                 </View>
 

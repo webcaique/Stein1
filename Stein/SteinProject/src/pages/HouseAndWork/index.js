@@ -129,8 +129,16 @@ const EditingHouse = () => {
                 keyExtractor={item=>item.id}
                 accessibilityElementsHidden={true}
                 renderItem={({item})=>{
-                  const enderecos = <BoxData logradouro={item.IDLogradouro} carregador={item.IDTipoCarregador} titulo={item.tipoLocal} nome={item.nomeLocal} user={"Caique"}
-                  localID={item.id} navegacao={()=> navigation.navigate("EditWork")}/>
+                  const enderecos = <BoxData 
+                  logradouro={item.IDLogradouro} 
+                  carregador={item.IDTipoCarregador} 
+                  titulo={item.tipoLocal} 
+                  nome={item.nomeLocal} 
+                  user={"Caique"} 
+                  localID={item.id} 
+                  navegacao={(itemID)=> navigation.navigate("EditWork",{
+                    idLocal: itemID,
+                  })}/>
 
                   return enderecos;
                 }}
