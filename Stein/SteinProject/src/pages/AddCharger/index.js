@@ -89,7 +89,6 @@ const AddCharger = ({navigation}) => {
         listaCarregadores.push({id: doc.id, ...doc.data()});
       });
       console.log("TESTE");
-      console.log(listaCarregadores);
       listaCarregadores.forEach(doc => {
         if (countCarregadores < parseInt(doc.id)) {
           countCarregadores = parseInt(doc.id);
@@ -100,8 +99,8 @@ const AddCharger = ({navigation}) => {
       tabelaCarregadores
         .doc(`${countCarregadores}`)
         .set({
-          IDLogradouro: countLogra,
-          qtdeCarregadores: qtdeCarregadores,
+          IDLogradouro: `${countLogra}`,
+          qtdeCarregadores: `${qtdeCarregadores}`,
           IDTipoCarregador: selectCarregadores
         })
         .then(() => {
