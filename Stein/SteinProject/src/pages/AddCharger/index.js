@@ -14,6 +14,7 @@ import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from './selectList';
 import TipoLogradouro from './tipoLogradouro.js';
+import {firestore} from "../../config/configFirebase";
 
 const AddCharger = ({navigation}) => {
 
@@ -87,6 +88,8 @@ const AddCharger = ({navigation}) => {
       snapshotCarregadores.forEach(doc => {
         listaCarregadores.push({id: doc.id, ...doc.data()});
       });
+      console.log("TESTE");
+      console.log(listaCarregadores);
       listaCarregadores.forEach(doc => {
         if (countCarregadores < parseInt(doc.id)) {
           countCarregadores = parseInt(doc.id);
@@ -99,9 +102,7 @@ const AddCharger = ({navigation}) => {
         .set({
           IDLogradouro: countLogra,
           qtdeCarregadores: qtdeCarregadores,
-          IDTipoCarregadores: carregadores.sort((a, b) => {
-            a - b;
-          }),
+          IDTipoCarregador: selectCarregadores
         })
         .then(() => {
           console.log('ADICIONADO!');
