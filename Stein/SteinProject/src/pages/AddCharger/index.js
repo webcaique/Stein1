@@ -17,13 +17,16 @@ import TipoLogradouro from './tipoLogradouro.js';
 
 const AddCharger = ({navigation}) => {
 
-  const [name, setName] = useState();
+  const tabelaCarregadores = firestore.collection('carregadores');
+  const tabelaLogra = firestore.collection('logradouro');
+
   const [logra, setLogra] = useState();
   const [numero, setNumero] = useState();
   const [complemento, setComplemento] = useState();
   const [cepInput, setCep] = useState();
   const [bairro, setBairro] = useState();
   const [cidade, setCidade] = useState();
+  const [qtdeCarregadores, setQtdeCarregadores] = useState();
 
   const [carregadores, setCarregadores] = useState(false);
   const [selectCarregadores, setSelectCarregadores] = useState();
@@ -42,8 +45,6 @@ const AddCharger = ({navigation}) => {
   };
 
   const addCharger = async () => {
-    const tabelaCarregadores = firestore.collection('carregadores');
-
     let countLogra = 0;
     const snapshotLogra = await tabelaLogra.get();
     const listaLogra = [];
@@ -55,6 +56,7 @@ const AddCharger = ({navigation}) => {
         countLogra = parseInt(doc.id);
       }
     });
+    console.log("TESTE")
     countLogra++;
     let testeLogra = {
       CEP: `${cepInput}`,
@@ -95,8 +97,11 @@ const AddCharger = ({navigation}) => {
       tabelaCarregadores
         .doc(`${countCarregadores}`)
         .set({
-            IDLogradouro: countLogra,
-            qtdeCarregadores: qtdeCarregadores,
+          IDLogradouro: countLogra,
+          qtdeCarregadores: qtdeCarregadores,
+          IDTipoCarregadores: carregadores.sort((a, b) => {
+            a - b;
+          }),
         })
         .then(() => {
           console.log('ADICIONADO!');
@@ -108,12 +113,13 @@ const AddCharger = ({navigation}) => {
     <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
       <View>
         <ScrollView>
-          <TextInput placeholder="Nome do local*" style={styles.textInput} />
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
-          <TextInput 
-          placeholder="CEP" 
-          style={styles.textInput}
-          keyboardType='numeric'
+          <TextInput
+            placeholder="CEP"
+            style={styles.textInput}
+            keyboardType="numeric"
+            onChangeText={setCep}
+            value={cepInput}
           />
 
           <View>
@@ -121,38 +127,45 @@ const AddCharger = ({navigation}) => {
           </View>
 
           <View>
-            <TextInput 
-            placeholder="Endereço*" 
-            style={[styles.textInput]}
-            onChangeText={setLogra}
+            <TextInput
+              placeholder="Endereço*"
+              style={[styles.textInput]}
+              onChangeText={setLogra}
+              value={logra}
             />
           </View>
           <View>
             <SelectList onUfChange={handleUfChange} />
           </View>
-          <TextInput 
-          placeholder="Cidade" 
-          style={styles.textInput} 
-          onChange={setCidade}/>
-          <TextInput 
-          placeholder="Complemento" 
-          style={styles.textInput} 
-          onChange={setComplemento} />
-          <TextInput 
-          placeholder="Bairro" 
-          style={styles.textInput} 
-          onChange={setBairro} />
-          <TextInput 
-          placeholder="Número" 
-          style={styles.textInput} 
-          keyboardType='numeric'
-          onChange={setNumero} />
+          <TextInput
+            placeholder="Cidade"
+            style={styles.textInput}
+            onChange={setCidade}
+            value={cidade}
+          />
+          <TextInput
+            placeholder="Complemento"
+            style={styles.textInput}
+            onChange={setComplemento}
+            value={complemento}
+          />
+          <TextInput
+            placeholder="Bairro"
+            style={styles.textInput}
+            onChange={setBairro}
+            value={bairro}
+          />
+          <TextInput
+            placeholder="Número"
+            style={styles.textInput}
+            keyboardType="numeric"
+            onChange={setNumero}
+            value={bairro}
+          />
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
 
-          <TextInput 
-          placeholder="Horário*"
-          style={styles.textInput} />
+          <TextInput placeholder="Horário*" style={styles.textInput} />
           <View style={styles.acceptPay}>
             <Switch />
             <Text>Aberto 24/7</Text>
@@ -170,10 +183,12 @@ const AddCharger = ({navigation}) => {
           ) : (
             <Text></Text>
           )}
-          <TextInput 
-          placeholder='Quantidades de carregadores'
-          keyboardType='number-pad'
-          style={styles.textInput}
+          <TextInput
+            placeholder="Quantidades de carregadores"
+            keyboardType="number-pad"
+            style={styles.textInput}
+            onChangeText={setQtdeCarregadores}
+            value={qtdeCarregadores}
           />
           <View style={styles.acceptPay}>
             <Switch />
@@ -183,7 +198,10 @@ const AddCharger = ({navigation}) => {
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => navigation.navigate('Stein')}>
+              onPress={() => {
+                addCharger();
+                navigation.navigate('Stein');
+              }}>
               <Text style={styles.textButtons}>Enviar</Text>
             </TouchableOpacity>
           </View>

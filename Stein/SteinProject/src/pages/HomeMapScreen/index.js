@@ -18,7 +18,6 @@ import TabelaCarregadores from "../componenteTabelaCarregadores.js"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'; 
 import Geolocation from '@react-native-community/geolocation';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const Img = 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
