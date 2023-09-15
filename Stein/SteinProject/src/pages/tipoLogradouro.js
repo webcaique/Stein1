@@ -7,8 +7,8 @@ export default function tipoLogradouro({onTipoLograChange}){
     const [tipoLogra, setTipoLogra] = useState();
     
     const handleTipoLograChange = (itemValue) => {
-        setTipoLogra(itemValue);
-        onTipoLograChange(itemValue); // Chama a função de retorno com o valor selecionado
+        setTipoLogra(itemValue); // será colocado no "uf" a variável  
+        onTipoLograChange(itemValue); // Chama a função de retorno com o valor selecionado que será enviardo para outra página
     };
 
     return (

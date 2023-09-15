@@ -4,11 +4,11 @@ import {View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
 export default function selectList({ onUfChange }) {
-    const [uf, setUf] = useState();
+    const [uf, setUf] = useState(); // variável
     
     const handleUfChange = (itemValue) => {
-        setUf(itemValue);
-        onUfChange(itemValue); // Chama a função de retorno com o valor selecionado
+        setUf(itemValue);// será colocado no "uf" a variável  
+        onUfChange(itemValue); // Chama a função de retorno com o valor selecionado que será enviardo para outra página
     };
 
     return (

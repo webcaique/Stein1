@@ -5,26 +5,10 @@ import BoxData from "./boxData.js";
 import {firestore} from "../../config/configFirebase";
 import { useNavigation } from '@react-navigation/native';
 
-
-
-/*
-var exampleAppWork = [
-    {
-        id:"00",
-        rua: "Rua Reinado do Cavalo Marinho, 111",
-        carregador:[
-            "carregador1.png",
-            "carregador2.png",
-        ],
-        nomeUser: "Daniel",
-
-    }
-]
-*/
-
 const EditingHouse = () => {
   const navigation = useNavigation();
 
+  // varíaveis de estados modificáveis
     var [house,setHouse] = useState([]);
     const [work, setWork] = useState([]);
     const [local, setLocal] = useState([]);

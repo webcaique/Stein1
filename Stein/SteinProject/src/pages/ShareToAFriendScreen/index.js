@@ -2,6 +2,7 @@ import React from "react";
 import {View, Text, Image, TouchableOpacity, Share} from "react-native";
 import styles from "./style"
 
+// FUnção futura para compertilhar o link para baixar aplicativo
 const ShareToAFriendScreen = () => {
     const onShare = async () => {
         const result = await Share.share({

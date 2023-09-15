@@ -9,46 +9,56 @@ export default function (props) {
   const [logra, setLogra] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const Deletar = async idParaDeletar => {
-    const deletar = firestore.collection('local');
+  const Deletar = async idParaDeletar => { // função para deletar dado do campo de dados
+    const deletar = firestore.collection('local'); // traz do firebase a tabela "Local"
 
-    const snapshot = await deletar.get();
-    const listDeletar = [];
+    const snapshot = await deletar.get(); // pega os dados no formato do firebase
+    const listDeletar = []; // lista que receberá os dados formatados
+
+    //pegará os id para deletar os dados da tabela "Local"
     snapshot.forEach(dado => {
       listDeletar.push(dado.id);
     });
     console.log(listDeletar);
 
+    // deletará os dados da tabela local
     deletar
       .doc(props.localID)
       .delete()
       .then(() => {
         const novoLocal = logra.filter(item => item.id !== idParaDeletar);
         setLogra(novoLocal);
-        console.log('DELETADO');
+        console.log('DELETADO'); // avisa que deletou
       });
   };
 
   useEffect(() => {
     const fetchEndereco = async () => {
-      const ends = firestore.collection('logradouro');
+      const ends = firestore.collection('logradouro'); // pega a tabela "Logradouro" 
 
       try {
+        // pega os dados da tabela "logradouro"
         const aparecer = ends.onSnapshot(async logras => {
+
+          // será colocado os dados formatados na lista
           const listLogra = [];
 
+          // coloca os dados na lista
           logras.forEach(itens => {
             listLogra.push({id: itens.id, ...itens.data()});
           });
 
           setEndereco(listLogra);
 
+          // edita a lista para ter apenas os dados que o id é a mesmo id enviado da página principal
           const locais = listLogra.filter(
             locaisSalvos => locaisSalvos.id === props.logradouro,
           );
-          setLogra(locais);
+
+          setLogra(locais); // coloca os dados da lista na constante para ser usado na página
           setLoading(false);
         });
+        // chama a função
         return () => aparecer();
       } catch (error) {
         console.log('Erro ao buscar documentos: ', error);

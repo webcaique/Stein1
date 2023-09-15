@@ -12,15 +12,16 @@ import {
 } from 'react-native';
 import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
-import SelectList from './selectList';
-import TipoLogradouro from './tipoLogradouro.js';
+import SelectList from '../selectList';
+import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from "../../config/configFirebase";
 
 const AddCharger = ({navigation}) => {
 
-  const tabelaCarregadores = firestore.collection('carregadores');
-  const tabelaLogra = firestore.collection('logradouro');
+  const tabelaCarregadores = firestore.collection('carregadores'); // Pega a tabela Carregadores do Firabase
+  const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
 
+    // Criação das varíaveis com estado variáveis para colocar os dados do formulário
   const [logra, setLogra] = useState();
   const [numero, setNumero] = useState();
   const [complemento, setComplemento] = useState();
@@ -28,38 +29,56 @@ const AddCharger = ({navigation}) => {
   const [bairro, setBairro] = useState();
   const [cidade, setCidade] = useState();
   const [qtdeCarregadores, setQtdeCarregadores] = useState();
-
-  const [carregadores, setCarregadores] = useState(false);
   const [selectCarregadores, setSelectCarregadores] = useState();
+  const [selectedUf, setSelectedUf] = useState('');
+  const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+
+  // Variável para aparição da tabelas dos carregadores
+  const [carregadores, setCarregadores] = useState(false);
+  
   const toggleCarregadorSelection = carr => {
     setSelectCarregadores(carr);
   };
 
-  const [selectedUf, setSelectedUf] = useState('');
   const handleUfChange = uf => {
     setSelectedUf(uf);
   };
 
-  const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+  
   const handleTipoLograChange = tipoLogra => {
     setSelectedTipoLogra(tipoLogra);
   };
 
+    // Função para adicionar dados no banco de dados
+
   const addCharger = async () => {
+
+    // o contador servira para colocar o id para o registro
     let countLogra = 0;
+
+    // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
     const snapshotLogra = await tabelaLogra.get();
+
+    // a lista que armazenara os dados formatos de um jeito que entedemos
     const listaLogra = [];
+
+    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra 
     snapshotLogra.forEach(doc => {
       listaLogra.push({id: doc.id, ...doc.data()});
     });
+
+    // verificará se o countLogra é menor que o id, pois se ele for receberá o valor do id
     listaLogra.forEach(doc => {
       if (countLogra < parseInt(doc.id)) {
         countLogra = parseInt(doc.id);
       }
     });
-    console.log("TESTE")
+
+    // aqui será incrementado um único valor, para criar um novo ID
     countLogra++;
-    let testeLogra = {
+
+    // aqui será colocados os dados coletados no formulário
+    let listLogra = {
       CEP: `${cepInput}`,
       UF: `${selectedUf}`,
       bairro: `${bairro}`,
@@ -74,28 +93,40 @@ const AddCharger = ({navigation}) => {
       tipoLogradouro: `${selectedTipoLogra}`,
     };
 
+    // adionará os dados ao banco de dados
     tabelaLogra
       .doc(`${countLogra}`)
-      .set(testeLogra)
+      .set(listLogra)
       .then(() => {
-        console.log('ADICIONADO!');
+        console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
       });
 
     if (true) {
+      // o contador servira para colocar o id para o registro
       let countCarregadores = 0;
+
+      // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
       const snapshotCarregadores = await tabelaCarregadores.get();
+
+    // a lista que armazenara os dados formatos de um jeito que entedemos
       const listaCarregadores = [];
+
+    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
       snapshotCarregadores.forEach(doc => {
         listaCarregadores.push({id: doc.id, ...doc.data()});
       });
-      console.log("TESTE");
+
+      // verificará se o countLogra é menor que o id, pois se ele for receberá o valor do id
       listaCarregadores.forEach(doc => {
         if (countCarregadores < parseInt(doc.id)) {
           countCarregadores = parseInt(doc.id);
         }
       });
+
+      // aqui será incrementado um único valor, para criar um novo ID
       countCarregadores++;
 
+      //Adiciona os dados dentro do banco de dados
       tabelaCarregadores
         .doc(`${countCarregadores}`)
         .set({

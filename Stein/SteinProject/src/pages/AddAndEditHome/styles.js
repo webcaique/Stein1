@@ -137,16 +137,6 @@ const styles = ScaledSheet.create({
 
         
     },
-    list:{
-        backgroundColor:"#fff",
-        borderWidth:1,
-        backgroundColor:"#fff",
-        marginVertical:10,
-        borderRadius:10,
-        height:moderateVerticalScale(50),
-
-        
-    },
     item:{
         borderWidth:1,
         backgroundColor:"#fff",
@@ -171,9 +161,6 @@ const styles = ScaledSheet.create({
         color:"#ffffff",
         
     },
-    fontList:{
-        fontSize:moderateScale(16),
-    },
     column6:{
         width:moderateScale(200),
     },
@@ -182,15 +169,6 @@ const styles = ScaledSheet.create({
         flexDirection:"column",
         justifyContent:"space-between",
         alignItems:"center",
-    },
-    list:{
-        width:"100%",
-        borderRadius:5,
-        borderWidth:1,
-        backgroundColor:"#fff",
-        justifyContent:"center",
-        height:50,
-        marginTop:10,
     },
     row7:{
         width:"100%",
