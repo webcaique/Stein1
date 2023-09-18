@@ -5,6 +5,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Modal,
+  Pressable
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -43,6 +45,18 @@ export default function AddHome() {
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
   const [idLocal, setIdLocal] = useState('');
   const [lograEdit, setLograEdit] = useState('');
+
+  //Campos inválidos
+  const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
+
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  const [validLogra, setValidLogra] = useState();
+  const [validNumero, setValidNumero] = useState();
+  const [validCep, setValidCep] = useState();
+  const [validBairro, setValidBairro] = useState();
+  const [validCidade, setValidCidade] = useState();
+  const [validName, setValidName] = useState();
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState();
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -187,33 +201,39 @@ export default function AddHome() {
             </Text>
           </View>
           <View
-            style={styles.row2}
+            style={[styles.row2]}
             // Campo para pegar o apelido
           >
             <Text
-              style={styles.textIsInput}
+              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
               // Campo para pegar o apelido
             >
-              Nome da residência:{' '}
+              Nome da empresa:
             </Text>
             <TextInput
-              style={styles.textInput}
-              onChangeText={text => {
-                setName(text);
-              }}
+              style={[styles.textInput, {}]}
+              onChangeText={setName}
               value={name}
             />
           </View>
 
           <View style={styles.row3}>
-            <Text style={styles.textIsInput}>Logradouro:</Text>
+            <Text
+              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              Logradouro:
+            </Text>
             <View
               style={styles.column1}
               // Campo para pegar o logradouro
             >
               <View style={styles.logradouro}>
                 <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
-                <TextInput style={styles.textInputLogradouro} />
+                <TextInput
+                  style={styles.textInputLogradouro}
+                  placeholderTextColor={validLogra ? 'red' : ''}
+                  onChangeText={setLogra}
+                  value={logra}
+                />
               </View>
             </View>
           </View>
@@ -224,12 +244,18 @@ export default function AddHome() {
               // Campo para pegar o número
             >
               <View>
-                <Text style={styles.textIsInput}>Número:</Text>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    ,
+                    {color: validNumero ? 'red' : ''},
+                  ]}>
+                  Número:
+                </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  onChangeText={text => {
-                    setNumero(text);
-                  }}
+                  placeholderTextColor={validNumero ? 'red' : ''}
+                  onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
                 />
@@ -239,7 +265,13 @@ export default function AddHome() {
                 onPress={() => {
                   setligarTabelaCarregadores(!ligarTabelaCarregadores);
                 }}>
-                <Text style={styles.textIsInput}>Carregadores</Text>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    {color: validSelectCarregadores ? 'red' : ''},
+                  ]}>
+                  Carregadores
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={{width: '100%', alignItems: 'center'}}>
@@ -261,9 +293,7 @@ export default function AddHome() {
             <Text style={styles.textIsInput}>Complemento:</Text>
             <TextInput
               style={styles.textInput}
-              onChangeText={text => {
-                setComplemento(text);
-              }}
+              onChangeText={setComplemento}
               value={complemento}
             />
           </View>
@@ -274,26 +304,31 @@ export default function AddHome() {
                 styles.column3
                 // Campo para pegar o CEP
               }>
-              <Text style={styles.textIsInput}>CEP:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                CEP:
+              </Text>
               <TextInput
                 style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cep}
                 keyboardType="number-pad"
-                onChangeText={text => {
-                  setCep(text);
-                }}
+                placeholderTextColor={validCep ? 'red' : ''}
               />
             </View>
             <View
               style={styles.column4}
               // Campo para pegar o bairro
             >
-              <Text style={styles.textIsInput}>Bairro:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                Bairro:
+              </Text>
               <TextInput
                 style={styles.textInputBairro}
-                onChangeText={text => {
-                  setBairro(text);
-                }}
+                onChangeText={setBairro}
                 value={bairro}
+                placeholderTextColor={validBairro ? 'red' : ''}
               />
             </View>
           </View>
@@ -303,13 +338,15 @@ export default function AddHome() {
               style={styles.column6}
               // Campo para pegar o município
             >
-              <Text style={styles.textIsInput}>Município:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
+                Município:
+              </Text>
               <TextInput
                 style={styles.textInputMunicipio}
-                onChangeText={text => {
-                  setCidade(text);
-                }}
+                onChangeText={setCidade}
                 value={cidade}
+                placeholderTextColor={validCidade ? 'red' : ''}
               />
             </View>
             <View
@@ -323,15 +360,84 @@ export default function AddHome() {
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={() => {
-              update();
-              navigation.navigate('HouseAndWork');
+              if (
+                name != undefined &&
+                numero != undefined &&
+                cep != undefined &&
+                bairro != undefined &&
+                cidade != undefined &&
+                carregadores != [] &&
+                logra != undefined
+              ) {
+                navigation.navigate('HouseAndWork', {refresh: true});
+                update();
+              } else {
+                setValidCep(cep == '' ? false : true);
+                setValidCidade(cidade == '' ? false : true);
+                setValidLogra(logra == '' ? false : true);
+                setValidNumero(numero == '' ? false : true);
+                setValidName(name == '' ? false : true);
+                setValidSelectCarregadores(carregadores == [] ? false : true);
+                setValidBairro(bairro == '' ? false : true);
+
+                var lista = [
+                  validBairro ? 'Bairro' : '',
+                  validCidade ? 'Cidade' : '',
+                  validCep ? 'CEP' : '',
+                  validNumero ? 'Número' : '',
+                  validName ? 'Nome' : '',
+                  validSelectCarregadores
+                    ? 'Nenhum carregador selecionado'
+                    : '',
+                  validLogra ? 'Logradouro' : '',
+                ];
+
+                setListaCamposInvalidos(lista);
+              }
             }}
             // Direcionar para página de Casa e Trabalho
           >
-            <Text style={styles.textButton}>Editar</Text>
+            <Text style={styles.textButton}>Adicionar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {listaCamposInvalidos.length > 0 ? (
+        <Modal transparent={true}>
+          <Pressable
+            style={styles.modalContainer}
+            onPress={() => {
+              setListaCamposInvalidos([]);
+            }}>
+            <View style={styles.modal}>
+              <Text>
+                Os seguintes dos campos estão com dados inválidos ou com vazios:
+              </Text>
+              <View>
+                {listaCamposInvalidos
+                  .filter(elemento => elemento != '')
+                  .map((item, index) => (
+                    <Text key={index} style={{fontWeight: '700'}}>
+                      {item}
+                      {listaCamposInvalidos.filter(elemento => elemento != '')
+                        .length != 1
+                        ? index !==
+                          listaCamposInvalidos.filter(
+                            elemento => elemento != '',
+                          ).length -
+                            1
+                          ? ', '
+                          : '.'
+                        : '.'}
+                    </Text>
+                  ))}
+              </View>
+            </View>
+          </Pressable>
+        </Modal>
+      ) : (
+        ''
+      )}
     </View>
   );
 

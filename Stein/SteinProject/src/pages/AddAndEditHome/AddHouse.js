@@ -5,6 +5,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Modal,
+  Pressable
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -195,7 +197,7 @@ export default function AddHome({navigation}) {
               style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
               // Campo para pegar o apelido
             >
-              Nome da empresa:
+              Nome da residência:
             </Text>
             <TextInput
               style={[styles.textInput, {}]}
