@@ -172,7 +172,21 @@ const styles = ScaledSheet.create({
     },
     row7:{
         width:"100%",
-    }
+    },
+    modal: {
+        width: 300,
+        height: "auto",
+        backgroundColor: 'white',
+        padding:10,
+        borderRadius: 10,
+      },
+      modalContainer:{
+        height:"100%",
+        width:"100%",
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"rgba(90,90,90,0.4)",
+      }
 })
 
 export default styles;

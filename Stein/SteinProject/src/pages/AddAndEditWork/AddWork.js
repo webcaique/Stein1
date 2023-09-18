@@ -5,6 +5,8 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Modal,
+  Pressable
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -31,6 +33,18 @@ export default function AddHome({navigation}) {
   const [cidade, setCidade] = useState();
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+
+  //Campos inválidos
+  const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
+
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  const [validLogra, setValidLogra] = useState();
+  const [validNumero, setValidNumero] = useState();
+  const [validCep, setValidCep] = useState();
+  const [validBairro, setValidBairro] = useState();
+  const [validCidade, setValidCidade] = useState();
+  const [validName, setValidName] = useState();
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState();
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -94,7 +108,7 @@ export default function AddHome({navigation}) {
       // aqui será incrementado um único valor, para criar um novo ID
       countLogra++;
 
-    // aqui será colocados os dados coletados no formulário
+      // aqui será colocados os dados coletados no formulário
       let listLogra = {
         CEP: `${cepInput}`,
         UF: `${selectedUf}`,
@@ -110,7 +124,7 @@ export default function AddHome({navigation}) {
         tipoLogradouro: `${selectedTipoLogra}`,
       };
 
-    // adionará os dados ao banco de dados
+      // adionará os dados ao banco de dados
       tabelaLogra
         .doc(`${countLogra}`)
         .set(listLogra)
@@ -119,18 +133,18 @@ export default function AddHome({navigation}) {
         })
         .catch(error => console.log(error)); // caso ocorra algum erro, mostrará para o DEV;
 
-    // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
+      // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
       const snapshotLocal = await tabelaLocal.get();
 
-    // a lista que armazenara os dados formatos de um jeito que entedemos
+      // a lista que armazenara os dados formatos de um jeito que entedemos
       const listaLocal = [];
 
-    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
+      // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
       snapshotLocal.forEach(data => {
         listaLocal.push({id: data.id, ...data.data()});
       });
 
-    // o contador servira para colocar o id para o registro
+      // o contador servira para colocar o id para o registro
       let countLocal = 0;
 
       // verificará se o countLogra é menor que o id, pois se ele for receberá o valor do id
@@ -140,13 +154,13 @@ export default function AddHome({navigation}) {
         }
       });
 
-    // aqui será incrementado um único valor, para criar um novo ID
+      // aqui será incrementado um único valor, para criar um novo ID
       countLocal++;
 
-    //organiza a array de carregadores em ordem crescente
+      //organiza a array de carregadores em ordem crescente
       carregadores.sort((a, b) => a - b);
 
-    // aqui serão colocados os dados coletados no formulário
+      // aqui serão colocados os dados coletados no formulário
       let testeLocal = {
         IDLogradouro: `${countLogra}`,
         IDTipoCarregador: carregadores,
@@ -186,24 +200,24 @@ export default function AddHome({navigation}) {
             </Text>
           </View>
           <View
-            style={styles.row2}
+            style={[styles.row2]}
             // Campo para pegar o apelido
           >
             <Text
-              style={styles.textIsInput}
+              style={[styles.textIsInput, {color: validName?"red":""}]}
               // Campo para pegar o apelido
             >
               Nome da empresa:
             </Text>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, {}]}
               onChangeText={setName}
               value={name}
             />
           </View>
 
           <View style={styles.row3}>
-            <Text style={styles.textIsInput}>Logradouro:</Text>
+            <Text style={[styles.textIsInput, {color: validLogra?"red":""}]}>Logradouro:</Text>
             <View
               style={styles.column1}
               // Campo para pegar o logradouro
@@ -212,6 +226,7 @@ export default function AddHome({navigation}) {
                 <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
                 <TextInput
                   style={styles.textInputLogradouro}
+                  placeholderTextColor={validLogra?"red":""}
                   onChangeText={setLogra}
                   value={logra}
                 />
@@ -225,9 +240,10 @@ export default function AddHome({navigation}) {
               // Campo para pegar o número
             >
               <View>
-                <Text style={styles.textIsInput}>Número:</Text>
+                <Text style={[styles.textIsInput, , {color: validNumero?"red":""}]}>Número:</Text>
                 <TextInput
                   style={styles.textInputNumber}
+                  placeholderTextColor={validNumero?"red":""}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -238,7 +254,7 @@ export default function AddHome({navigation}) {
                 onPress={() => {
                   setligarTabelaCarregadores(!ligarTabelaCarregadores);
                 }}>
-                <Text style={styles.textIsInput}>Carregadores</Text>
+                <Text style={[styles.textIsInput, {color: validSelectCarregadores?"red":""}]}>Carregadores</Text>
               </TouchableOpacity>
             </View>
             <View style={{width: '100%', alignItems: 'center'}}>
@@ -271,23 +287,27 @@ export default function AddHome({navigation}) {
                 styles.column3
                 // Campo para pegar o CEP
               }>
-              <Text style={styles.textIsInput}>CEP:</Text>
+              <Text style={[styles.textIsInput, {color: validCep?"red":""}]}>CEP:</Text>
               <TextInput
                 style={styles.textInputCep}
                 onChangeText={setCep}
                 value={cepInput}
                 keyboardType="number-pad"
+                placeholderTextColor={validCep?"red":""}
+
               />
             </View>
             <View
               style={styles.column4}
               // Campo para pegar o bairro
             >
-              <Text style={styles.textIsInput}>Bairro:</Text>
+              <Text style={[styles.textIsInput, {color: validBairro?"red":""}]}>Bairro:</Text>
               <TextInput
                 style={styles.textInputBairro}
                 onChangeText={setBairro}
                 value={bairro}
+                placeholderTextColor={validBairro?"red":""}
+
               />
             </View>
           </View>
@@ -297,11 +317,13 @@ export default function AddHome({navigation}) {
               style={styles.column6}
               // Campo para pegar o município
             >
-              <Text style={styles.textIsInput}>Município:</Text>
+              <Text style={[styles.textIsInput, {color: validCidade?"red":""}]}>Município:</Text>
               <TextInput
                 style={styles.textInputMunicipio}
                 onChangeText={setCidade}
                 value={cidade}
+                placeholderTextColor={validCidade?"red":""}
+
               />
             </View>
             <View
@@ -315,8 +337,40 @@ export default function AddHome({navigation}) {
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={() => {
-              navigation.navigate('HouseAndWork', {refresh: true});
-              addDataLogradouro();
+              if (
+                name != undefined &&
+                numero != undefined &&
+                cepInput != undefined &&
+                bairro != undefined &&
+                cidade != undefined &&
+                carregadores != [] &&
+                logra != undefined
+              ) {
+                navigation.navigate('HouseAndWork', {refresh: true});
+                addDataLogradouro();
+              } else {
+                setValidCep(cepInput == '' ? false : true);
+                setValidCidade(cidade == '' ? false : true);
+                setValidLogra(logra == '' ? false : true);
+                setValidNumero(numero == '' ? false : true);
+                setValidName(name == '' ? false : true);
+                setValidSelectCarregadores(carregadores == [] ? false : true);
+                setValidBairro(bairro == '' ? false : true);
+
+                var lista = [
+                  validBairro ? 'Bairro' : '',
+                  validCidade ? 'Cidade' : '',
+                  validCep ? 'CEP' : '',
+                  validNumero ? 'Número' : '',
+                  validName ? 'Nome' : '',
+                  validSelectCarregadores
+                    ? 'Nenhum carregador selecionado'
+                    : '',
+                  validLogra ? 'Logradouro' : '',
+                ];
+
+                setListaCamposInvalidos(lista);
+              }
             }}
             // Direcionar para página de Casa e Trabalho
           >
@@ -324,6 +378,43 @@ export default function AddHome({navigation}) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {listaCamposInvalidos.length > 0 ? (
+        <Modal transparent={true}>
+          <Pressable
+            style={styles.modalContainer}
+            onPress={() => {
+              setListaCamposInvalidos([]);
+            }}>
+            <View style={styles.modal}>
+              <Text>
+                Os seguintes dos campos estão com dados inválidos ou com vazios:
+              </Text>
+              <View>
+                {listaCamposInvalidos
+                  .filter(elemento => elemento != '')
+                  .map((item, index) => (
+                    <Text key={index} style={{fontWeight: '700'}}>
+                      {item}
+                      {listaCamposInvalidos.filter(elemento => elemento != '')
+                        .length != 1
+                        ? index !==
+                          listaCamposInvalidos.filter(
+                            elemento => elemento != '',
+                          ).length -
+                            1
+                          ? ', '
+                          : '.'
+                        : '.'}
+                    </Text>
+                  ))}
+              </View>
+            </View>
+          </Pressable>
+        </Modal>
+      ) : (
+        ''
+      )}
     </View>
   );
 }
