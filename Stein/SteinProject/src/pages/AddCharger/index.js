@@ -9,19 +9,19 @@ import {
   TouchableOpacity,
   Switch,
   Keyboard,
+  Modal,
 } from 'react-native';
 import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
-import {firestore} from "../../config/configFirebase";
+import {firestore} from '../../config/configFirebase';
 
 const AddCharger = ({navigation}) => {
-
   const tabelaCarregadores = firestore.collection('carregadores'); // Pega a tabela Carregadores do Firabase
   const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
 
-    // Criação das varíaveis com estado variáveis para colocar os dados do formulário
+  // Criação das varíaveis com estado variáveis para colocar os dados do formulário
   const [logra, setLogra] = useState();
   const [numero, setNumero] = useState();
   const [complemento, setComplemento] = useState();
@@ -33,21 +33,21 @@ const AddCharger = ({navigation}) => {
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
 
+  //Campos inválidos
+  const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
+
   // Variávies de estados para indicar campo obrigatório vazio ou inválido
-  const [validLogra, setValidLogra] = useState(true);
-  const [validNumero, setValidNumero] = useState(true);
-  const [validCep, setValidCep] = useState(true);
-  const [validBairro, setValidBairro] = useState(true);
-  const [validCidade, setValidCidade] = useState(true);
-  const [validQtdeCarregadores, setValidQtdeCarregadores] = useState(true);
-  const [validSelectCarregadores, setValidSelectCarregadores] = useState(true);
-
-
-
+  const [validLogra, setValidLogra] = useState();
+  const [validNumero, setValidNumero] = useState();
+  const [validCep, setValidCep] = useState();
+  const [validBairro, setValidBairro] = useState();
+  const [validCidade, setValidCidade] = useState();
+  const [validQtdeCarregadores, setValidQtdeCarregadores] = useState();
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState();
 
   // Variável para aparição da tabelas dos carregadores
   const [carregadores, setCarregadores] = useState(false);
-  
+
   const toggleCarregadorSelection = carr => {
     setSelectCarregadores(carr);
   };
@@ -56,15 +56,13 @@ const AddCharger = ({navigation}) => {
     setSelectedUf(uf);
   };
 
-  
   const handleTipoLograChange = tipoLogra => {
     setSelectedTipoLogra(tipoLogra);
   };
 
-    // Função para adicionar dados no banco de dados
+  // Função para adicionar dados no banco de dados
 
   const addCharger = async () => {
-
     // o contador servira para colocar o id para o registro
     let countLogra = 0;
 
@@ -74,7 +72,7 @@ const AddCharger = ({navigation}) => {
     // a lista que armazenara os dados formatos de um jeito que entedemos
     const listaLogra = [];
 
-    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra 
+    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
     snapshotLogra.forEach(doc => {
       listaLogra.push({id: doc.id, ...doc.data()});
     });
@@ -120,10 +118,10 @@ const AddCharger = ({navigation}) => {
       // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
       const snapshotCarregadores = await tabelaCarregadores.get();
 
-    // a lista que armazenara os dados formatos de um jeito que entedemos
+      // a lista que armazenara os dados formatos de um jeito que entedemos
       const listaCarregadores = [];
 
-    // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
+      // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
       snapshotCarregadores.forEach(doc => {
         listaCarregadores.push({id: doc.id, ...doc.data()});
       });
@@ -144,7 +142,7 @@ const AddCharger = ({navigation}) => {
         .set({
           IDLogradouro: `${countLogra}`,
           qtdeCarregadores: `${qtdeCarregadores}`,
-          IDTipoCarregador: selectCarregadores
+          IDTipoCarregador: selectCarregadores,
         })
         .then(() => {
           console.log('ADICIONADO!');
@@ -153,7 +151,11 @@ const AddCharger = ({navigation}) => {
   };
 
   return (
-    <Pressable style={styles.container} onPress={() => Keyboard.dismiss()}>
+    <Pressable
+      style={styles.container}
+      onPress={() => {
+        Keyboard.dismiss();
+      }}>
       <View>
         <ScrollView>
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
@@ -175,7 +177,7 @@ const AddCharger = ({navigation}) => {
               style={[styles.textInput]}
               onChangeText={setLogra}
               value={logra}
-              placeholderTextColor={validLogra? "": "red"}
+              placeholderTextColor={validLogra ? 'red' : ''}
             />
           </View>
           <View>
@@ -186,7 +188,7 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChange={setCidade}
             value={cidade}
-            placeholderTextColor={validCidade? "": "red"}
+            placeholderTextColor={validCidade ? 'red' : ''}
           />
           <TextInput
             placeholder="Complemento"
@@ -199,7 +201,7 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChange={setBairro}
             value={bairro}
-            placeholderTextColor={validBairro? "": "red"}
+            placeholderTextColor={validBairro ? 'red' : ''}
           />
           <TextInput
             placeholder="Número"
@@ -207,7 +209,7 @@ const AddCharger = ({navigation}) => {
             keyboardType="numeric"
             onChange={setNumero}
             value={numero}
-            placeholderTextColor={validNumero? "": "red"}
+            placeholderTextColor={validNumero ? 'red' : ''}
           />
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
@@ -220,7 +222,13 @@ const AddCharger = ({navigation}) => {
           <TouchableOpacity
             onPress={() => setCarregadores(!carregadores)}
             style={styles.charger}>
-            <Text style={[styles.placeholder, {color: validSelectCarregadores? "": "red"}]}>Carregador</Text>
+            <Text
+              style={[
+                styles.placeholder,
+                {color: validSelectCarregadores ? 'red' : ''},
+              ]}>
+              Carregador
+            </Text>
           </TouchableOpacity>
           {carregadores ? (
             <TabelaCarregadores
@@ -236,7 +244,7 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChangeText={setQtdeCarregadores}
             value={qtdeCarregadores}
-            placeholderTextColor={validQtdeCarregadores? "": "red"}
+            placeholderTextColor={validQtdeCarregadores ? 'red' : ''}
           />
           <View style={styles.acceptPay}>
             <Switch />
@@ -247,25 +255,84 @@ const AddCharger = ({navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                if(logra != undefined && numero != undefined && cepInput != undefined && bairro != undefined && cidade != undefined && qtdeCarregadores != undefined && selectCarregadores != []){ 
+                if (
+                  logra != undefined &&
+                  numero != undefined &&
+                  cepInput != undefined &&
+                  bairro != undefined &&
+                  cidade != undefined &&
+                  qtdeCarregadores != undefined &&
+                  selectCarregadores != []
+                ) {
                   addCharger();
                   navigation.navigate('Stein');
                 } else {
-                  setValidCep(cepInput == undefined?false:true);
-                  setValidCidade(cidade == undefined?false:true);
-                  setValidLogra(logra == undefined?false:true);
-                  setValidNumero(numero == undefined?false:true);
-                  setValidQtdeCarregadores(qtdeCarregadores == undefined?false:true);
-                  setValidSelectCarregadores(selectCarregadores == []?false:true);
-                  setValidBairro(bairro == undefined?false:true);
+                  setValidCep(cepInput == '' ? false : true);
+                  setValidCidade(cidade == '' ? false : true);
+                  setValidLogra(logra == '' ? false : true);
+                  setValidNumero(numero == '' ? false : true);
+                  setValidQtdeCarregadores(
+                    qtdeCarregadores == '' ? false : true,
+                  );
+                  setValidSelectCarregadores(
+                    selectCarregadores == [] ? false : true,
+                  );
+                  setValidBairro(bairro == '' ? false : true);
+
+                  var lista = [
+                    validBairro ? 'Bairro' : '',
+                    validCidade ? 'Cidade' : '',
+                    validCep ? 'CEP' : '',
+                    validNumero ? 'Número' : '',
+                    validQtdeCarregadores ? 'Quantidade de carregadores' : '',
+                    validSelectCarregadores
+                      ? 'Nenhum carregador selecionado'
+                      : '',
+                    validLogra ? 'Logradouro' : '',
+                  ];
+
+                  setListaCamposInvalidos(lista);
                 }
-                
               }}>
               <Text style={styles.textButtons}>Enviar</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
+
+      {listaCamposInvalidos.length > 0 ? (
+        <Modal transparent={true}>
+          <Pressable
+            style={styles.modalContainer}
+            onPress={() => {
+              setListaCamposInvalidos([]);
+            }}>
+            <View style={styles.modal}>
+              <Text>
+                Os seguintes dos campos estão com dados inválidos ou com vazios:
+              </Text>
+              <View>
+                {listaCamposInvalidos
+                  .filter(elemento => elemento != '')
+                  .map((item, index) => (
+                    <Text key={index} style={{fontWeight: '700'}}>
+                      {item}
+                      {listaCamposInvalidos.filter(elemento => elemento != '')
+                        .length != 1
+                        ? index !== listaCamposInvalidos
+                        .filter(elemento => elemento != '').length - 1
+                          ? ', '
+                          : '.'
+                        : '.'}
+                    </Text>
+                  ))}
+              </View>
+            </View>
+          </Pressable>
+        </Modal>
+      ) : (
+        ''
+      )}
     </Pressable>
   );
 };
