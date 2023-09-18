@@ -33,6 +33,18 @@ const AddCharger = ({navigation}) => {
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
 
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  const [validLogra, setValidLogra] = useState(true);
+  const [validNumero, setValidNumero] = useState(true);
+  const [validCep, setValidCep] = useState(true);
+  const [validBairro, setValidBairro] = useState(true);
+  const [validCidade, setValidCidade] = useState(true);
+  const [validQtdeCarregadores, setValidQtdeCarregadores] = useState(true);
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState(true);
+
+
+
+
   // Variável para aparição da tabelas dos carregadores
   const [carregadores, setCarregadores] = useState(false);
   
@@ -163,6 +175,7 @@ const AddCharger = ({navigation}) => {
               style={[styles.textInput]}
               onChangeText={setLogra}
               value={logra}
+              placeholderTextColor={validLogra? "": "red"}
             />
           </View>
           <View>
@@ -173,6 +186,7 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChange={setCidade}
             value={cidade}
+            placeholderTextColor={validCidade? "": "red"}
           />
           <TextInput
             placeholder="Complemento"
@@ -185,13 +199,15 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChange={setBairro}
             value={bairro}
+            placeholderTextColor={validBairro? "": "red"}
           />
           <TextInput
             placeholder="Número"
             style={styles.textInput}
             keyboardType="numeric"
             onChange={setNumero}
-            value={bairro}
+            value={numero}
+            placeholderTextColor={validNumero? "": "red"}
           />
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
@@ -204,7 +220,7 @@ const AddCharger = ({navigation}) => {
           <TouchableOpacity
             onPress={() => setCarregadores(!carregadores)}
             style={styles.charger}>
-            <Text style={styles.placeholder}>Carregador</Text>
+            <Text style={[styles.placeholder, {color: validSelectCarregadores? "": "red"}]}>Carregador</Text>
           </TouchableOpacity>
           {carregadores ? (
             <TabelaCarregadores
@@ -220,6 +236,7 @@ const AddCharger = ({navigation}) => {
             style={styles.textInput}
             onChangeText={setQtdeCarregadores}
             value={qtdeCarregadores}
+            placeholderTextColor={validQtdeCarregadores? "": "red"}
           />
           <View style={styles.acceptPay}>
             <Switch />
@@ -230,8 +247,19 @@ const AddCharger = ({navigation}) => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                addCharger();
-                navigation.navigate('Stein');
+                if(logra != undefined && numero != undefined && cepInput != undefined && bairro != undefined && cidade != undefined && qtdeCarregadores != undefined && selectCarregadores != []){ 
+                  addCharger();
+                  navigation.navigate('Stein');
+                } else {
+                  setValidCep(cepInput == undefined?false:true);
+                  setValidCidade(cidade == undefined?false:true);
+                  setValidLogra(logra == undefined?false:true);
+                  setValidNumero(numero == undefined?false:true);
+                  setValidQtdeCarregadores(qtdeCarregadores == undefined?false:true);
+                  setValidSelectCarregadores(selectCarregadores == []?false:true);
+                  setValidBairro(bairro == undefined?false:true);
+                }
+                
               }}>
               <Text style={styles.textButtons}>Enviar</Text>
             </TouchableOpacity>
