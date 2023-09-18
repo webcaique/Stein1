@@ -31,6 +31,18 @@ export default function AddHome({navigation}) {
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
 
+  //Campos inválidos
+  const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
+
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  const [validLogra, setValidLogra] = useState();
+  const [validNumero, setValidNumero] = useState();
+  const [validCep, setValidCep] = useState();
+  const [validBairro, setValidBairro] = useState();
+  const [validCidade, setValidCidade] = useState();
+  const [validName, setValidName] = useState();
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState();
+
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
     setSelectedUf(uf);
@@ -180,7 +192,7 @@ export default function AddHome({navigation}) {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName?"red":""}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
               // Campo para pegar o apelido
             >
               Nome da empresa:
@@ -193,7 +205,10 @@ export default function AddHome({navigation}) {
           </View>
 
           <View style={styles.row3}>
-            <Text style={[styles.textIsInput, {color: validLogra?"red":""}]}>Logradouro:</Text>
+            <Text
+              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              Logradouro:
+            </Text>
             <View
               style={styles.column1}
               // Campo para pegar o logradouro
@@ -202,7 +217,7 @@ export default function AddHome({navigation}) {
                 <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra?"red":""}
+                  placeholderTextColor={validLogra ? 'red' : ''}
                   onChangeText={setLogra}
                   value={logra}
                 />
@@ -216,10 +231,17 @@ export default function AddHome({navigation}) {
               // Campo para pegar o número
             >
               <View>
-                <Text style={[styles.textIsInput, , {color: validNumero?"red":""}]}>Número:</Text>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    ,
+                    {color: validNumero ? 'red' : ''},
+                  ]}>
+                  Número:
+                </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero?"red":""}
+                  placeholderTextColor={validNumero ? 'red' : ''}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -230,7 +252,13 @@ export default function AddHome({navigation}) {
                 onPress={() => {
                   setligarTabelaCarregadores(!ligarTabelaCarregadores);
                 }}>
-                <Text style={[styles.textIsInput, {color: validSelectCarregadores?"red":""}]}>Carregadores</Text>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    {color: validSelectCarregadores ? 'red' : ''},
+                  ]}>
+                  Carregadores
+                </Text>
               </TouchableOpacity>
             </View>
             <View style={{width: '100%', alignItems: 'center'}}>
@@ -263,27 +291,31 @@ export default function AddHome({navigation}) {
                 styles.column3
                 // Campo para pegar o CEP
               }>
-              <Text style={[styles.textIsInput, {color: validCep?"red":""}]}>CEP:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                CEP:
+              </Text>
               <TextInput
                 style={styles.textInputCep}
                 onChangeText={setCep}
                 value={cepInput}
                 keyboardType="number-pad"
-                placeholderTextColor={validCep?"red":""}
-
+                placeholderTextColor={validCep ? 'red' : ''}
               />
             </View>
             <View
               style={styles.column4}
               // Campo para pegar o bairro
             >
-              <Text style={[styles.textIsInput, {color: validBairro?"red":""}]}>Bairro:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                Bairro:
+              </Text>
               <TextInput
                 style={styles.textInputBairro}
                 onChangeText={setBairro}
                 value={bairro}
-                placeholderTextColor={validBairro?"red":""}
-
+                placeholderTextColor={validBairro ? 'red' : ''}
               />
             </View>
           </View>
@@ -293,13 +325,15 @@ export default function AddHome({navigation}) {
               style={styles.column6}
               // Campo para pegar o município
             >
-              <Text style={[styles.textIsInput, {color: validCidade?"red":""}]}>Município:</Text>
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
+                Município:
+              </Text>
               <TextInput
                 style={styles.textInputMunicipio}
                 onChangeText={setCidade}
                 value={cidade}
-                placeholderTextColor={validCidade?"red":""}
-
+                placeholderTextColor={validCidade ? 'red' : ''}
               />
             </View>
             <View
