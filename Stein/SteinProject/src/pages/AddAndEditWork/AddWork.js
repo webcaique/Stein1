@@ -116,8 +116,8 @@ export default function AddHome({navigation}) {
         cidade: `${cidade}`,
         complemento: `${complemento}`,
         geolocalizacao: {
-          Latitude: 'TESTE',
-          Longitude: 'TESTE',
+          latitude: 24.000,
+          longitude: 48.000,
         },
         logradouro: `${logra}`,
         numero: `${numero}`,

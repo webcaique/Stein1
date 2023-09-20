@@ -43,6 +43,7 @@ export default function Stein({navigation}) {
   };
 
   const tabelaLogra = firestore.collection('logradouro');
+  const tabelaCarregadores = firestore.collection('carregadores');
 
   const [modal, setModal] = useState(false);
   const [filtros, setFiltros] = useState(false);
@@ -54,18 +55,48 @@ export default function Stein({navigation}) {
 
   useEffect(() => {
     const fetchBd = async () => {
+      const snapshotCarr = await tabelaCarregadores.get();
+      const listCarr = [];
+      snapshotCarr.forEach(data => {
+        listCarr.push({id: data.id, ...data.data()});
+      });
+
       const snapshotLogra = await tabelaLogra.get();
       const listaLogra = [];
       snapshotLogra.forEach(doc => {
         listaLogra.push({id: doc.id, ...doc.data()});
       });
-      setLogra(listaLogra);
-      listaLogra.forEach((teste)=>{
-        console.log("DADOS");
-        console.log(teste.geolocalizacao);
-        setMarkers(prevMarkers => [...prevMarkers, {...teste.geolocalizacao, nome: "casa"}]);
+
+      listCarr.forEach(datas => {
+        listaLogra.forEach(docs => {
+          if (datas.id == docs.id) {
+            console.log('DATAS');
+            console.log(datas.nome);
+            let nome = datas.nome;
+            console.log('DOCS');
+            console.log(docs.geolocalizacao);
+            console.log(nome);
+            const novoPonto = {...docs.geolocalizacao, nome};
+            console.log('Novo ponto');
+            console.log(novoPonto);
+            setMarkers(prevMarkers => [
+              ...prevMarkers,
+              novoPonto,
+            ]);
+          }
+        });
       });
     };
+
+    //   listaLogra.forEach(teste => {
+    //     console.log('DADOS');
+    //     console.log(teste.geolocalizacao);
+    //     setMarkers(prevMarkers => [
+    //       ...prevMarkers,
+    //       {...teste.geolocalizacao, nome: 'casa'},
+    //     ]);
+    //   });
+    // };
 
     fetchBd();
     getLocation();

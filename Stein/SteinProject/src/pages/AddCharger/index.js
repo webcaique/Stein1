@@ -95,8 +95,8 @@ const AddCharger = ({navigation}) => {
       cidade: `${cidade}`,
       complemento: `${complemento}`,
       geolocalizacao: {
-        Latitude: 'TESTE',
-        Longitude: 'TESTE',
+        latitude: 24.0000,
+        longitude: 48.0000,
       },
       logradouro: `${logra}`,
       numero: `${numero}`,
