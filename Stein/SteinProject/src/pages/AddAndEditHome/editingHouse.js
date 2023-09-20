@@ -27,7 +27,7 @@ export default function AddHome() {
   const idFromOtherScreen = route.params.idLocal;
 
   // Variável para aparição da tabelas dos carregadores
-  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(true);
+  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
 
   const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
   const tabelaLocal = firestore.collection('local'); // Pega a tabela Local do Firabase
@@ -74,6 +74,11 @@ export default function AddHome() {
   };
 
   useEffect(() => {
+
+    const timer = setTimeout(() => {
+      setListaCamposInvalidos([]);
+    }, 5000);
+
     console.log(route.params.idLocal);
     const edit = async () => {
       //vai tentar pegar os dados da tabela local
@@ -123,6 +128,7 @@ export default function AddHome() {
       }
     };
     edit();
+    return () => clearTimeout(timer);
   }, []);
 
   const update = async () => {
@@ -372,27 +378,33 @@ export default function AddHome() {
                 navigation.navigate('HouseAndWork', {refresh: true});
                 update();
               } else {
-                setValidCep(cep == '' ? false : true);
-                setValidCidade(cidade == '' ? false : true);
-                setValidLogra(logra == '' ? false : true);
-                setValidNumero(numero == '' ? false : true);
-                setValidName(name == '' ? false : true);
-                setValidSelectCarregadores(carregadores == [] ? false : true);
-                setValidBairro(bairro == '' ? false : true);
+                setValidCep(cep == '' ? true : false);
+                setValidCidade(cidade == '' ? true : false);
+                setValidLogra(logra == '' ? true : false);
+                setValidNumero(numero == '' ? true : true);
+                setValidName(name == '' ? true : false);
+                setValidSelectCarregadores(carregadores == [] ? true : false);
+                setValidBairro(bairro == '' ? true : false);
 
                 var lista = [
-                  validBairro ? 'Bairro' : '',
-                  validCidade ? 'Cidade' : '',
-                  validCep ? 'CEP' : '',
-                  validNumero ? 'Número' : '',
-                  validName ? 'Nome' : '',
-                  validSelectCarregadores
+                  validBairro == undefined || validBairro ? 'Bairro' : '',
+                  validCidade == undefined || validCidade ? 'Cidade' : '',
+                  validCep == undefined || validCep? 'CEP' : '',
+                  validNumero == undefined || validNumero? 'Número' : '',
+                  validName == undefined || validName? 'Nome' : '',
+                  validSelectCarregadores == undefined || validSelectCarregadores
                     ? 'Nenhum carregador selecionado'
                     : '',
-                  validLogra ? 'Logradouro' : '',
+                  validLogra == undefined  || validLogra? 'Logradouro' : '',
                 ];
 
                 setListaCamposInvalidos(lista);
+
+                const timer = setTimeout(() => {
+                  setListaCamposInvalidos([]);
+                }, 5000);
+            
+                return () => clearTimeout(timer);
               }
             }}
             // Direcionar para página de Casa e Trabalho

@@ -35,6 +35,15 @@ const estilos=ScaledSheet.create({
     bgBranco:{
       backgroundColor:"white",
     },
+    tituloFiltros:{
+      fontSize: 16,
+      fontWeight: "600",
+    },
+    textParaFiltos:{
+      marginBottom:10,
+      fontSize:14,
+    },
+
 
 
     })

@@ -86,10 +86,8 @@ const estilos=ScaledSheet.create({
      links:{
       width:"100%",
       height:moderateVerticalScale(40),
-      borderColor:"#ffffff",
-      borderBottomColor:"#000000",
-      borderWidth:2,
       marginVertical:10,
+      borderBottomWidth:1,      
      },
      imagemIcon1:{
       width:moderateVerticalScale(25),
@@ -102,7 +100,6 @@ const estilos=ScaledSheet.create({
       height:moderateVerticalScale(25),
       resizeMode:"contain",
       marginHorizontal:10,
-      transform: [{rotate:'90deg'}],
      },
      textLink:{
       fontSize:moderateScale(18),
@@ -110,6 +107,7 @@ const estilos=ScaledSheet.create({
      containerLink:{
       flexDirection:"row",
       alignItems:"center",
+      
     },
     imgs:{
       width: moderateVerticalScale(50),
@@ -133,6 +131,11 @@ const estilos=ScaledSheet.create({
       justifyContent:"center",
       
     },
+    centerTabela:{
+      width:"100%",
+      alignItems:"center"
+    },
+
 
     })
 

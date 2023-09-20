@@ -21,7 +21,7 @@ export default function AddHome({navigation}) {
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
   const [carregadores, setCarregadores] = useState();
   // Variável para aparição da tabelas dos carregadores
-  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(true);
+  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
   //
   const [name, setName] = useState();
   const [logra, setLogra] = useState();
@@ -171,6 +171,13 @@ export default function AddHome({navigation}) {
     }
   };
 
+  useEffect(()=>{
+    const timer = setTimeout(() => {
+      setListaCamposInvalidos([]);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  },[]);
   return (
     <View>
       <ScrollView
@@ -203,13 +210,15 @@ export default function AddHome({navigation}) {
               style={[styles.textInput, {}]}
               onChangeText={setName}
               value={name}
+              placeholder='Nome da residência'
+              placeholderTextColor={validName ? 'red' : ''}
             />
           </View>
 
           <View style={styles.row3}>
             <Text
               style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
-              Logradouro:
+              Endereço:
             </Text>
             <View
               style={styles.column1}
@@ -276,7 +285,7 @@ export default function AddHome({navigation}) {
           </View>
 
           <View
-            style={styles.row4}
+            style={{...styles.row4, marginTop: ligarTabelaCarregadores? 10:0}}
             // Campo para pegar o complemento
           >
             <Text style={styles.textIsInput}>Complemento:</Text>
@@ -370,18 +379,24 @@ export default function AddHome({navigation}) {
                 setValidBairro(bairro == '' ? false : true);
 
                 var lista = [
-                  validBairro ? 'Bairro' : '',
-                  validCidade ? 'Cidade' : '',
-                  validCep ? 'CEP' : '',
-                  validNumero ? 'Número' : '',
-                  validName ? 'Nome' : '',
-                  validSelectCarregadores
+                  validBairro == undefined || validBairro ? 'Bairro' : '',
+                  validCidade == undefined || validCidade ? 'Cidade' : '',
+                  validCep == undefined || validCep? 'CEP' : '',
+                  validNumero == undefined || validNumero? 'Número' : '',
+                  validName == undefined || validName? 'Nome' : '',
+                  validSelectCarregadores == undefined || validSelectCarregadores
                     ? 'Nenhum carregador selecionado'
                     : '',
-                  validLogra ? 'Logradouro' : '',
+                  validLogra == undefined  || validLogra? 'Endereço' : '',
                 ];
 
                 setListaCamposInvalidos(lista);
+
+                const timer = setTimeout(() => {
+                  setListaCamposInvalidos([]);
+                }, 5000);
+            
+                return () => clearTimeout(timer);
               }
             }}
             // Direcionar para página de Casa e Trabalho

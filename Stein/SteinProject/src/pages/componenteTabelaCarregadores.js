@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import estilos from "./style";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 
 export default function({onSelectCarregadores, ...props} ) {
@@ -88,8 +86,8 @@ export default function({onSelectCarregadores, ...props} ) {
 
     const content = <ScrollView>
     {props.notFiltro?<View/>:
-    [<Text>Mostrando filtros para</Text>,
-    <Text>conectores</Text>]
+    [<Text style={estilos.tituloFiltros}>Filtrar por:</Text>,
+    <Text style={estilos.textParaFiltos}>Conectores</Text>]
     }
     
     <View style={{ flexDirection: "row" }}>

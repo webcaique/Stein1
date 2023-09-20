@@ -1,15 +1,30 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  Modal,
+  Pressable,
+} from 'react-native';
 import styles from './style';
 import {firestore} from '../../config/configFirebase';
-import {ScrollView} from 'react-native-gesture-handler';
 
 export default function (props) {
+
+  const timer = setTimeout(() => {
+    setValidDeletar(false);
+  }, 5000);
+
   const [endereco, setEndereco] = useState([]);
   const [logra, setLogra] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [podeDeletar, setPodeDeletar] = useState(false);
+  const [validDeletar, setValidDeletar] = useState(false);
 
-  const Deletar = async idParaDeletar => { // função para deletar dado do campo de dados
+  const Deletar = async idParaDeletar => {
+    // função para deletar dado do campo de dados
     const deletar = firestore.collection('local'); // traz do firebase a tabela "Local"
 
     const snapshot = await deletar.get(); // pega os dados no formato do firebase
@@ -34,12 +49,11 @@ export default function (props) {
 
   useEffect(() => {
     const fetchEndereco = async () => {
-      const ends = firestore.collection('logradouro'); // pega a tabela "Logradouro" 
+      const ends = firestore.collection('logradouro'); // pega a tabela "Logradouro"
 
       try {
         // pega os dados da tabela "logradouro"
         const aparecer = ends.onSnapshot(async logras => {
-
           // será colocado os dados formatados na lista
           const listLogra = [];
 
@@ -67,15 +81,75 @@ export default function (props) {
     };
 
     fetchEndereco();
+
+    return ()=>clearTimeout(timer);
+    
   }, []);
   const renderItem = ({item}) => (
-
     <View style={styles.box}>
+      {validDeletar ? (
+        <Modal transparent={true}>
+          <Pressable style={{...styles.modal, backgroundColor:"rgba(90,90,90,0.4)"}}
+          onPress={()=>{
+            setValidDeletar(false)
+          }}
+          >
+            <View style={{width:300, height:200, padding:20, backgroundColor:"#fff", borderRadius:10,}}>
+              <Text style={{marginBottom:10, fontSize:26, fontWeight:"900",}}>Tem certeza que quer deletar {props.name}?</Text>
+              <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                <TouchableOpacity
+                style={{
+                  width:125,
+                  backgroundColor:"red",
+                  height:62.5,
+                  borderRadius:20,
+                  justifyContent:"center",
+                  alignItems:"center",
+                }}
+                onPress={()=>{
+                  setValidDeletar(false);
+                  Deletar(props.logradouro);
+                }}
+                >
+                  <Text style={{
+                    fontSize:16,
+                    fontWeight:"900",
+                    color:"white",
+                  }}>SIM</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                style={{
+                  width:125,
+                  backgroundColor:"blue",
+                  height:62.5,
+                  borderRadius:20,
+                  justifyContent:"center",
+                  alignItems:"center",
+                }}
+                onPress={()=>{
+                  setValidDeletar(false);
+                }}
+                >
+                  <Text style={{
+                    fontSize:16,
+                    fontWeight:"900",
+                    color:"white",
+                  }}>NÃO</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Pressable>
+        </Modal>
+      ) : (
+        ''
+      )}
       <View style={styles.topBottom}>
         <TouchableOpacity
           style={styles.btnExcluir}
-          onPressIn={() => {
-            Deletar(props.logradouro);
+          onPressIn={ () => {
+            clearTimeout(timer)
+            setValidDeletar(true);
+            
           }}>
           <Text style={styles.txtExcluir}>EXCLUIR</Text>
           <Image
@@ -117,15 +191,9 @@ export default function (props) {
 
           <View style={styles.link}>
             <View style={styles.textLinkView}>
-              <Text style={styles.textLink}>
-                {`${item.tipoLogradouro}`}
-              </Text>
-              <Text style={styles.textLink}>
-              {`${item.logradouro},`}
-              </Text>
-              <Text style={styles.textLink}>
-            {`Nº ${item.numero}`}
-              </Text>
+              <Text style={styles.textLink}>{`${item.tipoLogradouro}`}</Text>
+              <Text style={styles.textLink}>{`${item.logradouro},`}</Text>
+              <Text style={styles.textLink}>{`Nº ${item.numero}`}</Text>
             </View>
             <View style={styles.iconLinkView}>
               <Image

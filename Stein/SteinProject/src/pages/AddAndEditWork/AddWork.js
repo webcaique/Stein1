@@ -22,7 +22,7 @@ export default function AddHome({navigation}) {
   const [carregadores, setCarregadores] = useState();
 
   // Variável para a aparição da tabelas dos carregadores
-  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(true);
+  const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
   //
   const [name, setName] = useState();
   const [logra, setLogra] = useState();
@@ -180,6 +180,15 @@ export default function AddHome({navigation}) {
         });
     }
   };
+
+  useEffect(()=>{
+    const timer = setTimeout(() => {
+      setListaCamposInvalidos([]);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+
+  },[])
 
   return (
     <View>
@@ -358,18 +367,24 @@ export default function AddHome({navigation}) {
                 setValidBairro(bairro == '' ? false : true);
 
                 var lista = [
-                  validBairro ? 'Bairro' : '',
-                  validCidade ? 'Cidade' : '',
-                  validCep ? 'CEP' : '',
-                  validNumero ? 'Número' : '',
-                  validName ? 'Nome' : '',
-                  validSelectCarregadores
+                  validBairro == undefined || validBairro ? 'Bairro' : '',
+                  validCidade == undefined || validCidade ? 'Cidade' : '',
+                  validCep == undefined || validCep? 'CEP' : '',
+                  validNumero == undefined || validNumero? 'Número' : '',
+                  validName == undefined || validName? 'Nome' : '',
+                  validSelectCarregadores == undefined || validSelectCarregadores
                     ? 'Nenhum carregador selecionado'
                     : '',
-                  validLogra ? 'Logradouro' : '',
+                  validLogra == undefined  || validLogra? 'Logradouro' : '',
                 ];
 
                 setListaCamposInvalidos(lista);
+
+                const timer = setTimeout(() => {
+                  setListaCamposInvalidos([]);
+                }, 5000);
+            
+                return () => clearTimeout(timer);
               }
             }}
             // Direcionar para página de Casa e Trabalho

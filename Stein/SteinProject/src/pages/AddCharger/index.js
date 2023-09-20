@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -150,6 +150,14 @@ const AddCharger = ({navigation}) => {
     }
   };
 
+  useEffect(()=>{
+    const timer = setTimeout(() => {
+      setListaCamposInvalidos([]);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  },[])
+
   return (
     <Pressable
       style={styles.container}
@@ -280,18 +288,24 @@ const AddCharger = ({navigation}) => {
                   setValidBairro(bairro == '' ? false : true);
 
                   var lista = [
-                    validBairro ? 'Bairro' : '',
-                    validCidade ? 'Cidade' : '',
-                    validCep ? 'CEP' : '',
-                    validNumero ? 'Número' : '',
-                    validQtdeCarregadores ? 'Quantidade de carregadores' : '',
-                    validSelectCarregadores
+                    validBairro == undefined || validBairro ? 'Bairro' : '',
+                    validCidade == undefined || validCidade ? 'Cidade' : '',
+                    validCep == undefined || validCep ? 'CEP' : '',
+                    validNumero == undefined || validNumero ? 'Número' : '',
+                    validQtdeCarregadores == undefined || validQtdeCarregadores ? 'Quantidade de carregadores' : '',
+                    validSelectCarregadores == undefined || validSelectCarregadores
                       ? 'Nenhum carregador selecionado'
                       : '',
-                    validLogra ? 'Logradouro' : '',
+                    validLogra == undefined || validLogra ? 'Logradouro' : '',
                   ];
 
                   setListaCamposInvalidos(lista);
+
+                  const timer = setTimeout(() => {
+                    setListaCamposInvalidos([]);
+                  }, 5000);
+              
+                  return () => clearTimeout(timer);
                 }
               }}>
               <Text style={styles.textButtons}>Enviar</Text>
