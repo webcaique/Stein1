@@ -347,13 +347,13 @@ export default function AddHome({navigation}) {
             style={styles.editionButton}
             onPressIn={() => {
               if (
-                name != undefined &&
-                numero != undefined &&
-                cepInput != undefined &&
-                bairro != undefined &&
-                cidade != undefined &&
-                carregadores != [] &&
-                logra != undefined
+                name != undefined && name != "" &&
+                numero != undefined && numero != "" &&
+                cepInput != undefined && cepInput != "" &&
+                bairro != undefined && bairro != "" &&
+                cidade != undefined && cidade != "" &&
+                carregadores != [] && 
+                logra != undefined && logra != "" 
               ) {
                 navigation.navigate('HouseAndWork', {refresh: true});
                 addDataLogradouro();

@@ -65,7 +65,7 @@ export default function Stein({navigation}) {
       const listaLogra = [];
       snapshotLogra.forEach(doc => {
         listaLogra.push({id: doc.id, ...doc.data()});
-      });
+      })
 
       listCarr.forEach(datas => {
         listaLogra.forEach(docs => {
