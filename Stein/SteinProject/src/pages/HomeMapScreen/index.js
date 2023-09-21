@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   Text,
@@ -24,6 +25,7 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
+import styles from '../styles';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
@@ -47,12 +49,12 @@ export default function Stein({navigation}) {
 
   const [modal, setModal] = useState(false);
   const [filtros, setFiltros] = useState(false);
-
+  const [visivel, setVisivel] = useState(false);
   const [region, setRegion] = useState(null);
   const [markers, setMarkers] = useState([]);
   const [logra, setLogra] = useState();
   const [loading, setLoading] = useState(false);
-
+  const [nome, setNome]= useState([])
   useEffect(() => {
     const fetchBd = async () => {
       const snapshotCarr = await tabelaCarregadores.get();
@@ -73,16 +75,14 @@ export default function Stein({navigation}) {
             console.log('DATAS');
             console.log(datas.nome);
             let nome = datas.nome;
+            setNome(datas.nome);
             console.log('DOCS');
             console.log(docs.geolocalizacao);
             console.log(nome);
             const novoPonto = {...docs.geolocalizacao, nome};
             console.log('Novo ponto');
             console.log(novoPonto);
-            setMarkers(prevMarkers => [
-              ...prevMarkers,
-              novoPonto,
-            ]);
+            setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
           }
         });
       });
@@ -336,13 +336,145 @@ export default function Stein({navigation}) {
           </Modal>
         </View>
         <View style={estilos.fundo}>
+          <Modal visible={visivel}>
+            <View>
+              <Text style={{fontSize:16}}
+                onPress={() => {
+                  setVisivel(false);
+                }}>
+                Voltar
+              </Text>
+              
+<View style={estilos.Img1}>
+
+  <Image
+  style={estilos.Img}
+  source={{
+    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'}}></Image>
+</View>
+
+<View style={estilos.estrela}>
+ <Text style={{color:"white", fontSize: verticalScale(25)}}>{nome}</Text>
+</View>
+
+              <View style={estilos.bff}>
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Favoritos
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festrela.png?alt=media&token=55c04446-3b9b-4666-bf4b-f8baf15913c5',
+                    }}
+                  />
+                   <Text style={estilos.textIcon}>Favorito</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Galeria
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fgaleria.png?alt=media&token=2116fe7a-d830-4a5e-a028-be0940600f00',
+                    }}
+                  
+                  />
+                       <Text style={estilos.textIcon}>Adicionar Foto</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //ROTAS
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fset2.png?alt=media&token=b9379978-0c83-4758-a591-4619509b3e09',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Direção</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Reportar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fperigo.png?alt=media&token=884eace5-04b9-450c-b168-bea02542e4ba',
+                    }}
+                  />
+                    <Text style={estilos.textIcon}>Reportar</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={estilos.Strahd}>
+               
+
+
+{/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
+
+
+              <TouchableOpacity style={estilos.iconsSpecs1}>
+               
+                  <Image
+                    //Localizar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fendereco.png?alt=media&token=073a9f5b-f866-4583-bec7-5a4615b11fbf',
+                    }}
+                  />
+                     <Text style={estilos.textIcon1}>R. Ribeirão Claro, 230 - Vila Olímpia, São Paulo - SP</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs1}>
+                  <Image
+                    //Dinheiro
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fbufunfa.png?alt=media&token=e608fc97-e108-4180-ab19-97d66bfc1fcc',
+                    }}
+                  />
+                    <Text style={estilos.textIcon1}>Grátis</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs1}>
+                  <Image
+                    //Estacionamento
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festacionamento.png?alt=media&token=a827952e-b37d-4383-8144-2c7c38ffe54d',
+                    }}
+                  />
+                    <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
+                </TouchableOpacity>
+
+              
+             
+                <TouchableOpacity style={estilos.iconsSpecs1}>
+                  <Image
+                    //Tipo
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ftipo.png?alt=media&token=34abcf01-a2ac-4b54-92de-20a74a835ef6',
+                    }}
+                  />
+                    <Text style={estilos.textIcon1}>Estacionamento para VE, Restaurante, 
+                      Banheiros, Compras</Text>
+                </TouchableOpacity>
+                
+           
+              </View>
+            </View>
+          </Modal>
+
+
+
+
+
           <MapView
             onMapReady={() => {
               Platform.OS === 'android'
                 ? PermissionsAndroid.request(
                     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                   ).then(() => {
-                    console.log('Ganhomos familia');
+                    console.log('Ganhamos familia');
                   })
                 : null;
             }}
@@ -359,6 +491,9 @@ export default function Stein({navigation}) {
                   longitude: coordenada.longitude,
                 }}
                 title={coordenada.nome}
+                onPress={() => {
+                  setVisivel(true);
+                }}
               />
             ))}
           </MapView>

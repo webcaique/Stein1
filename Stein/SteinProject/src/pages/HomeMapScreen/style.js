@@ -135,8 +135,60 @@ const estilos=ScaledSheet.create({
       width:"100%",
       alignItems:"center"
     },
+bff:{
+  flexDirection:'row',
+justifyContent:'center',
+},
+icon:{
+  width:65, 
+  height:50,
+ margin: 20,
+   resizeMode: 'contain',
+   flexDirection:'row',
+   
 
+  },
+iconsSpecs:{
+  borderWidth:2,
+  backgroundColor:'#D9D9D9',
 
+},
+textIcon:{
+fontSize:18,
+color: 'black',
+marginRight: 20,
+marginLeft: 20,
+maxWidth:80
+
+},
+Img:{
+  height:200,
+  width: 500,
+  resizeMode:'cover',
+},
+estrela:{
+height:100,
+width:432,
+backgroundColor: '#584086',
+flexDirection:'row-reverse',
+
+},
+Strahd:{
+
+},
+iconsSpecs1:{
+  borderWidth:2,
+  backgroundColor:'#D9D9D9',
+  height:verticalScale(75),
+  flexDirection:'row',
+  alignItems:'center'
+
+},
+textIcon1:{
+  color: 'black',
+  fontSize:18,
+maxWidth:270
+}
     })
-
+   
 export default estilos;
