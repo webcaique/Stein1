@@ -88,33 +88,9 @@ export default function Stein({navigation}) {
       });
     };
 
-    //   listaLogra.forEach(teste => {
-    //     console.log('DADOS');
-    //     console.log(teste.geolocalizacao);
-    //     setMarkers(prevMarkers => [
-    //       ...prevMarkers,
-    //       {...teste.geolocalizacao, nome: 'casa'},
-    //     ]);
-    //   });
-    // };
-
     fetchBd();
     getLocation();
   }, []);
-
-  /*
-  logra.forEach((date)=>{
-      let dados = {
-        key: markers.length,
-        coords:{
-          latitude: parseFloat(date.geolocalizacao.latitude) ,
-          longitude: parseFloat(date.geolocalizacao.longitude)
-        },
-        pinColor: '#0000FF'
-      }
-      setMarkers(oldArray=>[...oldArray,dados])
-    });
-  */
 
   function getLocation() {
     Geolocation.getCurrentPosition(

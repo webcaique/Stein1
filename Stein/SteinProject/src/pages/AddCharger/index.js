@@ -16,6 +16,9 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
+import tipoLogradouro from '../tipoLogradouro.js';
+
+const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const AddCharger = ({navigation}) => {
   const tabelaCarregadores = firestore.collection('carregadores'); // Pega a tabela Carregadores do Firabase
@@ -25,13 +28,16 @@ const AddCharger = ({navigation}) => {
   const [logra, setLogra] = useState();
   const [numero, setNumero] = useState();
   const [complemento, setComplemento] = useState();
-  const [cepInput, setCep] = useState();
+  const [cepInput, setCep] = useState('');
   const [bairro, setBairro] = useState();
   const [cidade, setCidade] = useState();
   const [qtdeCarregadores, setQtdeCarregadores] = useState();
   const [selectCarregadores, setSelectCarregadores] = useState();
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
+  const [datasParaValidar, setDatasParaValidar] = useState();
 
   //Campos inválidos
   const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
@@ -86,82 +92,180 @@ const AddCharger = ({navigation}) => {
 
     // aqui será incrementado um único valor, para criar um novo ID
     countLogra++;
+    var coord;
 
-    // aqui será colocados os dados coletados no formulário
-    let listLogra = {
-      CEP: `${cepInput}`,
-      UF: `${selectedUf}`,
-      bairro: `${bairro}`,
-      cidade: `${cidade}`,
-      complemento: `${complemento}`,
-      geolocalizacao: {
-        latitude: 24.0000,
-        longitude: 48.0000,
-      },
-      logradouro: `${logra}`,
-      numero: `${numero}`,
-      tipoLogradouro: `${selectedTipoLogra}`,
+    const validarGeo = async () => {
+      try {
+        const address = `${numero} ${selectedTipoLogra} ${logra}, ${bairro}, ${cidade}, ${selectedUf}, BR`;
+
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address,
+          )}&key=${apiKey}`,
+        );
+
+        if (!response.ok) {
+          throw new Error('Erro ao buscar coordenadas.');
+        }
+
+        const data = await response.json();
+
+        setDatasParaValidar(data);
+
+        if (data.results && data.results.length > 0) {
+          const location = data.results[0].geometry.location;
+          console.log('LATITUDE: ' + location.lat);
+          console.log('LONGITUDE: ' + location.lng);
+          coord = {latitude: location.lat, longitude: location.lng};
+          let listLogra = {
+            CEP: `${cepInput}`,
+            UF: `${selectedUf}`,
+            bairro: `${bairro}`,
+            cidade: `${cidade}`,
+            complemento: `${complemento}`,
+            geolocalizacao: {
+              latitude: latitude,
+              longitude: longitude,
+            },
+            logradouro: `${logra}`,
+            numero: `${numero}`,
+            tipoLogradouro: `${selectedTipoLogra}`,
+          };
+
+          // adionará os dados ao banco de dados
+          tabelaLogra
+            .doc(`${countLogra}`)
+            .set({
+              CEP: `${cepInput}`,
+              UF: `${selectedUf}`,
+              bairro: `${bairro}`,
+              cidade: `${cidade}`,
+              complemento: `${complemento}`,
+              geolocalizacao: {
+                latitude: location.lat,
+                longitude: location.lng,
+              },
+              logradouro: `${logra}`,
+              numero: `${numero}`,
+              tipoLogradouro: `${selectedTipoLogra}`,
+            })
+            .then(() => {
+              console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
+            });
+
+          if (true) {
+            // o contador servira para colocar o id para o registro
+            let countCarregadores = 0;
+
+            // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
+            const snapshotCarregadores = await tabelaCarregadores.get();
+
+            // a lista que armazenara os dados formatos de um jeito que entedemos
+            const listaCarregadores = [];
+
+            // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
+            snapshotCarregadores.forEach(doc => {
+              listaCarregadores.push({id: doc.id, ...doc.data()});
+            });
+
+            // verificará se o countLogra é menor que o id, pois se ele for receberá o valor do id
+            listaCarregadores.forEach(doc => {
+              if (countCarregadores < parseInt(doc.id)) {
+                countCarregadores = parseInt(doc.id);
+              }
+            });
+
+            // aqui será incrementado um único valor, para criar um novo ID
+            countCarregadores++;
+
+            //Adiciona os dados dentro do banco de dados
+            tabelaCarregadores
+              .doc(`${countCarregadores}`)
+              .set({
+                IDLogradouro: `${countLogra}`,
+                qtdeCarregadores: `${qtdeCarregadores}`,
+                IDTipoCarregador: selectCarregadores,
+              })
+              .then(() => {
+                console.log('ADICIONADO!');
+              });
+          }
+        } else {
+          throw new Error('Endereço não encontrado.');
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+      }
     };
 
-    // adionará os dados ao banco de dados
-    tabelaLogra
-      .doc(`${countLogra}`)
-      .set(listLogra)
-      .then(() => {
-        console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
-      });
-
+    validarGeo();
     if (true) {
-      // o contador servira para colocar o id para o registro
-      let countCarregadores = 0;
-
-      // colocar os dados do banco de dados em uma variável (eles chegaram em formato do Firebase)
-      const snapshotCarregadores = await tabelaCarregadores.get();
-
-      // a lista que armazenara os dados formatos de um jeito que entedemos
-      const listaCarregadores = [];
-
-      // forEach para varrer os dados na snapshotLogra para colocar os dados na listaLogra
-      snapshotCarregadores.forEach(doc => {
-        listaCarregadores.push({id: doc.id, ...doc.data()});
-      });
-
-      // verificará se o countLogra é menor que o id, pois se ele for receberá o valor do id
-      listaCarregadores.forEach(doc => {
-        if (countCarregadores < parseInt(doc.id)) {
-          countCarregadores = parseInt(doc.id);
-        }
-      });
-
-      // aqui será incrementado um único valor, para criar um novo ID
-      countCarregadores++;
-
-      //Adiciona os dados dentro do banco de dados
-      tabelaCarregadores
-        .doc(`${countCarregadores}`)
-        .set({
-          IDLogradouro: `${countLogra}`,
-          qtdeCarregadores: `${qtdeCarregadores}`,
-          IDTipoCarregador: selectCarregadores,
-        })
-        .then(() => {
-          console.log('ADICIONADO!');
-        });
+      // aqui será colocados os dados coletados no formulário
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const timer = setTimeout(() => {
       setListaCamposInvalidos([]);
     }, 5000);
 
     return () => clearTimeout(timer);
-  },[])
+  }, []);
+
+  const handleGeocode = async () => {
+    try {
+      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      const response = await fetch(
+        `https://viacep.com.br/ws/${cepInput}/json/`,
+      );
+
+      if (!response.ok) {
+        setCep('CEP INVÁLIDO!');
+        setValidCep(true);
+        const timer = setTimeout(() => {
+          setCep('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+      }
+
+      const data = await response.json();
+      setBairro(data.bairro);
+      setCidade(data.localidade);
+      setSelectedUf(data.uf);
+
+      const partes = data.logradouro.split(' ');
+
+      if (partes.length >= 2) {
+        const tipo = partes[0];
+        const logras = partes.slice(1).join(' ');
+
+        setSelectedTipoLogra(tipo);
+        setLogra(logras);
+      } else {
+        console.error('Texto não contém espaço.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  };
 
   return (
     <Pressable
       style={styles.container}
       onPress={() => {
+        if (cepInput.length == 8) {
+          handleGeocode();
+        } else {
+          setCep('CEP INVÁLIDO!');
+          setValidCep(true);
+          const timer = setTimeout(() => {
+            setCep('');
+          }, 3000);
+
+          return () => clearTimeout(timer);
+        }
+
         Keyboard.dismiss();
       }}>
       <View>
@@ -169,10 +273,23 @@ const AddCharger = ({navigation}) => {
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
           <TextInput
             placeholder="CEP"
-            style={styles.textInput}
+            style={[styles.textInput, {color: validCep ? 'red' : ''}]}
             keyboardType="numeric"
             onChangeText={setCep}
             value={cepInput}
+            onBlur={() => {
+              if (cepInput.length == 8) {
+                handleGeocode();
+              } else {
+                setCep('CEP INVÁLIDO!');
+                setValidCep(true);
+                const timer = setTimeout(() => {
+                  setCep('');
+                }, 3000);
+
+                return () => clearTimeout(timer);
+              }
+            }}
           />
 
           <View>
@@ -189,7 +306,7 @@ const AddCharger = ({navigation}) => {
             />
           </View>
           <View>
-            <SelectList onUfChange={handleUfChange} />
+            <SelectList onUfChange={handleUfChange} validar={selectedUf} />
           </View>
           <TextInput
             placeholder="Cidade"
@@ -199,12 +316,6 @@ const AddCharger = ({navigation}) => {
             placeholderTextColor={validCidade ? 'red' : ''}
           />
           <TextInput
-            placeholder="Complemento"
-            style={styles.textInput}
-            onChange={setComplemento}
-            value={complemento}
-          />
-          <TextInput
             placeholder="Bairro"
             style={styles.textInput}
             onChange={setBairro}
@@ -212,10 +323,17 @@ const AddCharger = ({navigation}) => {
             placeholderTextColor={validBairro ? 'red' : ''}
           />
           <TextInput
-            placeholder="Número"
+            placeholder="Complemento"
             style={styles.textInput}
-            keyboardType="numeric"
-            onChange={setNumero}
+            onChange={setComplemento}
+            value={complemento}
+          />
+
+          <TextInput
+            placeholder="Número"
+            keyboardType="number-pad"
+            style={styles.textInput}
+            onChangeText={setNumero}
             value={numero}
             placeholderTextColor={validNumero ? 'red' : ''}
           />
@@ -233,7 +351,7 @@ const AddCharger = ({navigation}) => {
             <Text
               style={[
                 styles.placeholder,
-                {color: validSelectCarregadores ? 'red' : ''},
+                {color: validSelectCarregadores ? 'red' : '000'},
               ]}>
               Carregador
             </Text>
@@ -275,6 +393,9 @@ const AddCharger = ({navigation}) => {
                   addCharger();
                   navigation.navigate('Stein');
                 } else {
+                  console.log('NÚMERO: ');
+                  console.log(numero);
+
                   setValidCep(cepInput == '' ? false : true);
                   setValidCidade(cidade == '' ? false : true);
                   setValidLogra(logra == '' ? false : true);
@@ -292,8 +413,11 @@ const AddCharger = ({navigation}) => {
                     validCidade == undefined || validCidade ? 'Cidade' : '',
                     validCep == undefined || validCep ? 'CEP' : '',
                     validNumero == undefined || validNumero ? 'Número' : '',
-                    validQtdeCarregadores == undefined || validQtdeCarregadores ? 'Quantidade de carregadores' : '',
-                    validSelectCarregadores == undefined || validSelectCarregadores
+                    validQtdeCarregadores == undefined || validQtdeCarregadores
+                      ? 'Quantidade de carregadores'
+                      : '',
+                    validSelectCarregadores == undefined ||
+                    validSelectCarregadores
                       ? 'Nenhum carregador selecionado'
                       : '',
                     validLogra == undefined || validLogra ? 'Logradouro' : '',
@@ -304,7 +428,7 @@ const AddCharger = ({navigation}) => {
                   const timer = setTimeout(() => {
                     setListaCamposInvalidos([]);
                   }, 5000);
-              
+
                   return () => clearTimeout(timer);
                 }
               }}>
@@ -333,8 +457,11 @@ const AddCharger = ({navigation}) => {
                       {item}
                       {listaCamposInvalidos.filter(elemento => elemento != '')
                         .length != 1
-                        ? index !== listaCamposInvalidos
-                        .filter(elemento => elemento != '').length - 1
+                        ? index !==
+                          listaCamposInvalidos.filter(
+                            elemento => elemento != '',
+                          ).length -
+                            1
                           ? ', '
                           : '.'
                         : '.'}
