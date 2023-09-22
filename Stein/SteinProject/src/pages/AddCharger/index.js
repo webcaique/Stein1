@@ -16,7 +16,6 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
-import tipoLogradouro from '../tipoLogradouro.js';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -96,7 +95,7 @@ const AddCharger = ({navigation}) => {
 
     const validarGeo = async () => {
       try {
-        const address = `${numero} ${selectedTipoLogra} ${logra}, ${bairro}, ${cidade}, ${selectedUf}, BR`;
+        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(

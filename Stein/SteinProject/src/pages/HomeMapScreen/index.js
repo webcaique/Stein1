@@ -24,14 +24,48 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
-import { useFocusEffect } from '@react-navigation/native'; // Importe useFocusEffect
-
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+  useEffect(() => {
+    // Coloque aqui o código que deseja executar quando a tela receber foco.
+    const fetchBd = async () => {
+      setMarkers([]);
+      try {
+        const snapshotCarr = await tabelaCarregadores.get();
+        const listCarr = [];
+        snapshotCarr.forEach(data => {
+          listCarr.push({id: data.id, ...data.data()});
+        });
+
+        const snapshotLogra = await tabelaLogra.get();
+        const listaLogra = [];
+        snapshotLogra.forEach(doc => {
+          listaLogra.push({id: doc.id, ...doc.data()});
+        });
+        listaLogra.forEach(docs => {
+          listCarr.forEach(datas => {
+            if (datas.id == docs.id) {
+              let nome = datas.nome;
+              const novoPonto = {...docs.geolocalizacao, nome};
+              setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
+              console.log('NOVO PONTO');
+              console.log(markers)
+
+            }
+          });
+        });
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+    getLocation();
+    fetchBd();
+  }, []);
 
   const [rotation, setRotation] = useState(90); // Estado para controlar a rotação
 
@@ -55,52 +89,6 @@ export default function Stein({navigation}) {
   const [markers, setMarkers] = useState([]);
   const [logra, setLogra] = useState();
   const [loading, setLoading] = useState(true);
-
-  
-
-  useEffect(() => {
-    const fetchBd = async () => {
-      try {
-        const aparecerMap = async () => {
-          const snapshotCarr = await tabelaCarregadores.get();
-          const listCarr = [];
-          snapshotCarr.forEach(data => {
-            listCarr.push({id: data.id, ...data.data()});
-          });
-
-          const snapshotLogra = await tabelaLogra.get();
-          const listaLogra = [];
-          snapshotLogra.forEach(doc => {
-            listaLogra.push({id: doc.id, ...doc.data()});
-          });
-
-          listCarr.forEach(datas => {
-            listaLogra.forEach(docs => {
-              if (datas.id == docs.id) {
-                console.log('DATAS');
-                console.log(datas.nome);
-                let nome = datas.nome;
-                console.log('DOCS');
-                console.log(docs.geolocalizacao);
-                console.log(nome);
-                const novoPonto = {...docs.geolocalizacao, nome};
-                console.log('Novo ponto');
-                console.log(novoPonto);
-                setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
-              }
-            });
-          });
-          setLoading(false);
-        };
-        aparecerMap();
-
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-    getLocation();
-    fetchBd();
-  }, [loading]);
 
   const render = () => (
     <View style={estilos.superior}>
@@ -182,7 +170,6 @@ export default function Stein({navigation}) {
                   <TouchableOpacity
                     style={{...estilos.links}}
                     onPress={() => {
-                      setLoading(true);
                       setModal(!modal);
                       navigation.navigate('AddCharger');
                     }}>
@@ -413,7 +400,7 @@ export default function Stein({navigation}) {
   if (loading) {
     return <Text>Carregando</Text>;
   } else {
-    return (render());
+    return render();
   }
 }
 
