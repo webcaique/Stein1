@@ -3,7 +3,7 @@ import styles from "./styles"
 import { View } from "react-native"
 import {Picker} from '@react-native-picker/picker';
 
-export default function tipoLogradouro({onTipoLograChange}){
+export default function tipoLogradouro({validar, onTipoLograChange}){
     const [tipoLogra, setTipoLogra] = useState("Rua");
     
     const handleTipoLograChange = (itemValue) => {
@@ -14,8 +14,11 @@ export default function tipoLogradouro({onTipoLograChange}){
     return (
         <View style={styles.list}>
             <Picker
-                selectedValue={tipoLogra}
-                onValueChange={handleTipoLograChange}
+                selectedValue={validar? tipoLogra:validar}
+                onValueChange={()=>{
+                    console.log("TESTE: "+validar)
+                    handleTipoLograChange
+                }}
                 
             >
                 <Picker.Item label="Aeroporto" value="Aeroporto" style={styles.fontList} />

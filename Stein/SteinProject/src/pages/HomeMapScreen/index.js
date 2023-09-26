@@ -24,47 +24,78 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+  const fetchMarkersFromFirestore = async () => {
+    try {
+      const snapshotCarr = await tabelaCarregadores.get();
+      const listCarr = [];
+      snapshotCarr.forEach(data => {
+        listCarr.push({id: data.id, ...data.data()});
+      });
+
+      const snapshotLogra = await tabelaLogra.get();
+      const listaLogra = [];
+      snapshotLogra.forEach(doc => {
+        listaLogra.push({id: doc.id, ...doc.data()});
+      });
+
+      const newMarkers = [];
+
+      listaLogra.forEach(docs => {
+        listCarr.forEach(datas => {
+          if (datas.IDLogradouro === docs.id) {
+            let nome = datas.nome;
+            const novoPonto = {...docs.geolocalizacao, nome};
+            newMarkers.push(novoPonto);
+          }
+        });
+      });
+
+      setMarkers(newMarkers);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const restartPage = () => {
+    // Incrementa a chave para forçar a reinicialização
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchMarkersFromFirestore();
+    }, []),
+  );
+
   useEffect(() => {
     // Coloque aqui o código que deseja executar quando a tela receber foco.
-    const fetchBd = async () => {
-      setMarkers([]);
-      try {
-        const snapshotCarr = await tabelaCarregadores.get();
-        const listCarr = [];
-        snapshotCarr.forEach(data => {
-          listCarr.push({id: data.id, ...data.data()});
-        });
-
-        const snapshotLogra = await tabelaLogra.get();
-        const listaLogra = [];
-        snapshotLogra.forEach(doc => {
-          listaLogra.push({id: doc.id, ...doc.data()});
-        });
-        listaLogra.forEach(docs => {
-          listCarr.forEach(datas => {
-            if (datas.id == docs.id) {
-              let nome = datas.nome;
-              const novoPonto = {...docs.geolocalizacao, nome};
-              setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
-              console.log('NOVO PONTO');
-              console.log(markers)
-
-            }
-          });
-        });
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
+    fetchMarkersFromFirestore();
     getLocation();
-    fetchBd();
+    navigation.addListener('focus', restartPage);
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = tabelaLogra.onSnapshot(snapshot => {
+      // Quando há uma alteração na coleção 'logradouro'
+      // (por exemplo, quando novos dados são adicionados), a função será chamada
+      // Você pode adicionar lógica adicional aqui se necessário
+      fetchMarkersFromFirestore();
+    });
+
+    return () => {
+      // Certifique-se de cancelar a inscrição quando o componente for desmontado
+      unsubscribe();
+    };
   }, []);
 
   const [rotation, setRotation] = useState(90); // Estado para controlar a rotação
@@ -91,7 +122,7 @@ export default function Stein({navigation}) {
   const [loading, setLoading] = useState(true);
 
   const render = () => (
-    <View style={estilos.superior}>
+    <View key={refreshKey} style={estilos.superior}>
       <View style={{width: '100%'}}>
         <Modal
           transparent={true}
