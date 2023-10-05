@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
-
+import auth from "../../config/configFirebase.js"
 
 
 export default function LoginScreen({navigation}){
@@ -10,7 +10,20 @@ export default function LoginScreen({navigation}){
     const toggleCheckbox = () => setChecked(!checked); // Deixar marcado ou não o checkBox
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
+    const [email, setEmail] = useState("")
+    const [senha, setSenha] = useState("")
+    const [errorLogin, setErrorLogin] = useState("")
+
+    const loginFirebase = ()=>{
+
+    }
+
+    useEffect(()=>{
+
+    }, []);
+
     return(
+        <KeyboardAvoidingView>
         <View style={{backgroundColor:"#fff", height:"100%"}} 
         //Container para fazer a página ocupar toda tela
         >
@@ -32,6 +45,8 @@ export default function LoginScreen({navigation}){
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize="none"
+                onChangeText={(text)=>setEmail(text)}
+                value={email}
                 />
                 <TextInput //Campo para colocar a senha
                 style={styles.textInput2} 
@@ -42,7 +57,10 @@ export default function LoginScreen({navigation}){
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
+                textContentType={'password'}
+                onChangeText={(text)=>setSenha(text)}
+                value={senha}                
+                />
                 <View style={styles.checkBox}>
                     <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
                         disabled={false}
@@ -107,6 +125,7 @@ export default function LoginScreen({navigation}){
         </Pressable>
             </ScrollView>
         </View>
+        </KeyboardAvoidingView>
     )
 }
 
