@@ -11,11 +11,22 @@ export default function LoginScreen({navigation}){
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     const [email, setEmail] = useState("")
-    const [senha, setSenha] = useState("")
+    const [password, setPassword] = useState("")
     const [errorLogin, setErrorLogin] = useState("")
 
     const loginFirebase = ()=>{
-
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+    
+        let user = userCredential.user;
+        // navigation.navigate("teste", {idUser: user.uid})
+    })
+    .catch((error) => {
+        setErrorLogin(true)
+        let errorCode = error.code;
+        let errorMessage = error.message;
+    
+    });
     }
 
     useEffect(()=>{
@@ -58,8 +69,8 @@ export default function LoginScreen({navigation}){
                 password={true} 
                 autoCorrect={false}
                 textContentType={'password'}
-                onChangeText={(text)=>setSenha(text)}
-                value={senha}                
+                onChangeText={(text)=>setPassword(text)}
+                value={password}                
                 />
                 <View style={styles.checkBox}>
                     <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
@@ -101,11 +112,31 @@ export default function LoginScreen({navigation}){
             </TouchableOpacity>
             
             </View>
+
+        {email === "" || password === ""
+        ?
+            <TouchableOpacity style={styles.buttons} 
+            //Botão para fazer o login e fazer a verificação de dados
+            disabled={true}>
+                <Text style={styles.textButtons}>Entrar</Text>
+            </TouchableOpacity>
+        :
             <TouchableOpacity style={styles.buttons} 
             //Botão para fazer o login e fazer a verificação de dados
             onPress={()=> navigation.navigate("QuemSomos")}>
                 <Text style={styles.textButtons}>Entrar</Text>
             </TouchableOpacity>
+        }
+            <View>
+                {errorLogin === true
+                    ?
+                    <View>
+                        <Text>email ou/e senha inválidos</Text>
+                    </View>
+                    :
+                    <View/>
+                }
+            </View>
             <View style={styles.singinLink}
             //Container do link
             >    
