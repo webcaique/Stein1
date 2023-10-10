@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, version} from 'react';
 import {
   View,
   Text,
@@ -106,8 +106,6 @@ const AddCharger = ({navigation}) => {
 
         const data = await response.json();
 
-        setDatasParaValidar(data);
-
         if (data.results && data.results.length > 0) {
           const location = data.results[0].geometry.location;
           console.log('LATITUDE: ' + location.lat);
@@ -207,6 +205,11 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
 
+      setValidCidade(false);
+      setValidLogra(false);
+      setValidNumero(false);
+      setValidBairro(false);
+
       const data = await response.json();
       setBairro(data.bairro);
       setCidade(data.localidade);
@@ -219,6 +222,7 @@ const AddCharger = ({navigation}) => {
         const logras = partes.slice(1).join(' ');
 
         setSelectedTipoLogra(tipo);
+        console.log(tipo);
         setLogra(logras);
       } else {
         console.error('Texto não contém espaço.');
@@ -230,7 +234,7 @@ const AddCharger = ({navigation}) => {
 
   const semCep = async () => {
     try {
-      if (logra != '' && bairro != '' && cidade != '' && numero != '') {
+      if (logra != '' && bairro != '' && cidade != '' && numero != '' && cepInput.length != 8) {
         const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
         const response = await fetch(
@@ -249,7 +253,13 @@ const AddCharger = ({navigation}) => {
 
         const data = await response.json();
 
-        console.log('DATAS DATAS DATAS DATAS DATAS DATAS');
+        console.log(data.results[0].address_components[4].short_name);
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0];
+        var tipoUf = data.results[0].address_components[4].short_name;
+        setSelectedUf(tipoUf);
+        setSelectedTipoLogra(tipoLogra);
+
         var cepNormal = data.results[0].address_components[6].long_name.replace(
           '-',
           '',
@@ -257,9 +267,40 @@ const AddCharger = ({navigation}) => {
         console.log(cepNormal);
         setCep(cepNormal);
         setValidacaoLogradouro(true);
+        setValidCidade(false);
+
+        setValidLogra(false);
+
+        setValidNumero(false);
+
+        setValidBairro(false);
       }
     } catch (error) {
-      throw new Error('NÃO ENCONTRADO O ENDEREÇO');
+      console.log("ERRO: "+error);
+      const validacao = async () => {
+        let camposInvalidos = [];
+        setValidCidade(true);
+        camposInvalidos.push('Cidade');
+
+        setValidLogra(true);
+        camposInvalidos.push('Logradouro');
+
+        setValidNumero(true);
+        camposInvalidos.push('Número');
+
+        setValidBairro(true);
+        camposInvalidos.push('Bairro');
+
+        setListaCamposInvalidos(camposInvalidos);
+      };
+
+      validacao();
+
+      const timer = setTimeout(() => {
+        setListaCamposInvalidos([]);
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
   };
 
@@ -282,6 +323,9 @@ const AddCharger = ({navigation}) => {
         qtdeCarregadores != '' &&
         selectCarregadores != []
       ) {
+        if (cepInput.length == 8 && !validcaoLogradouro) {
+          handleGeocode();
+        }
         addCharger();
         navigation.navigate('Stein');
       } else {
@@ -316,6 +360,11 @@ const AddCharger = ({navigation}) => {
             setValidBairro(true);
             camposInvalidos.push('Bairro');
           }
+          if (qtdeCarregadores < selectCarregadores.length) {
+            setValidQtdeCarregadores(true);
+            camposInvalidos.push('Quantidade de carregadores', "Há mais carregadores selecionados do que quantidades deles");
+            
+          }
 
           setListaCamposInvalidos(camposInvalidos);
         };
@@ -348,7 +397,8 @@ const AddCharger = ({navigation}) => {
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
           <TextInput
             placeholder="CEP"
-            style={[styles.textInput, {color: validCep ? 'red' : ''}]}
+            placeholderTextColor={validCep ? 'red' : '#000'}
+            style={[styles.textInput, {color: validCep ? 'red' : '#000'}]}
             keyboardType="numeric"
             onChangeText={setCep}
             value={cepInput}
@@ -360,16 +410,19 @@ const AddCharger = ({navigation}) => {
           />
 
           <View>
-            <TipoLogradouro onTipoLograChange={handleTipoLograChange} validar={selectedTipoLogra} />
+            <TipoLogradouro
+              onTipoLograChange={handleTipoLograChange}
+              validar={selectedTipoLogra}
+            />
           </View>
 
           <View>
             <TextInput
               placeholder="Endereço*"
-              style={[styles.textInput]}
+              style={[styles.textInput, {color: validLogra ? 'red' : '#000'}]}
               onChangeText={setLogra}
               value={logra}
-              placeholderTextColor={validLogra ? 'red' : ''}
+              placeholderTextColor={validLogra ? 'red' : '#000'}
               onBlur={() => {
                 semCep();
               }}
@@ -378,25 +431,29 @@ const AddCharger = ({navigation}) => {
           <View>
             <SelectList onUfChange={handleUfChange} validar={selectedUf} />
           </View>
+
           <TextInput
             placeholder="Cidade"
-            style={styles.textInput}
-            onChange={setCidade}
+            placeholderTextColor={validCidade ? 'red' : '#000'}
+            style={[styles.textInput, {color: validCidade ? 'red' : '#000'}]}
+            onChangeText={text => {
+              setCidade(text);
+            }}
             value={cidade}
-            placeholderTextColor={validCidade ? 'red' : ''}
             onBlur={() => {
+              console.log(cidade);
               semCep();
             }}
           />
 
           <TextInput
             placeholder="Bairro*"
-            style={[styles.textInput]}
+            placeholderTextColor={validBairro ? 'red' : '#000'}
+            style={[styles.textInput, {color: validBairro ? 'red' : '#000'}]}
             onChangeText={text => {
               setBairro(text);
             }}
             value={bairro}
-            placeholderTextColor={validBairro ? 'red' : ''}
             onBlur={() => {
               semCep();
             }}
@@ -405,10 +462,10 @@ const AddCharger = ({navigation}) => {
           <TextInput
             placeholder="Número"
             keyboardType="number-pad"
-            style={styles.textInput}
+            style={[styles.textInput, {color: validNumero ? 'red' : '#000'}]}
             onChangeText={setNumero}
             value={numero}
-            placeholderTextColor={validNumero ? 'red' : ''}
+            placeholderTextColor={validNumero ? 'red' : '#000'}
             onBlur={() => {
               semCep();
             }}
@@ -416,6 +473,7 @@ const AddCharger = ({navigation}) => {
 
           <TextInput
             placeholder="Complemento"
+            placeholderTextColor={'#000'}
             style={styles.textInput}
             onChange={setComplemento}
             value={complemento}
@@ -423,7 +481,11 @@ const AddCharger = ({navigation}) => {
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
 
-          <TextInput placeholder="Horário*" style={styles.textInput} />
+          <TextInput
+            placeholder="Horário*"
+            style={styles.textInput}
+            placeholderTextColor={'#000'}
+          />
           <View style={styles.acceptPay}>
             <Switch />
             <Text>Aberto 24/7</Text>
@@ -434,7 +496,7 @@ const AddCharger = ({navigation}) => {
             <Text
               style={[
                 styles.placeholder,
-                {color: validSelectCarregadores ? 'red' : '000'},
+                {color: validSelectCarregadores ? 'red' : '#000'},
               ]}>
               Carregador
             </Text>
@@ -443,6 +505,7 @@ const AddCharger = ({navigation}) => {
             <TabelaCarregadores
               notFiltro={true}
               onSelectCarregadores={toggleCarregadorSelection}
+              carr={selectCarregadores}
             />
           ) : (
             <Text></Text>
@@ -455,15 +518,23 @@ const AddCharger = ({navigation}) => {
               setQtdeCarregadores(text);
             }}
             value={qtdeCarregadores}
-            placeholderTextColor={validQtdeCarregadores ? 'red' : ''}
+            placeholderTextColor={validQtdeCarregadores ? 'red' : '#000'}
           />
           <View style={styles.acceptPay}>
             <Switch />
             <Text>Pagamento Necessário</Text>
           </View>
-          <TextInput placeholder="Preço(Opcional)" style={styles.textInput} />
+          <TextInput
+            placeholder="Preço(Opcional)"
+            style={styles.textInput}
+            placeholderTextColor={'#000'}
+          />
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
-            <TouchableOpacity style={styles.button} onPress={handlePress}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                handlePress();
+              }}>
               <Text style={styles.textButtons}>Enviar</Text>
             </TouchableOpacity>
           </View>

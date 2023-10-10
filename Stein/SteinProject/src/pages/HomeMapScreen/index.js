@@ -78,13 +78,6 @@ export default function Stein({navigation}) {
   );
 
   useEffect(() => {
-    // Coloque aqui o código que deseja executar quando a tela receber foco.
-    fetchMarkersFromFirestore();
-    getLocation();
-    navigation.addListener('focus', restartPage);
-  }, [navigation]);
-
-  useEffect(() => {
     const unsubscribe = tabelaLogra.onSnapshot(snapshot => {
       // Quando há uma alteração na coleção 'logradouro'
       // (por exemplo, quando novos dados são adicionados), a função será chamada
@@ -95,8 +88,30 @@ export default function Stein({navigation}) {
     return () => {
       // Certifique-se de cancelar a inscrição quando o componente for desmontado
       unsubscribe();
+      fetchMarkersFromFirestore();
+      Geolocation.getCurrentPosition(
+        position => {
+          const userRegion = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          };
+          setRegion(userRegion);
+        },
+        error => {
+          console.error('Erro ao obter a localização:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 2000,
+          maximumAge: 1000,
+        },
+      );
+      navigation.addListener('focus', restartPage);
     };
-  }, []);
+    // Coloque aqui o código que deseja executar quando a tela receber foco.
+  }, [navigation]);
 
   const [rotation, setRotation] = useState(90); // Estado para controlar a rotação
 
@@ -116,7 +131,12 @@ export default function Stein({navigation}) {
   const [modal, setModal] = useState(false);
   const [filtros, setFiltros] = useState(false);
 
-  const [region, setRegion] = useState(null);
+  const [region, setRegion] = useState({
+    latitude: -23.5440494, // Coordenada inicial (pode ser qualquer coisa)
+    longitude: -46.9013996, // Coordenada inicial (pode ser qualquer coisa)
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
   const [markers, setMarkers] = useState([]);
   const [logra, setLogra] = useState();
   const [loading, setLoading] = useState(true);
@@ -316,6 +336,10 @@ export default function Stein({navigation}) {
       </View>
       <View style={estilos.fundo}>
         <MapView
+          provider={PROVIDER_GOOGLE}
+          style={{width: width, height: height}}
+          region={region}
+          loadingEnabled={true}
           onMapReady={() => {
             Platform.OS === 'android'
               ? PermissionsAndroid.request(
@@ -325,11 +349,7 @@ export default function Stein({navigation}) {
                 })
               : null;
           }}
-          provider={PROVIDER_GOOGLE}
-          style={{width: width, height: height}}
-          region={region}
-          showsUserLocation={true}
-          loadingEnabled={true}>
+          >
           {markers.map((coordenada, index) => (
             <Marker
               key={index}
@@ -407,47 +427,9 @@ export default function Stein({navigation}) {
     </View>
   );
 
-  function getLocation() {
-    Geolocation.getCurrentPosition(
-      info => {
-        console.log('LAT', info.coords.latitude);
-        console.log('LON', info.coords.longitude);
-        setRegion({
-          latitude: info.coords.latitude,
-          longitude: info.coords.longitude,
-          longitudeDelta: 0.0922,
-          latitudeDelta: 0.0421,
-        });
-      },
-      error => {
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 2000,
-      },
-    );
-  }
   if (loading) {
     return <Text>Carregando</Text>;
   } else {
     return render();
   }
 }
-
-/*
-
-<Image
-                        style={estilos.imagemIcon2}
-                        source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
-                        }}
-                      />
-
-<Image
-                        style={estilos.imagemIcon2}
-                        source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
-                        }}
-                      />
-*/

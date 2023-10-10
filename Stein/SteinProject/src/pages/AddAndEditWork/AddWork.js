@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
-  Keyboard
+  Keyboard,
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -22,18 +22,18 @@ export default function AddHome({navigation}) {
   const tabelaLocal = firestore.collection('local');
 
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
-  const [carregadores, setCarregadores] = useState();
+  const [carregadores, setCarregadores] = useState([]);
 
   // Variável para a aparição da tabelas dos carregadores
   const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
   //
-  const [name, setName] = useState("");
-  const [logra, setLogra] = useState("");
-  const [numero, setNumero] = useState("");
-  const [complemento, setComplemento] = useState("");
-  const [cepInput, setCep] = useState("");
-  const [bairro, setBairro] = useState("");
-  const [cidade, setCidade] = useState("");
+  const [name, setName] = useState('');
+  const [logra, setLogra] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [cepInput, setCep] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
 
@@ -50,6 +50,7 @@ export default function AddHome({navigation}) {
   const [validSelectCarregadores, setValidSelectCarregadores] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
 
+  
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -74,7 +75,8 @@ export default function AddHome({navigation}) {
       numero != undefined &&
       cepInput != undefined &&
       bairro != undefined &&
-      cidade != undefined
+      cidade != undefined &&
+      carregadores != []
     ) {
       // o contador servira para colocar o id para o registro
       let countLogra = 0;
@@ -125,8 +127,7 @@ export default function AddHome({navigation}) {
       countLocal++;
 
       //organiza a array de carregadores em ordem crescente
-      carregadores.sort((a, b) => a - b);
-
+      carregadores.sort((a,b)=> a-b)
       // aqui serão colocados os dados coletados no formulário
       let testeLocal = {
         IDLogradouro: `${countLogra}`,
@@ -145,58 +146,59 @@ export default function AddHome({navigation}) {
         .catch(error => {
           console.log(error);
         });
+        
+
+        const validarGeo = async () => {
+          try {
+            const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+      
+            const response = await fetch(
+              `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+                address,
+              )}&key=${apiKey}`,
+            );
+      
+            if (!response.ok) {
+              throw new Error('Erro ao buscar coordenadas.');
+            }
+      
+            const data = await response.json();
+      
+      
+            if (data.results && data.results.length > 0) {
+              const location = data.results[0].geometry.location;
+      
+              // adionará os dados ao banco de dados
+              tabelaLogra
+                .doc(`${countLogra}`)
+                .set({
+                  CEP: `${cepInput}`,
+                  UF: `${selectedUf}`,
+                  bairro: `${bairro}`,
+                  cidade: `${cidade}`,
+                  complemento: `${complemento}`,
+                  geolocalizacao: {
+                    latitude: location.lat,
+                    longitude: location.lng,
+                  },
+                  logradouro: `${logra}`,
+                  numero: `${numero}`,
+                  tipoLogradouro: `${selectedTipoLogra}`,
+                })
+                .then(() => {
+                  console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
+                });
+            } else {
+              throw new Error('Endereço não encontrado.');
+            }
+          } catch (error) {
+            console.error('Erro:', error);
+          }
+        };
+        validarGeo()
     }
 
-    const validarGeo = async () => {
-      try {
-        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
-
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            address,
-          )}&key=${apiKey}`,
-        );
-
-        if (!response.ok) {
-          throw new Error('Erro ao buscar coordenadas.');
-        }
-
-        const data = await response.json();
-
-        setDatasParaValidar(data);
-
-        if (data.results && data.results.length > 0) {
-          const location = data.results[0].geometry.location;
-
-          // adionará os dados ao banco de dados
-          tabelaLogra
-            .doc(`${countLogra}`)
-            .set({
-              CEP: `${cepInput}`,
-              UF: `${selectedUf}`,
-              bairro: `${bairro}`,
-              cidade: `${cidade}`,
-              complemento: `${complemento}`,
-              geolocalizacao: {
-                latitude: location.lat,
-                longitude: location.lng,
-              },
-              logradouro: `${logra}`,
-              numero: `${numero}`,
-              tipoLogradouro: `${selectedTipoLogra}`,
-            })
-            .then(() => {
-              console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
-            });
-        } else {
-          throw new Error('Endereço não encontrado.');
-        }
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    };
-
-    validarGeo();
+    
   };
 
   useEffect(() => {
@@ -228,7 +230,6 @@ export default function AddHome({navigation}) {
       setBairro(data.bairro);
       setCidade(data.localidade);
       setSelectedUf(data.uf);
-      console.log(data)
 
       const partes = data.logradouro.split(' ');
 
@@ -264,19 +265,31 @@ export default function AddHome({navigation}) {
           setValidNumero(true);
           throw new Error('Erro ao buscar coordenadas.');
         }
-
+        
         const data = await response.json();
 
-        console.log('DATAS DATAS DATAS DATAS DATAS DATAS');
+        console.log(data.results[0].address_components[4].short_name);
+        var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0]
+        var tipoUf = data.results[0].address_components[4].short_name
+        console.log(data.results[0].address_components[4])
+        setSelectedUf(tipoUf)
+        setSelectedTipoLogra(tipoLogra);
+
         var cepNormal = data.results[0].address_components[6].long_name.replace(
           '-',
           '',
         );
+        console.log(data.results[0]);
         setCep(cepNormal);
         setValidacaoLogradouro(true);
       }
     } catch (error) {
-      throw new Error('NÃO ENCONTRADO O ENDEREÇO');
+      setValidLogra(true)
+      setValidCidade(true)
+      setValidNumero(true)
+      setCep(true);
+      console.log("OI")
+      throw new Error('NÃO ENCONTRADO O ENDEREÇO: '+error);
     }
   };
 
@@ -291,6 +304,7 @@ export default function AddHome({navigation}) {
       // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
       // E, em seguida, chamar addCharger() se todas as verificações passarem.
       if (
+        name != '' &&
         logra != '' &&
         numero != '' &&
         cepInput != '' &&
@@ -299,10 +313,14 @@ export default function AddHome({navigation}) {
         carregadores != []
       ) {
         addDataLogradouro();
-        navigation.navigate('HomeAndWork');
+        navigation.navigate('HouseAndWork');
       } else {
         const validacao = async () => {
           let camposInvalidos = [];
+          if (name == '') {
+            setValidName(true);
+            camposInvalidos.push('Nome');
+          }
 
           if (cepInput === '') {
             setValidCep(true);
@@ -310,7 +328,7 @@ export default function AddHome({navigation}) {
           }
           if (cidade === '') {
             setValidCidade(true);
-            camposInvalidos.push('Cidade');
+            camposInvalidos.push('Município');
           }
           if (logra === '') {
             setValidLogra(true);
@@ -320,7 +338,8 @@ export default function AddHome({navigation}) {
             setValidNumero(true);
             camposInvalidos.push('Número');
           }
-          if (carregadores.length === 0) {
+          console.log(carregadores);
+          if (carregadores == [] || carregadores == undefined) {
             setValidSelectCarregadores(true);
             camposInvalidos.push('Nenhum carregador selecionado');
           }
@@ -362,7 +381,7 @@ export default function AddHome({navigation}) {
           style={styles.container}
           onPress={() => {
             semCep();
-            console.log(cidade)
+            console.log(cidade);
             Keyboard.dismiss();
             if (cepInput.length == 8 && !validcaoLogradouro) {
               handleGeocode();
@@ -406,12 +425,18 @@ export default function AddHome({navigation}) {
               // Campo para pegar o logradouro
             >
               <View style={styles.logradouro}>
-                <TipoLogradouro onTipoLograChange={handleTipoLograChange} validar={selectedTipoLogra} />
+                <TipoLogradouro
+                  onTipoLograChange={handleTipoLograChange}
+                  validar={selectedTipoLogra}
+                />
                 <TextInput
                   style={styles.textInputLogradouro}
                   placeholderTextColor={validLogra ? 'red' : ''}
                   onChangeText={setLogra}
                   value={logra}
+                  onBlur={() => {
+                    semCep();
+                  }}
                 />
               </View>
             </View>
@@ -437,6 +462,9 @@ export default function AddHome({navigation}) {
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
+                  onBlur={() => {
+                    semCep();
+                  }}
                 />
               </View>
               <TouchableOpacity
@@ -474,6 +502,9 @@ export default function AddHome({navigation}) {
               style={styles.textInput}
               onChangeText={setComplemento}
               value={complemento}
+              onBlur={() => {
+                semCep();
+              }}
             />
           </View>
 
@@ -493,6 +524,11 @@ export default function AddHome({navigation}) {
                 value={cepInput}
                 keyboardType="number-pad"
                 placeholderTextColor={validCep ? 'red' : ''}
+                onBlur={() => {
+                  if (cepInput.length == 8 && !validcaoLogradouro) {
+                    handleGeocode();
+                  }
+                }}
               />
             </View>
             <View
@@ -508,6 +544,9 @@ export default function AddHome({navigation}) {
                 onChangeText={setBairro}
                 value={bairro}
                 placeholderTextColor={validBairro ? 'red' : ''}
+                onBlur={() => {
+                  semCep();
+                }}
               />
             </View>
           </View>
@@ -526,6 +565,9 @@ export default function AddHome({navigation}) {
                 onChangeText={setCidade}
                 value={cidade}
                 placeholderTextColor={validCidade ? 'red' : ''}
+                onBlur={() => {
+                  semCep();
+                }}
               />
             </View>
             <View
@@ -533,7 +575,7 @@ export default function AddHome({navigation}) {
               // Campo para pegar o estado
             >
               <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf}/>
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
             </View>
           </View>
           <TouchableOpacity

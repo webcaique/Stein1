@@ -3,8 +3,9 @@ import { View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import estilos from "./style";
 
 
-export default function({onSelectCarregadores, ...props} ) {
-  const [selectedCarregadores, setSelectedCarregadores] = useState([]); // Use o estado para controlar os carregadores selecionados
+export default function({validar, carr, onSelectCarregadores, ...props} ) {
+  const [selectedCarregadores, setSelectedCarregadores] = useState(validar == []? []: [validar]); // Use o estado para controlar os carregadores selecionados
+  console.log(validar)
 
   // imprimir os dados para identificcação dos carregadores
   const nomeCarregadores = [
@@ -57,7 +58,11 @@ export default function({onSelectCarregadores, ...props} ) {
 
   function renderCarregador(i) { // função para aparecer os carregadores na tela do usuário
     const carregadorIndex = i + 1;
-    const isSelected = selectedCarregadores.includes(carregadorIndex);
+    let isSelected = selectedCarregadores.includes(carregadorIndex);
+    isSelected = carr.includes(carregadorIndex); 
+    console.log(carr)
+
+    console.log(isSelected)
   
     return (
       
