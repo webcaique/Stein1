@@ -96,6 +96,7 @@ export default function AddHome() {
         listaLc.forEach(datas => {
           if (datas.IDLogradouro == idFromOtherScreen) {
             end = datas;
+            console.log(datas)
           }
         });
         setIdLocal(end);
@@ -232,7 +233,7 @@ export default function AddHome() {
     try {
       // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
       const response = await fetch(
-        `https://viacep.com.br/ws/${cepInput}/json/`,
+        `https://viacep.com.br/ws/${cep}/json/`,
       );
 
       if (!response.ok) {
@@ -300,7 +301,6 @@ export default function AddHome() {
         );
         console.log(cepNormal);
         setCep(cepNormal);
-        setValidacaoLogradouro(true);
       }
     } catch (error) {
       throw new Error('NÃO ENCONTRADO O ENDEREÇO');
@@ -309,7 +309,7 @@ export default function AddHome() {
 
   const handlePress = async () => {
     try {
-      if (cepInput.length === 8 && !validcaoLogradouro) {
+      if (cep.length === 8) {
         await handleGeocode();
       }
       await semCep();
@@ -321,13 +321,13 @@ export default function AddHome() {
         name != '' &&
         logra != '' &&
         numero != '' &&
-        cepInput != '' &&
+        cep != '' &&
         bairro != '' &&
         cidade != '' &&
         carregadores != []
       ) {
-        addDataLogradouro();
-        navigation.navigate('HomeAndWork');
+        update();
+        navigation.navigate('HouseAndWork');
       } else {
         const validacao = async () => {
           let camposInvalidos = [];
@@ -336,7 +336,7 @@ export default function AddHome() {
             camposInvalidos.push('Nome');
           }
 
-          if (cepInput === '') {
+          if (cep === '') {
             setValidCep(true);
             camposInvalidos.push('CEP');
           }
@@ -397,7 +397,7 @@ export default function AddHome() {
             semCep();
             console.log(cidade)
             Keyboard.dismiss();
-            if (cepInput.length == 8 && !validcaoLogradouro) {
+            if (cep.length == 8) {
               handleGeocode();
             }
           }}
@@ -494,7 +494,7 @@ export default function AddHome() {
                 <TabelaCarregadores
                   onSelectCarregadores={toggleCarregadorSelection}
                   notFiltro={true}
-                  validar={carregadores}
+                  carr={carregadores}
                 />
               ) : (
                 <View />
@@ -531,7 +531,7 @@ export default function AddHome() {
                 keyboardType="number-pad"
                 placeholderTextColor={validCep ? 'red' : ''}
                 onBlur={() => {
-                  if (cepInput.length == 8 && !validcaoLogradouro) {
+                  if (cep.length == 8) {
                     handleGeocode();
                   }
                 }}

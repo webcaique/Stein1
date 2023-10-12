@@ -22,7 +22,7 @@ export default function AddHome({navigation}) {
   const tabelaLocal = firestore.collection('local');
 
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
-  const [carregadores, setCarregadores] = useState([]);
+  const [carregador, setCarregador] = useState("");
 
   // Variável para a aparição da tabelas dos carregadores
   const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
@@ -64,7 +64,7 @@ export default function AddHome({navigation}) {
 
   const toggleCarregadorSelection = carr => {
     // pegará os carregadores selecionados
-    setCarregadores(carr);
+    setCarregador(carr);
   };
 
   // Função para adicionar dados no banco de dados
@@ -76,7 +76,7 @@ export default function AddHome({navigation}) {
       cepInput != undefined &&
       bairro != undefined &&
       cidade != undefined &&
-      carregadores != []
+      carregador != []
     ) {
       // o contador servira para colocar o id para o registro
       let countLogra = 0;
@@ -127,11 +127,11 @@ export default function AddHome({navigation}) {
       countLocal++;
 
       //organiza a array de carregadores em ordem crescente
-      carregadores.sort((a,b)=> a-b)
+      carregador.sort((a,b)=> a-b)
       // aqui serão colocados os dados coletados no formulário
       let testeLocal = {
         IDLogradouro: `${countLogra}`,
-        IDTipoCarregador: carregadores,
+        IDTipoCarregador: carregador,
         nomeLocal: `${name}`,
         tipoLocal: `Trabalho`,
       };
@@ -260,6 +260,8 @@ export default function AddHome({navigation}) {
 
         if (!response.ok) {
           setValidBairro(true);
+          console.log(validBairro)
+
           setValidCidade(true);
           setValidLogra(true);
           setValidNumero(true);
@@ -282,13 +284,14 @@ export default function AddHome({navigation}) {
         console.log(data.results[0]);
         setCep(cepNormal);
         setValidacaoLogradouro(true);
+
       }
     } catch (error) {
       setValidLogra(true)
       setValidCidade(true)
       setValidNumero(true)
-      setCep(true);
-      console.log("OI")
+      setValidCep(true);
+      setValidBairro(true)
       throw new Error('NÃO ENCONTRADO O ENDEREÇO: '+error);
     }
   };
@@ -310,7 +313,7 @@ export default function AddHome({navigation}) {
         cepInput != '' &&
         bairro != '' &&
         cidade != '' &&
-        carregadores != []
+        carregador != []
       ) {
         addDataLogradouro();
         navigation.navigate('HouseAndWork');
@@ -338,8 +341,8 @@ export default function AddHome({navigation}) {
             setValidNumero(true);
             camposInvalidos.push('Número');
           }
-          console.log(carregadores);
-          if (carregadores == [] || carregadores == undefined) {
+          console.log(carregador);
+          if (carregador == [] || carregador == undefined) {
             setValidSelectCarregadores(true);
             camposInvalidos.push('Nenhum carregador selecionado');
           }
@@ -403,7 +406,7 @@ export default function AddHome({navigation}) {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : '#000'}]}
               // Campo para pegar o apelido
             >
               Nome da empresa:
@@ -417,7 +420,7 @@ export default function AddHome({navigation}) {
 
           <View style={styles.row3}>
             <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
               Logradouro:
             </Text>
             <View
@@ -431,7 +434,7 @@ export default function AddHome({navigation}) {
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
+                  placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
                   onBlur={() => {
@@ -452,13 +455,13 @@ export default function AddHome({navigation}) {
                   style={[
                     styles.textIsInput,
                     ,
-                    {color: validNumero ? 'red' : ''},
+                    {color: validNumero ? 'red' : '#000'},
                   ]}>
                   Número:
                 </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
+                  placeholderTextColor={validNumero ? 'red' : '#000'}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -471,11 +474,16 @@ export default function AddHome({navigation}) {
                 style={styles.btnCarregadores}
                 onPress={() => {
                   setligarTabelaCarregadores(!ligarTabelaCarregadores);
+                  console.log()
+                  console.log("TESTE")
+                  console.log(carregador)
+                  console.log()
+                  
                 }}>
                 <Text
                   style={[
                     styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
+                    {color: validSelectCarregadores ? 'red' : '#000'},
                   ]}>
                   Carregadores
                 </Text>
@@ -484,9 +492,10 @@ export default function AddHome({navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
               {ligarTabelaCarregadores ? (
                 <TabelaCarregadores
-                  onSelectCarregadores={toggleCarregadorSelection}
-                  notFiltro={true}
-                />
+                notFiltro={true}
+                onSelectCarregadores={toggleCarregadorSelection}
+                carr={carregador}
+              />
               ) : (
                 <View />
               )}
@@ -515,7 +524,7 @@ export default function AddHome({navigation}) {
                 // Campo para pegar o CEP
               }>
               <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
                 CEP:
               </Text>
               <TextInput
@@ -523,7 +532,7 @@ export default function AddHome({navigation}) {
                 onChangeText={setCep}
                 value={cepInput}
                 keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
+                placeholderTextColor={validCep ? 'red' : '#000'}
                 onBlur={() => {
                   if (cepInput.length == 8 && !validcaoLogradouro) {
                     handleGeocode();
@@ -536,14 +545,14 @@ export default function AddHome({navigation}) {
               // Campo para pegar o bairro
             >
               <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
                 Bairro:
               </Text>
               <TextInput
                 style={styles.textInputBairro}
                 onChangeText={setBairro}
                 value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
+                placeholderTextColor={validBairro ? 'red' : '#000'}
                 onBlur={() => {
                   semCep();
                 }}
@@ -557,14 +566,14 @@ export default function AddHome({navigation}) {
               // Campo para pegar o município
             >
               <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
                 Município:
               </Text>
               <TextInput
                 style={styles.textInputMunicipio}
                 onChangeText={setCidade}
                 value={cidade}
-                placeholderTextColor={validCidade ? 'red' : ''}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
                 onBlur={() => {
                   semCep();
                 }}

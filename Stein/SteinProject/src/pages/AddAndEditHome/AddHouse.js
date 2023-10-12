@@ -22,7 +22,7 @@ export default function AddHome({navigation}) {
   const tabelaLocal = firestore.collection('local');
 
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
-  const [carregadores, setCarregadores] = useState();
+  const [carregadores, setCarregadores] = useState([]);
 
   // Variável para a aparição da tabelas dos carregadores
   const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
@@ -479,6 +479,7 @@ export default function AddHome({navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
               {ligarTabelaCarregadores ? (
                 <TabelaCarregadores
+                carr={carregadores}
                   onSelectCarregadores={toggleCarregadorSelection}
                   notFiltro={true}
                 />
