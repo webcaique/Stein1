@@ -198,7 +198,7 @@ const App = () => {
         />
         <Stack.Screen name="HouseAndWork" component={HouseAndWork}
         options={{
-          title:"Editar casa",
+          title:"Casa e Trabalho",
           headerTitleAlign:"center",
           headerTitleStyle:{
             fontSize:30,
