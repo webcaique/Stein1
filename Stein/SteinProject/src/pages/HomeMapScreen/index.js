@@ -338,19 +338,28 @@ export default function Stein({navigation}) {
         <View style={estilos.fundo}>
           <Modal visible={visivel}>
             <View>
-              <Text style={{fontSize:16}}
-                onPress={() => {
-                  setVisivel(false);
-                }}>
-                Voltar
-              </Text>
+
               
 <View style={estilos.Img1}>
 
-  <Image
+  <ImageBackground
   style={estilos.Img}
   source={{
-    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'}}></Image>
+    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'}}>
+       <TouchableOpacity
+       onPress={() => {
+        setVisivel(false);
+                       }}>
+   <Image 
+   style={estilos.seta}
+   source={{
+    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w'
+  }}>
+    
+  </Image>
+     </TouchableOpacity>
+    </ImageBackground>
+ 
 </View>
 
 <View style={estilos.estrela}>

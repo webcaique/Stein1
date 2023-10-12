@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
 
@@ -188,6 +189,13 @@ textIcon1:{
   color: 'black',
   fontSize:18,
 maxWidth:270
+},
+seta:{
+  marginTop:10,
+  height:25,
+  width:25,
+  resizeMode:'contain',
+  transform:[{ rotate: '-180deg' }]
 }
     })
    
