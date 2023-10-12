@@ -3,7 +3,7 @@ import styles from './styles';
 import {View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
-export default function selectList({ onUfChange }) {
+export default function selectList({validar, onUfChange }) {
     const [uf, setUf] = useState(); // variável
     
     const handleUfChange = (itemValue) => {
@@ -14,7 +14,7 @@ export default function selectList({ onUfChange }) {
     return (
         <View style={styles.list}>
             <Picker
-                selectedValue={uf}
+                selectedValue={validar != ""? validar:uf}
                 onValueChange={handleUfChange}
             >
         <Picker.Item label="AC" value="AC" style={styles.fontList} />

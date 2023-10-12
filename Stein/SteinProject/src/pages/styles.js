@@ -4,7 +4,6 @@ const styles = ScaledSheet.create({
     list:{
         backgroundColor:"#fff",
         borderWidth:1,
-        backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
         height:moderateVerticalScale(50),
