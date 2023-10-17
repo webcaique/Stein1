@@ -77,37 +77,41 @@ export default function Stein({navigation}) {
     }, []),
   );
 
+  function GetMyLocation(){
+    Geolocation.getCurrentPosition(
+      position => {
+        const userRegion = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        };
+        setRegion(userRegion);
+      },
+      error => {
+        console.error('Erro ao obter a localização:', error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 60000,
+      },
+    );
+  }
   useEffect(() => {
+    GetMyLocation()
+    console.log(region)
     const unsubscribe = tabelaLogra.onSnapshot(snapshot => {
       // Quando há uma alteração na coleção 'logradouro'
       // (por exemplo, quando novos dados são adicionados), a função será chamada
       // Você pode adicionar lógica adicional aqui se necessário
       fetchMarkersFromFirestore();
     });
+    
 
     return () => {
       // Certifique-se de cancelar a inscrição quando o componente for desmontado
       unsubscribe();
       fetchMarkersFromFirestore();
-      Geolocation.getCurrentPosition(
-        position => {
-          const userRegion = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          };
-          setRegion(userRegion);
-        },
-        error => {
-          console.error('Erro ao obter a localização:', error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 2000,
-          maximumAge: 1000,
-        },
-      );
       navigation.addListener('focus', restartPage);
     };
     // Coloque aqui o código que deseja executar quando a tela receber foco.
@@ -347,8 +351,9 @@ export default function Stein({navigation}) {
                 ).then(() => {
                   console.log('Ganhomos familia');
                 })
-              : null;
+              : console.log("NULO");
           }}
+          showsUserLocation
           >
           {markers.map((coordenada, index) => (
             <Marker
