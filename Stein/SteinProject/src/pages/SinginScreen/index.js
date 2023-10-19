@@ -1,12 +1,44 @@
-import React from "react";
-import {View, Text, Pressable, Keyboard, TextInput, TouchableOpacity} from "react-native"
+import React, { useState, useEffect } from "react";
+import {View, Text, Pressable, Keyboard, TextInput, TouchableOpacity, KeyboardAvoidingView} from "react-native"
 import styles from "./style"
+import {auth} from "../../config/configFirebase.js"
+import firebase from "../../config/configFirebase.js"
 
-const SinginScreen = ({navigation}) => {
+export default function SinginScreen({navigation}){
+
+    const [nomeUsuario, setNomeUsuario] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [errorRegister, setErrorRegister] = useState("")
+
+    const register = ()=>{
+        auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+        
+            let user = userCredential.user;
+            console.log(user)
+            navigation.navigate("QuemSomos")
+            // navigation.navigate("teste", {idUser: user.uid})
+        })
+        .catch((error) => {
+            setErrorRegister(true)
+            let errorCode = error.code;
+            let errorMessage = error.message;
+        
+        });
+        }
+    
+        useEffect(()=>{
+    
+        }, []);
+
     return(
+
         <View style={styles.conteiner} 
         //Container principal
         >
+        <KeyboardAvoidingView>
         <Pressable // Deixa a página clicável para desativar o teclado do usuário
             onPress={Keyboard.dismiss}>
                 <View style={styles.conteiner} 
@@ -21,6 +53,8 @@ const SinginScreen = ({navigation}) => {
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize='sentences'
+                onChangeText={(text)=>setNomeUsuario(text)}
+                value={nomeUsuario}
                 />
                 <TextInput // campo para colocar o email
                 placeholder="Email"
@@ -29,6 +63,8 @@ const SinginScreen = ({navigation}) => {
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize="none"
+                onChangeText={(text)=>setEmail(text)}
+                value={email}
                 />
                 <TextInput // campo para colocar o senha
                 style={styles.textInputAll} 
@@ -39,7 +75,10 @@ const SinginScreen = ({navigation}) => {
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
+                textContentType={'password'}
+                onChangeText={(text)=>setPassword(text)}
+                value={password}
+                />
 
                 <TextInput // campo para confirmar sua senha
                 style={styles.textInputAll} 
@@ -50,18 +89,27 @@ const SinginScreen = ({navigation}) => {
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
-                <View styles={styles.viewButton} 
+                textContentType={'password'}
+                onChangeText={(text)=>setConfirmPassword(text)}
+                value={confirmPassword}
+                />
+                <View styles={styles.viewButton}
                 //Container do botão para cadastrar o usuário
                 >
-                    <TouchableOpacity style={styles.buttons} 
-                    onPress={()=> navigation.navigate("LoginScreen")}
-                    //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
-                    >
-                        <Text style={styles.textButtons}
-                        //Texto do botão
-                        >Cadastrar</Text>
-                    </TouchableOpacity>
+                    {email === "" || password === "" || confirmPassword === "" || nomeUsuario === ""
+        ?
+            <TouchableOpacity style={styles.buttons} 
+            //Botão para fazer o login e fazer a verificação de dados
+            disabled={true}>
+                <Text style={styles.textButtons}>Entrar</Text>
+            </TouchableOpacity>
+        :
+            <TouchableOpacity style={styles.buttons} 
+            //Botão para fazer o login e fazer a verificação de dados
+            onPress={register}>
+                <Text style={styles.textButtons}>Entrar</Text>
+            </TouchableOpacity>
+        }
                     <View style={styles.loginLink}
                     //Link para entrar na tela de login
                     >    
@@ -84,8 +132,8 @@ const SinginScreen = ({navigation}) => {
 
             </View>
         </Pressable>
+        </KeyboardAvoidingView>
         </View>
     )
 
 }
-export default SinginScreen;

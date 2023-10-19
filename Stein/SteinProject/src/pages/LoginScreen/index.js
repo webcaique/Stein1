@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
-import auth from "../../config/configFirebase.js"
-
+import {auth} from "../../config/configFirebase.js"
+import firebase from "../../config/configFirebase.js"
 
 export default function LoginScreen({navigation}){
     const [checked, setChecked] = useState(true);
@@ -15,10 +15,12 @@ export default function LoginScreen({navigation}){
     const [errorLogin, setErrorLogin] = useState("")
 
     const loginFirebase = ()=>{
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
     
         let user = userCredential.user;
+        console.log(user)
+        navigation.navigate("QuemSomos")
         // navigation.navigate("teste", {idUser: user.uid})
     })
     .catch((error) => {
@@ -123,7 +125,10 @@ export default function LoginScreen({navigation}){
         :
             <TouchableOpacity style={styles.buttons} 
             //Botão para fazer o login e fazer a verificação de dados
-            onPress={()=> navigation.navigate("QuemSomos")}>
+            onPress={()=> {
+                loginFirebase()
+                }
+                }>
                 <Text style={styles.textButtons}>Entrar</Text>
             </TouchableOpacity>
         }
