@@ -1,0 +1,29 @@
+<GoogleAutoComplete apiKey="AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ" debounce={300}>
+  {({inputValue, handleTextChange, locationResults, fetchDetails}) => (
+    <React.Fragment>
+      <TextInput
+      style={{
+        height: 40,
+        width: 300,
+        borderWidth: 1,
+        paddingHorizontal: 16,
+        position: 'absolute',
+        top:100,
+        alignContent:"center"
+      }}
+        value={inputValue}
+        onChangeText={handleTextChange}
+        placeholder="Location..."
+      />
+      <ScrollView style={{maxHeight: 100}}>
+        {locationResults.map((el, i) => (
+          <LocationItem
+            {...el}
+            fetchDetails={fetchDetails}
+            key={String(i)}
+          />
+        ))}
+      </ScrollView>
+    </React.Fragment>
+  )}
+</GoogleAutoComplete>

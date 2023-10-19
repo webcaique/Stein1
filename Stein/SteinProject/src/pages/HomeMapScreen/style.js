@@ -2,7 +2,11 @@ import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale
 
 
 const estilos=ScaledSheet.create({
- 
+    barraDeBusca:{
+      height:1000,
+      width:1000,
+      flex:5
+    },
     inferior:{
       flex:1,
       position:'absolute',

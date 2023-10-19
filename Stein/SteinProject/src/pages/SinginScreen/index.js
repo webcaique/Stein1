@@ -1,6 +1,7 @@
 import React from "react";
 import {View, Text, Pressable, Keyboard, TextInput, TouchableOpacity} from "react-native"
 import styles from "./style"
+import Search from "../HomeMapScreen/search";
 
 const SinginScreen = ({navigation}) => {
     return(

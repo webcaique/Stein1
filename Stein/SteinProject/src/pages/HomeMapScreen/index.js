@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, Component} from 'react';
 import {
   Text,
   View,
@@ -25,6 +25,7 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
 import {useFocusEffect} from '@react-navigation/native';
+import Search from './search';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
@@ -353,7 +354,6 @@ export default function Stein({navigation}) {
                 })
               : console.log("NULO");
           }}
-          showsUserLocation
           >
           {markers.map((coordenada, index) => (
             <Marker
@@ -392,6 +392,9 @@ export default function Stein({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+
+      <Search/>
+      
 
       <View style={estilos.inferior}>
         <TouchableOpacity
