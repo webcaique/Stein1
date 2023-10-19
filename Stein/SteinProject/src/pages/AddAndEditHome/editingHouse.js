@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Modal,
-  Pressable
+  Pressable,
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -74,7 +74,6 @@ export default function AddHome() {
   };
 
   useEffect(() => {
-
     const timer = setTimeout(() => {
       setListaCamposInvalidos([]);
     }, 5000);
@@ -95,6 +94,8 @@ export default function AddHome() {
           listaLocal.forEach(datas => {
             if (datas.IDLogradouro == idFromOtherScreen) {
               setIdLocal(datas);
+              setName(datas.nomeLocal);
+              setCarregadores(datas.IDTipoCarregador);
             }
           });
 
@@ -113,6 +114,15 @@ export default function AddHome() {
           listaLogra.forEach(datas => {
             if (datas.id == idFromOtherScreen) {
               setLograEdit(datas);
+              setBairro(datas.bairro);
+              setCep(datas.CEP);
+              setCidade(datas.cidade);
+              setComplemento(datas.complemento);
+              setLogra(datas.logradouro);
+              setNumero(datas.numero);
+              setSelectedTipoLogra(datas.tipoLogradouro);
+              setSelectedUf(datas.UF);
+              console.log(selectedUf);
             }
           });
 
@@ -164,8 +174,8 @@ export default function AddHome() {
           cidade: `${cidade}`,
           complemento: `${complemento}`,
           geolocalizacao: {
-            latitude: 24.000,
-            longitude: 48.000,
+            latitude: 24.0,
+            longitude: 48.0,
           },
           logradouro: `${logra}`,
           numero: `${numero}`,
@@ -233,7 +243,10 @@ export default function AddHome() {
               // Campo para pegar o logradouro
             >
               <View style={styles.logradouro}>
-                <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
+                <TipoLogradouro
+                  onTipoLograChange={handleTipoLograChange}
+                  validar={selectedTipoLogra}
+                />
                 <TextInput
                   style={styles.textInputLogradouro}
                   placeholderTextColor={validLogra ? 'red' : ''}
@@ -285,6 +298,7 @@ export default function AddHome() {
                 <TabelaCarregadores
                   onSelectCarregadores={toggleCarregadorSelection}
                   notFiltro={true}
+                  carr={carregadores}
                 />
               ) : (
                 <View />
@@ -360,7 +374,7 @@ export default function AddHome() {
               // Campo para pegar o estado
             >
               <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} />
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
             </View>
           </View>
           <TouchableOpacity
@@ -389,13 +403,14 @@ export default function AddHome() {
                 var lista = [
                   validBairro == undefined || validBairro ? 'Bairro' : '',
                   validCidade == undefined || validCidade ? 'Cidade' : '',
-                  validCep == undefined || validCep? 'CEP' : '',
-                  validNumero == undefined || validNumero? 'Número' : '',
-                  validName == undefined || validName? 'Nome' : '',
-                  validSelectCarregadores == undefined || validSelectCarregadores
+                  validCep == undefined || validCep ? 'CEP' : '',
+                  validNumero == undefined || validNumero ? 'Número' : '',
+                  validName == undefined || validName ? 'Nome' : '',
+                  validSelectCarregadores == undefined ||
+                  validSelectCarregadores
                     ? 'Nenhum carregador selecionado'
                     : '',
-                  validLogra == undefined  || validLogra? 'Logradouro' : '',
+                  validLogra == undefined || validLogra ? 'Logradouro' : '',
                 ];
 
                 setListaCamposInvalidos(lista);
@@ -403,7 +418,7 @@ export default function AddHome() {
                 const timer = setTimeout(() => {
                   setListaCamposInvalidos([]);
                 }, 5000);
-            
+
                 return () => clearTimeout(timer);
               }
             }}

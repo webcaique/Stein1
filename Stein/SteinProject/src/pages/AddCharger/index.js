@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, version} from 'react';
 import {
   View,
   Text,
@@ -16,7 +16,6 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
-import tipoLogradouro from '../tipoLogradouro.js';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -25,31 +24,29 @@ const AddCharger = ({navigation}) => {
   const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
 
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
-  const [logra, setLogra] = useState();
-  const [numero, setNumero] = useState();
-  const [complemento, setComplemento] = useState();
+  const [logra, setLogra] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
   const [cepInput, setCep] = useState('');
-  const [bairro, setBairro] = useState();
-  const [cidade, setCidade] = useState();
-  const [qtdeCarregadores, setQtdeCarregadores] = useState();
-  const [selectCarregadores, setSelectCarregadores] = useState();
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [qtdeCarregadores, setQtdeCarregadores] = useState('');
+  const [selectCarregadores, setSelectCarregadores] = useState('');
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
-  const [datasParaValidar, setDatasParaValidar] = useState();
+  const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
 
   //Campos inválidos
   const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
 
   // Variávies de estados para indicar campo obrigatório vazio ou inválido
-  const [validLogra, setValidLogra] = useState();
-  const [validNumero, setValidNumero] = useState();
-  const [validCep, setValidCep] = useState();
-  const [validBairro, setValidBairro] = useState();
-  const [validCidade, setValidCidade] = useState();
-  const [validQtdeCarregadores, setValidQtdeCarregadores] = useState();
-  const [validSelectCarregadores, setValidSelectCarregadores] = useState();
+  const [validLogra, setValidLogra] = useState(false);
+  const [validNumero, setValidNumero] = useState(false);
+  const [validCep, setValidCep] = useState(false);
+  const [validBairro, setValidBairro] = useState(false);
+  const [validCidade, setValidCidade] = useState(false);
+  const [validQtdeCarregadores, setValidQtdeCarregadores] = useState(false);
+  const [validSelectCarregadores, setValidSelectCarregadores] = useState(false);
 
   // Variável para aparição da tabelas dos carregadores
   const [carregadores, setCarregadores] = useState(false);
@@ -92,11 +89,10 @@ const AddCharger = ({navigation}) => {
 
     // aqui será incrementado um único valor, para criar um novo ID
     countLogra++;
-    var coord;
 
     const validarGeo = async () => {
       try {
-        const address = `${numero} ${selectedTipoLogra} ${logra}, ${bairro}, ${cidade}, ${selectedUf}, BR`;
+        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -110,27 +106,10 @@ const AddCharger = ({navigation}) => {
 
         const data = await response.json();
 
-        setDatasParaValidar(data);
-
         if (data.results && data.results.length > 0) {
           const location = data.results[0].geometry.location;
           console.log('LATITUDE: ' + location.lat);
           console.log('LONGITUDE: ' + location.lng);
-          coord = {latitude: location.lat, longitude: location.lng};
-          let listLogra = {
-            CEP: `${cepInput}`,
-            UF: `${selectedUf}`,
-            bairro: `${bairro}`,
-            cidade: `${cidade}`,
-            complemento: `${complemento}`,
-            geolocalizacao: {
-              latitude: latitude,
-              longitude: longitude,
-            },
-            logradouro: `${logra}`,
-            numero: `${numero}`,
-            tipoLogradouro: `${selectedTipoLogra}`,
-          };
 
           // adionará os dados ao banco de dados
           tabelaLogra
@@ -199,9 +178,6 @@ const AddCharger = ({navigation}) => {
     };
 
     validarGeo();
-    if (true) {
-      // aqui será colocados os dados coletados no formulário
-    }
   };
 
   useEffect(() => {
@@ -229,6 +205,11 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
 
+      setValidCidade(false);
+      setValidLogra(false);
+      setValidNumero(false);
+      setValidBairro(false);
+
       const data = await response.json();
       setBairro(data.bairro);
       setCidade(data.localidade);
@@ -241,9 +222,160 @@ const AddCharger = ({navigation}) => {
         const logras = partes.slice(1).join(' ');
 
         setSelectedTipoLogra(tipo);
+        console.log(tipo);
         setLogra(logras);
       } else {
         console.error('Texto não contém espaço.');
+      }
+    } catch (error) {
+      console.error('Erro:', error);
+    }
+  };
+
+  const semCep = async () => {
+    try {
+      if (logra != '' && bairro != '' && cidade != '' && numero != '' && cepInput.length != 8) {
+        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            address,
+          )}&key=${apiKey}`,
+        );
+
+        if (!response.ok) {
+          setValidBairro(true);
+          setValidCidade(true);
+          setValidLogra(true);
+          setValidNumero(true);
+          throw new Error('Erro ao buscar coordenadas.');
+        }
+
+        const data = await response.json();
+
+        console.log(data.results[0].address_components[4].short_name);
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0];
+        var tipoUf = data.results[0].address_components[4].short_name;
+        setSelectedUf(tipoUf);
+        setSelectedTipoLogra(tipoLogra);
+
+        var cepNormal = data.results[0].address_components[6].long_name.replace(
+          '-',
+          '',
+        );
+        console.log(cepNormal);
+        setCep(cepNormal);
+        setValidacaoLogradouro(true);
+        setValidCidade(false);
+
+        setValidLogra(false);
+
+        setValidNumero(false);
+
+        setValidBairro(false);
+      }
+    } catch (error) {
+      console.log("ERRO: "+error);
+      const validacao = async () => {
+        let camposInvalidos = [];
+        setValidCidade(true);
+        camposInvalidos.push('Cidade');
+
+        setValidLogra(true);
+        camposInvalidos.push('Logradouro');
+
+        setValidNumero(true);
+        camposInvalidos.push('Número');
+
+        setValidBairro(true);
+        camposInvalidos.push('Bairro');
+
+        setListaCamposInvalidos(camposInvalidos);
+      };
+
+      validacao();
+
+      const timer = setTimeout(() => {
+        setListaCamposInvalidos([]);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  };
+
+  const handlePress = async () => {
+    try {
+      if (cepInput.length === 8 && !validcaoLogradouro) {
+        await handleGeocode();
+      }
+      await semCep();
+
+      // O restante do código que depende dos resultados de handleGeocode e semCep
+      // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
+      // E, em seguida, chamar addCharger() se todas as verificações passarem.
+      if (
+        logra != '' &&
+        numero != '' &&
+        cepInput != '' &&
+        bairro != '' &&
+        cidade != '' &&
+        qtdeCarregadores != '' &&
+        selectCarregadores != []
+      ) {
+        if (cepInput.length == 8 && !validcaoLogradouro) {
+          handleGeocode();
+        }
+        addCharger();
+        navigation.navigate('Stein');
+      } else {
+        const validacao = async () => {
+          let camposInvalidos = [];
+
+          if (cepInput === '') {
+            setValidCep(true);
+            camposInvalidos.push('CEP');
+          }
+          if (cidade === '') {
+            setValidCidade(true);
+            camposInvalidos.push('Cidade');
+          }
+          if (logra === '') {
+            setValidLogra(true);
+            camposInvalidos.push('Logradouro');
+          }
+          if (numero === '') {
+            setValidNumero(true);
+            camposInvalidos.push('Número');
+          }
+          if (qtdeCarregadores === '') {
+            setValidQtdeCarregadores(true);
+            camposInvalidos.push('Quantidade de carregadores');
+          }
+          if (selectCarregadores.length === 0) {
+            setValidSelectCarregadores(true);
+            camposInvalidos.push('Nenhum carregador selecionado');
+          }
+          if (bairro === '') {
+            setValidBairro(true);
+            camposInvalidos.push('Bairro');
+          }
+          if (qtdeCarregadores < selectCarregadores.length) {
+            setValidQtdeCarregadores(true);
+            camposInvalidos.push('Quantidade de carregadores', "Há mais carregadores selecionados do que quantidades deles");
+            
+          }
+
+          setListaCamposInvalidos(camposInvalidos);
+        };
+
+        validacao();
+
+        const timer = setTimeout(() => {
+          setListaCamposInvalidos([]);
+        }, 5000);
+
+        return () => clearTimeout(timer);
       }
     } catch (error) {
       console.error('Erro:', error);
@@ -254,93 +386,106 @@ const AddCharger = ({navigation}) => {
     <Pressable
       style={styles.container}
       onPress={() => {
-        if (cepInput.length == 8) {
-          handleGeocode();
-        } else {
-          setCep('CEP INVÁLIDO!');
-          setValidCep(true);
-          const timer = setTimeout(() => {
-            setCep('');
-          }, 3000);
-
-          return () => clearTimeout(timer);
-        }
-
+        semCep();
         Keyboard.dismiss();
+        if (cepInput.length == 8 && !validcaoLogradouro) {
+          handleGeocode();
+        }
       }}>
       <View>
         <ScrollView>
           <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
           <TextInput
             placeholder="CEP"
-            style={[styles.textInput, {color: validCep ? 'red' : ''}]}
+            placeholderTextColor={validCep ? 'red' : '#000'}
+            style={[styles.textInput, {color: validCep ? 'red' : '#000'}]}
             keyboardType="numeric"
             onChangeText={setCep}
             value={cepInput}
             onBlur={() => {
-              if (cepInput.length == 8) {
+              if (cepInput.length == 8 && !validcaoLogradouro) {
                 handleGeocode();
-              } else {
-                setCep('CEP INVÁLIDO!');
-                setValidCep(true);
-                const timer = setTimeout(() => {
-                  setCep('');
-                }, 3000);
-
-                return () => clearTimeout(timer);
               }
             }}
           />
 
           <View>
-            <TipoLogradouro onTipoLograChange={handleTipoLograChange} />
+            <TipoLogradouro
+              onTipoLograChange={handleTipoLograChange}
+              validar={selectedTipoLogra}
+            />
           </View>
 
           <View>
             <TextInput
               placeholder="Endereço*"
-              style={[styles.textInput]}
+              style={[styles.textInput, {color: validLogra ? 'red' : '#000'}]}
               onChangeText={setLogra}
               value={logra}
-              placeholderTextColor={validLogra ? 'red' : ''}
+              placeholderTextColor={validLogra ? 'red' : '#000'}
+              onBlur={() => {
+                semCep();
+              }}
             />
           </View>
           <View>
             <SelectList onUfChange={handleUfChange} validar={selectedUf} />
           </View>
+
           <TextInput
             placeholder="Cidade"
-            style={styles.textInput}
-            onChange={setCidade}
+            placeholderTextColor={validCidade ? 'red' : '#000'}
+            style={[styles.textInput, {color: validCidade ? 'red' : '#000'}]}
+            onChangeText={text => {
+              setCidade(text);
+            }}
             value={cidade}
-            placeholderTextColor={validCidade ? 'red' : ''}
+            onBlur={() => {
+              console.log(cidade);
+              semCep();
+            }}
           />
+
           <TextInput
-            placeholder="Bairro"
-            style={styles.textInput}
-            onChange={setBairro}
+            placeholder="Bairro*"
+            placeholderTextColor={validBairro ? 'red' : '#000'}
+            style={[styles.textInput, {color: validBairro ? 'red' : '#000'}]}
+            onChangeText={text => {
+              setBairro(text);
+            }}
             value={bairro}
-            placeholderTextColor={validBairro ? 'red' : ''}
-          />
-          <TextInput
-            placeholder="Complemento"
-            style={styles.textInput}
-            onChange={setComplemento}
-            value={complemento}
+            onBlur={() => {
+              semCep();
+            }}
           />
 
           <TextInput
             placeholder="Número"
             keyboardType="number-pad"
-            style={styles.textInput}
+            style={[styles.textInput, {color: validNumero ? 'red' : '#000'}]}
             onChangeText={setNumero}
             value={numero}
-            placeholderTextColor={validNumero ? 'red' : ''}
+            placeholderTextColor={validNumero ? 'red' : '#000'}
+            onBlur={() => {
+              semCep();
+            }}
+          />
+
+          <TextInput
+            placeholder="Complemento"
+            placeholderTextColor={'#000'}
+            style={styles.textInput}
+            onChange={setComplemento}
+            value={complemento}
           />
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
 
-          <TextInput placeholder="Horário*" style={styles.textInput} />
+          <TextInput
+            placeholder="Horário*"
+            style={styles.textInput}
+            placeholderTextColor={'#000'}
+          />
           <View style={styles.acceptPay}>
             <Switch />
             <Text>Aberto 24/7</Text>
@@ -351,7 +496,7 @@ const AddCharger = ({navigation}) => {
             <Text
               style={[
                 styles.placeholder,
-                {color: validSelectCarregadores ? 'red' : '000'},
+                {color: validSelectCarregadores ? 'red' : '#000'},
               ]}>
               Carregador
             </Text>
@@ -360,6 +505,7 @@ const AddCharger = ({navigation}) => {
             <TabelaCarregadores
               notFiltro={true}
               onSelectCarregadores={toggleCarregadorSelection}
+              carr={selectCarregadores}
             />
           ) : (
             <Text></Text>
@@ -368,69 +514,26 @@ const AddCharger = ({navigation}) => {
             placeholder="Quantidades de carregadores"
             keyboardType="number-pad"
             style={styles.textInput}
-            onChangeText={setQtdeCarregadores}
+            onChangeText={text => {
+              setQtdeCarregadores(text);
+            }}
             value={qtdeCarregadores}
-            placeholderTextColor={validQtdeCarregadores ? 'red' : ''}
+            placeholderTextColor={validQtdeCarregadores ? 'red' : '#000'}
           />
           <View style={styles.acceptPay}>
             <Switch />
             <Text>Pagamento Necessário</Text>
           </View>
-          <TextInput placeholder="Preço(Opcional)" style={styles.textInput} />
+          <TextInput
+            placeholder="Preço(Opcional)"
+            style={styles.textInput}
+            placeholderTextColor={'#000'}
+          />
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                if (
-                  logra != undefined &&
-                  numero != undefined &&
-                  cepInput != undefined &&
-                  bairro != undefined &&
-                  cidade != undefined &&
-                  qtdeCarregadores != undefined &&
-                  selectCarregadores != []
-                ) {
-                  addCharger();
-                  navigation.navigate('Stein');
-                } else {
-                  console.log('NÚMERO: ');
-                  console.log(numero);
-
-                  setValidCep(cepInput == '' ? false : true);
-                  setValidCidade(cidade == '' ? false : true);
-                  setValidLogra(logra == '' ? false : true);
-                  setValidNumero(numero == '' ? false : true);
-                  setValidQtdeCarregadores(
-                    qtdeCarregadores == '' ? false : true,
-                  );
-                  setValidSelectCarregadores(
-                    selectCarregadores == [] ? false : true,
-                  );
-                  setValidBairro(bairro == '' ? false : true);
-
-                  var lista = [
-                    validBairro == undefined || validBairro ? 'Bairro' : '',
-                    validCidade == undefined || validCidade ? 'Cidade' : '',
-                    validCep == undefined || validCep ? 'CEP' : '',
-                    validNumero == undefined || validNumero ? 'Número' : '',
-                    validQtdeCarregadores == undefined || validQtdeCarregadores
-                      ? 'Quantidade de carregadores'
-                      : '',
-                    validSelectCarregadores == undefined ||
-                    validSelectCarregadores
-                      ? 'Nenhum carregador selecionado'
-                      : '',
-                    validLogra == undefined || validLogra ? 'Logradouro' : '',
-                  ];
-
-                  setListaCamposInvalidos(lista);
-
-                  const timer = setTimeout(() => {
-                    setListaCamposInvalidos([]);
-                  }, 5000);
-
-                  return () => clearTimeout(timer);
-                }
+                handlePress();
               }}>
               <Text style={styles.textButtons}>Enviar</Text>
             </TouchableOpacity>
