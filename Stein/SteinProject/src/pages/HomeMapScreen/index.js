@@ -617,9 +617,6 @@ export default function Stein({navigation}) {
               />
             </TouchableOpacity>
           </View>
-<<<<<<< Updated upstream
-        </View>
-=======
           </ScrollView>
         </Modal>
       </View>
@@ -641,7 +638,6 @@ export default function Stein({navigation}) {
       loadingEnabled={true}
      >
       </MapView>
->>>>>>> Stashed changes
 
         <View style={estilos.inferior}>
           <TouchableOpacity
