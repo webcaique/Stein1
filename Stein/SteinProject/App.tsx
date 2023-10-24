@@ -16,6 +16,7 @@ import SinginScreen from './src/pages/SinginScreen/index';
 import Stein from './src/pages/HomeMapScreen/';
 import UserScreen from "./src/pages/UserScreen/index";
 import ConfingScreen from "./src/pages/ConfingScreen/index";
+import EsquecerSenha from './src/pages/EsquecerSenha/index';
 import ShareToAFriendScreen from "./src/pages/ShareToAFriendScreen/index";
 import AddCharger from "./src/pages/AddCharger/index";
 import FaqScreen from "./src/pages/FaqScreen/index";
@@ -74,6 +75,12 @@ const App = () => {
       }}
         />
         <Stack.Screen name="Stein" component={Stein}
+        options={{   
+        headerBackTitleVisible:false,
+        headerShown:false,
+      }}
+        />
+        <Stack.Screen name="EsquecerSenha" component={EsquecerSenha}
         options={{   
         headerBackTitleVisible:false,
         headerShown:false,
