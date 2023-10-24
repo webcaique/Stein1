@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
-import {auth} from "../../config/configFirebase.js"
-import firebase from "../../config/configFirebase.js"
+import {auth} from "../../config/configFirebase.js";
+import firebase from "../../config/configFirebase.js";
 
 export default function LoginScreen({navigation}){
     const [checked, setChecked] = useState(true);
-    const toggleCheckbox = () => setChecked(!checked); // Deixar marcado ou não o checkBox
+    const toggleCheckbox = () => setChecked(!checked);
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
     const [email, setEmail] = useState("")
@@ -148,14 +148,14 @@ export default function LoginScreen({navigation}){
                 <Text style={styles.textSigin}
                 //Texto para "explicar" o link
                 > Não possui conta? </Text>
+
                 <TouchableOpacity style={styles.siginButton}
-                // Link para direcionar para a tela de cadastro
                 onPress={()=> navigation.navigate("SinginScreen")}
                 >
                         <Text style={styles.textSiginButton}>
                             Cadastrar-se
                         </Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
             </View>
         </View>
         </Pressable>

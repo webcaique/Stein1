@@ -617,7 +617,31 @@ export default function Stein({navigation}) {
               />
             </TouchableOpacity>
           </View>
+<<<<<<< Updated upstream
         </View>
+=======
+          </ScrollView>
+        </Modal>
+      </View>
+      <View style={estilos.fundo}>
+      <MapView
+      onMapReady={()=>{
+        Platform.OS === "android"?
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        ).then(()=>{
+          console.log("Ganhomos familia");
+        }):null
+      }}
+        provider={PROVIDER_GOOGLE}
+       style={{width: width, height: height}}
+       region={region}
+       minZoomLevel={17}
+       showsUserLocation={false}
+      loadingEnabled={true}
+     >
+      </MapView>
+>>>>>>> Stashed changes
 
         <View style={estilos.inferior}>
           <TouchableOpacity
