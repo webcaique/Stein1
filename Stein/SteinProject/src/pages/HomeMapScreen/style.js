@@ -2,6 +2,35 @@ import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale
 
 
 const estilos=ScaledSheet.create({
+  gps:{
+    marginHorizontal:5,
+  },
+  info:{
+    fontSize:12,
+    color:"#fff"
+  },  
+  horarioDeChegada:{
+    fontSize: 16,
+    color:"#fff",
+    fontWeight:"700",
+  },
+  cotainerInformacoes:{
+    width:"50%",
+    alignItems:"center",
+  },
+  informacoes:{
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent:"flex-start",
+  },
+  rotaContainer:{
+    position:"absolute",
+    bottom:0,
+    width:"100%",
+    alignItems:"center",
+    justifyContent:"center",
+    height:"10%"
+  },
     barraDeBusca:{
       height:1000,
       width:1000,

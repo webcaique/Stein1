@@ -1,170 +1,3 @@
-<MapView
-provider={PROVIDER_GOOGLE}
-style={{width: width, height: height}}
-region={region}
-loadingEnabled={true}
-onMapReady={() => {
-  Platform.OS === 'android'
-    ? PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      ).then(() => {
-        console.log('Ganhomos familia');
-      })
-    : console.log("NULO");
-}}
->
-  {destination && (
-    <Directions
-      origin={region}
-      destination={destination}
-      onReady={()=>{
-
-
-      }}
-    />
-  )}
-{markers.map((coordenada, index) => (
-  <Marker
-    key={index}
-    coordinate={{
-      latitude: coordenada.latitude,
-      longitude: coordenada.longitude,
-    }}
-    title={coordenada.nome}
-  />
-))}
-</MapView>
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
-import Search from './search';
-import Directions from './direction';
-import {getPixelRatio} from './editDirection';
-
-export default class Map extends Component {
-  state = {
-    destination: null,
-    minDuration: null,
-    locMenorDuracao:null,
-    menorDuracao: null,
-  };
-
-  handleLocationSelected = (data, {geometry}) => {
-    const {
-      location: {lat: latitude, lng: longitude},
-    } = geometry;
-    this.setState({
-      destination: {
-        latitude,
-        longitude,
-        title: data.structured_formatting.main_text,
-      },
-    });
-  };
-
-  pertos = (mark) => {
-    const origin = this.props.userMapRegion; // Substitua pelas coordenadas da localização atual do usuário.
-    const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
-    let count = 0;
-    mark.forEach(location => {
-      const destination = {
-        latitude: location.latitude,
-        longitude: location.longitude,
-      };
-
-      // Solicitar as direções do Google Maps
-      fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
-      )
-        .then(response => response.json())
-        .then(data => {
-          if (data.routes && data.routes.length > 0) {
-            const duration = data.routes[0].legs[0].duration.value;
-            if (duration < this.state.minDuration) {
-              this.setState({
-                minDuration: duration,
-              });
-              if(this.props.dest.length == count){ 
-                this.setState({
-                  locMenorDuracao: destination,
-                })
-              }
-            }
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao calcular a duração da viagem:', error);
-        });
-        count++;
-    });
-    this.setState({
-      menorDuracao: this.state.locMenorDuracao,
-      destination: null,
-    })
-    return this.state.menorDuracao;
-  }
-
-  render() {
-    const {
-      userMapRegion,
-      chargerMarkes,
-      inf,
-      searchVer,
-      resetSrc,
-      dest,
-    } = this.props;
-    const {destination, menorDuracao} = this.state;
-
-    return (
-      <View style={{flex: 1}}>
-        <MapView
-          style={{flex: 1}}
-          region={userMapRegion}
-          loadingEnabled
-          ref={el => (this.mapView = el)}>
-          <Marker coordinate={userMapRegion} />
-
-          {destination || menorDuracao? (
-            <>
-              <Directions
-                origin={userMapRegion}
-                destination={destination || this.pertos(dest[0])}
-                onReady={result => {
-                  inf(result.distance, result.duration);
-                  resetSrc(true);
-                  this.mapView.fitToCoordinates(result.coordinates, {
-                    edgePadding: {
-                      right: getPixelRatio(10),
-                      top: getPixelRatio(10),
-                      left: getPixelRatio(10),
-                      bottom: getPixelRatio(10),
-                    },
-                  });
-                }}
-              />
-              <Marker coordinate={destination || menorDuracao} />
-            </>
-          ) : null}
-          {chargerMarkes}
-        </MapView>
-
-        {searchVer && (
-          <Search
-            resetSearch={resetSrc}
-            onLocationSelected={this.handleLocationSelected}
-            searchVal={searchVer}
-            
-          />
-        )}
-      </View>
-    );
-  }
-}
-////////////////////////////////////////////////////////////////////////////////////////////////
 import React, {useState, useEffect} from 'react';
 import {
   Text,
@@ -216,6 +49,7 @@ export default function Stein({navigation}) {
   const [menorDuracao, setMenorDuracao] = useState(null);
   const [minDuration, setMinDuration] = useState(Infinity);
   const [locMenorDuracao, setLocMenorDuracao] = useState();
+  const [verificacaoDestination, setVerificacaoDestination] = useState(false);
   const [pontosPertos, setPontosPertos] = useState("");
 
   const tabelaLogra = firestore.collection('logradouro');
@@ -527,7 +361,7 @@ export default function Stein({navigation}) {
       </View>
       <View style={estilos.fundo}>
         <Map
-          dest={pontosPertos}
+          dest={menorDuracao}
           resetSrc={resetSearch}
           searchVer={search} // Passando o valor atual de searchVer
           userMapRegion={region}
@@ -546,10 +380,42 @@ export default function Stein({navigation}) {
 
         <TouchableOpacity
           style={estilos.iconBoltBg}
-          onPress={()=>{
-            setPontosPertos(markers)
+          onPress={async () => {
+            const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
+            const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
+            let count = 0;
+            markers.forEach(location => {
+              const destination = {
+                latitude: location.latitude,
+                longitude: location.longitude,
+              };
+
+              // Solicitar as direções do Google Maps
+              fetch(
+                `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
+              )
+                .then(response => response.json())
+                .then(data => {
+                  if (data.routes && data.routes.length > 0) {
+                    const duration = data.routes[0].legs[0].duration.value;
+                    if (duration < minDuration) {
+                      setMinDuration(duration);
+                      console.log(markers.length);
+                      if(markers.length == count){
+                        setLocMenorDuracao(destination);
+                      }
+                    }
+                  }
+                })
+                .catch(error => {
+                  console.error('Erro ao calcular a duração da viagem:', error);
+                });
+                count++;
+            });
+            setMenorDuracao(locMenorDuracao);
+            setVerificacaoDestination(!verificacaoDestination);
             setSeach(false);
-            }}>
+          }}>
           <Image
             //Localizador de pontos pertos
             style={estilos.iconBolt}

@@ -78,7 +78,6 @@ export default function AddHome() {
       setListaCamposInvalidos([]);
     }, 5000);
 
-    console.log(route.params.idLocal);
     const edit = async () => {
       //vai tentar pegar os dados da tabela local
       try {
@@ -122,7 +121,6 @@ export default function AddHome() {
               setNumero(datas.numero);
               setSelectedTipoLogra(datas.tipoLogradouro);
               setSelectedUf(datas.UF);
-              console.log(selectedUf);
             }
           });
 
