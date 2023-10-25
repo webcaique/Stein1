@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   Text,
@@ -34,14 +33,14 @@ export default function Stein({navigation}) {
   const [markers, setMarkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menorDuracao, setMenorDuracao] = useState(null);
+  const [minDuration, setMinDuration] = useState(Infinity);
   const [locMenorDuracao, setLocMenorDuracao] = useState();
   const [verificacaoDestination, setVerificacaoDestination] = useState(false);
-  const [durac, setDurac] = useState(null);
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
 
-  resetSearch = (srcVal, drc) => {
+  resetSearch = srcVal => {
     setSearchLoading(srcVal);
   };
 
@@ -348,7 +347,7 @@ export default function Stein({navigation}) {
 
               const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
               const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
-              let minDuration = Infinity;
+              let count = 0;
               markers.forEach(location => {
                 const destination = {
                   latitude: location.latitude,
@@ -361,12 +360,17 @@ export default function Stein({navigation}) {
                 )
                   .then(response => response.json())
                   .then(data => {
+                    let teste = 0;                    
                     if (data.routes && data.routes.length > 0) {
+                      teste++;
                       const duration = data.routes[0].legs[0].duration.value;
                       if (duration < minDuration) {
-                        minDuration = duration
-                        setDurac(minDuration);
-                        setLocMenorDuracao(destination);
+                        setMinDuration(duration);
+                        count++;
+                        console.log(duration < minDuration);
+                        if (markers.length == count) {
+                          setLocMenorDuracao(destination);
+                        }
                       }
                     }
                   })
@@ -429,10 +433,10 @@ export default function Stein({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setSeach(true);
+              setSeach(!search);
+              setMinDuration('');
               setLocMenorDuracao('');
               setMenorDuracao('');
-              setDurac(null);
             }}>
             <Image
               // Botão para pesquisar a localização
@@ -450,25 +454,8 @@ export default function Stein({navigation}) {
             />
           </TouchableOpacity>
         </View>
-        {searchLoading ? <Rota distancia={distancia} duracao={duracao} durac={durac}/> : ''}
+        {searchLoading ? <Rota distancia={distancia} duracao={duracao} /> : ''}
       </View>
     );
   }
 }
-
-/*
-
-<Image
-                        style={estilos.imagemIcon2}
-                        source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
-                        }}
-                      />
-
-<Image
-                        style={estilos.imagemIcon2}
-                        source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
-                        }}
-                      />
-*/

@@ -80,7 +80,6 @@ export default function AddHome() {
       setListaCamposInvalidos([]);
     }, 5000);
 
-    console.log(route.params.idLocal);
     const edit = async () => {
       //vai tentar pegar os dados da tabela local
       try {

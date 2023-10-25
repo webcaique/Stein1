@@ -4,7 +4,9 @@ import estilos from "./style";
 
 
 export default function({validar, carr, onSelectCarregadores, ...props} ) {
-  const [selectedCarregadores, setSelectedCarregadores] = useState(validar == []? []: [validar]); // Use o estado para controlar os carregadores selecionados
+  const [selectedCarregadores, setSelectedCarregadores] = useState(validar == [] || validar == undefined ? []: [validar]); // Use o estado para controlar os carregadores selecionados
+  console.log()
+  console.log(selectedCarregadores);
 
   // imprimir os dados para identificcação dos carregadores
   const nomeCarregadores = [

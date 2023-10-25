@@ -1,4 +1,4 @@
-package com.stein;
+package com.Stein;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
