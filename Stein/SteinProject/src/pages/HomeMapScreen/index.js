@@ -25,6 +25,7 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
+import { Rating, AirbnbRating } from 'react-native-ratings';
 import styles from '../styles';
 
 const Img =
@@ -44,21 +45,35 @@ export default function Stein({navigation}) {
       const listaLogra = [];
       snapshotLogra.forEach(doc => {
         listaLogra.push({id: doc.id, ...doc.data()});
+        console.log('ablubefkabkfjbaejkfb')
+        console.log(doc._data.cidade)
+        setCidade(doc._data.cidade)
+    
       });
 
       const newMarkers = [];
 
+     const listaEnd = []
+
       listaLogra.forEach(docs => {
         listCarr.forEach(datas => {
           if (datas.IDLogradouro === docs.id) {
-            let nome = datas.nome;
+            let nome = `${docs.bairro}, \n${docs.cidade}`;
+            let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+            console.log('ELEFANTE')
+            console.log(endereco)
+            console.log('3 tigres')
+            console.log(nome)
             const novoPonto = {...docs.geolocalizacao, nome};
             newMarkers.push(novoPonto);
+            listaEnd.push(endereco)
           }
         });
       });
 
+
       setMarkers(newMarkers);
+      setEndereco(listaEnd)
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -72,11 +87,7 @@ export default function Stein({navigation}) {
     setRefreshKey(prevKey => prevKey + 1);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchMarkersFromFirestore();
-    }, []),
-  );
+
 
   function GetMyLocation(){
     Geolocation.getCurrentPosition(
@@ -141,6 +152,9 @@ export default function Stein({navigation}) {
   const [logra, setLogra] = useState();
   const [loading, setLoading] = useState(false);
   const [nome, setNome]= useState([])
+  const [cidade, setCidade]= useState([])
+  const [endereco, setEndereco]= useState([])
+  const [end, setEnd]= useState([])
   useEffect(() => {
     const fetchBd = async () => {
       const snapshotCarr = await tabelaCarregadores.get();
@@ -421,14 +435,16 @@ export default function Stein({navigation}) {
             </ScrollView>
           </Modal>
         </View>
+        
         <View style={estilos.fundo}>
-          <Modal visible={visivel}>
+        
+          <Modal visible={visivel} >
             <View>
 
               
 <View style={estilos.Img1}>
 
-  <ImageBackground
+    <ImageBackground
   style={estilos.Img}
   source={{
     uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'}}>
@@ -449,7 +465,12 @@ export default function Stein({navigation}) {
 </View>
 
 <View style={estilos.estrela}>
- <Text style={{color:"white", fontSize: verticalScale(25)}}>{nome}</Text>
+<Rating
+  showRating
+  onFinishRating={this.ratingCompleted}
+  style={{ paddingVertical: 10 }}
+/>
+ <Text style={{ fontSize: verticalScale(20), color: 'white', marginLeft: moderateScale(200)}}>{cidade}</Text>
 </View>
 
               <View style={estilos.bff}>
@@ -506,8 +527,9 @@ export default function Stein({navigation}) {
 {/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
 
 
-              <TouchableOpacity style={estilos.iconsSpecs1}>
-               
+
+              <View style={estilos.iconsSpecs1}>
+                    
                   <Image
                     //Localizar
                     style={estilos.icon}
@@ -515,10 +537,10 @@ export default function Stein({navigation}) {
                       uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fendereco.png?alt=media&token=073a9f5b-f866-4583-bec7-5a4615b11fbf',
                     }}
                   />
-                     <Text style={estilos.textIcon1}>R. Ribeirão Claro, 230 - Vila Olímpia, São Paulo - SP</Text>
-                </TouchableOpacity>
+                     <Text style={estilos.textIcon1}>{end}</Text>
+                </View>
 
-                <TouchableOpacity style={estilos.iconsSpecs1}>
+                <View style={estilos.iconsSpecs1}>
                   <Image
                     //Dinheiro
                     style={estilos.icon}
@@ -527,9 +549,9 @@ export default function Stein({navigation}) {
                     }}
                   />
                     <Text style={estilos.textIcon1}>Grátis</Text>
-                </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity style={estilos.iconsSpecs1}>
+                <View style={estilos.iconsSpecs1}>
                   <Image
                     //Estacionamento
                     style={estilos.icon}
@@ -538,11 +560,11 @@ export default function Stein({navigation}) {
                     }}
                   />
                     <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
-                </TouchableOpacity>
+                </View>
 
               
              
-                <TouchableOpacity style={estilos.iconsSpecs1}>
+                <View style={estilos.iconsSpecs1}>
                   <Image
                     //Tipo
                     style={estilos.icon}
@@ -552,11 +574,16 @@ export default function Stein({navigation}) {
                   />
                     <Text style={estilos.textIcon1}>Estacionamento para VE, Restaurante, 
                       Banheiros, Compras</Text>
-                </TouchableOpacity>
+                </View>
+              
+
                 
+
            
               </View>
+              
             </View>
+            
           </Modal>
 
 
@@ -578,19 +605,26 @@ export default function Stein({navigation}) {
             region={region}
             showsUserLocation={true}
             loadingEnabled={true}>
-            {markers.map((coordenada, index) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: coordenada.latitude,
-                  longitude: coordenada.longitude,
-                }}
-                title={coordenada.nome}
-                onPress={() => {
-                  setVisivel(true);
-                }}
-              />
-            ))}
+            {markers.map((coordenada, index) => {
+              
+              return(
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: coordenada.latitude,
+                    longitude: coordenada.longitude,
+                  }}
+                  title={coordenada.nome}
+                  onPress={() => {
+                    setVisivel(true) ;   
+                    setEnd(endereco[index])
+                     setCidade(markers[index].nome)
+                    console.log('teste2o')
+                    console.log(cidade)
+                  }}
+                />
+              )
+            })}
           </MapView>
 
           <TouchableOpacity style={estilos.iconBoltBg}>
