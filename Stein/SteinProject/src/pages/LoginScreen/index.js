@@ -1,16 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
-
-
+import {auth} from "../../config/configFirebase.js";
+import firebase from "../../config/configFirebase.js";
 
 export default function LoginScreen({navigation}){
     const [checked, setChecked] = useState(true);
-    const toggleCheckbox = () => setChecked(!checked); // Deixar marcado ou não o checkBox
+    const toggleCheckbox = () => setChecked(!checked);
     const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [errorLogin, setErrorLogin] = useState("")
+
+    const loginFirebase = ()=>{
+    auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+    
+        let user = userCredential.user;
+        console.log(user)
+        navigation.navigate("QuemSomos")
+        // navigation.navigate("teste", {idUser: user.uid})
+    })
+    .catch((error) => {
+        setErrorLogin(true)
+        let errorCode = error.code;
+        let errorMessage = error.message;
+    
+    });
+    }
+
+    useEffect(()=>{
+
+    }, []);
+
     return(
+        <KeyboardAvoidingView>
         <View style={{backgroundColor:"#fff", height:"100%"}} 
         //Container para fazer a página ocupar toda tela
         >
@@ -32,6 +58,8 @@ export default function LoginScreen({navigation}){
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize="none"
+                onChangeText={(text)=>setEmail(text)}
+                value={email}
                 />
                 <TextInput //Campo para colocar a senha
                 style={styles.textInput2} 
@@ -42,7 +70,10 @@ export default function LoginScreen({navigation}){
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
+                textContentType={'password'}
+                onChangeText={(text)=>setPassword(text)}
+                value={password}                
+                />
                 <View style={styles.checkBox}>
                     <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
                         disabled={false}
@@ -83,30 +114,54 @@ export default function LoginScreen({navigation}){
             </TouchableOpacity>
             
             </View>
+
+        {email === "" || password === ""
+        ?
             <TouchableOpacity style={styles.buttons} 
             //Botão para fazer o login e fazer a verificação de dados
-            onPress={()=> navigation.navigate("QuemSomos")}>
+            disabled={true}>
                 <Text style={styles.textButtons}>Entrar</Text>
             </TouchableOpacity>
+        :
+            <TouchableOpacity style={styles.buttons} 
+            //Botão para fazer o login e fazer a verificação de dados
+            onPress={()=> {
+                loginFirebase()
+                }
+                }>
+                <Text style={styles.textButtons}>Entrar</Text>
+            </TouchableOpacity>
+        }
+            <View>
+                {errorLogin === true
+                    ?
+                    <View>
+                        <Text>email ou/e senha inválidos</Text>
+                    </View>
+                    :
+                    <View/>
+                }
+            </View>
             <View style={styles.singinLink}
             //Container do link
             >    
                 <Text style={styles.textSigin}
                 //Texto para "explicar" o link
                 > Não possui conta? </Text>
+
                 <TouchableOpacity style={styles.siginButton}
-                // Link para direcionar para a tela de cadastro
                 onPress={()=> navigation.navigate("SinginScreen")}
                 >
                         <Text style={styles.textSiginButton}>
                             Cadastrar-se
                         </Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
             </View>
         </View>
         </Pressable>
             </ScrollView>
         </View>
+        </KeyboardAvoidingView>
     )
 }
 

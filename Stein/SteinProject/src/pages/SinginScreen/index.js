@@ -1,13 +1,37 @@
-import React from "react";
-import {View, Text, Pressable, Keyboard, TextInput, TouchableOpacity} from "react-native"
-import styles from "./style"
-import Search from "../HomeMapScreen/search";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
+import styles from "./style.js"
+import CheckBox from '@react-native-community/checkbox';
+import {auth} from "../../config/configFirebase.js";
+import firebase from "../../config/configFirebase.js";
 
 const SinginScreen = ({navigation}) => {
+
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [nome, setNome] = useState("")
+    const [errorRegister, setErrorRegister] = useState("")
+
+    const register =  () => {
+    auth.createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+        let user = userCredential.user;
+        navigation.navigate("LoginScreen")
+    })
+    .catch((error) => {
+        setErrorRegister(true)
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.error(error.message)
+    });
+    }
+
     return(
         <View style={styles.conteiner} 
         //Container principal
         >
+        <KeyboardAvoidingView>
         <Pressable // Deixa a página clicável para desativar o teclado do usuário
             onPress={Keyboard.dismiss}>
                 <View style={styles.conteiner} 
@@ -22,6 +46,8 @@ const SinginScreen = ({navigation}) => {
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize='sentences'
+                onChangeText={(text)=>setNome(text)}
+                value={nome}
                 />
                 <TextInput // campo para colocar o email
                 placeholder="Email"
@@ -30,6 +56,8 @@ const SinginScreen = ({navigation}) => {
                 keyboardType="email-address" 
                 returnKeyLabel="email"
                 autoCapitalize="none"
+                onChangeText={(text)=>setEmail(text)}
+                value={email}
                 />
                 <TextInput // campo para colocar o senha
                 style={styles.textInputAll} 
@@ -40,7 +68,10 @@ const SinginScreen = ({navigation}) => {
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
+                textContentType={'password'}
+                onChangeText={(text)=>setPassword(text)}
+                value={password}
+                />
 
                 <TextInput // campo para confirmar sua senha
                 style={styles.textInputAll} 
@@ -51,18 +82,57 @@ const SinginScreen = ({navigation}) => {
                 secureTextEntry={true}
                 password={true} 
                 autoCorrect={false}
-                textContentType={'password'}/>
-                <View styles={styles.viewButton} 
-                //Container do botão para cadastrar o usuário
+                textContentType={'password'}
+                onChangeText={(text)=>setConfirmPassword(text)}
+                value={confirmPassword}
+                />
+
+                {email === "" || password === "" || confirmPassword === "" || nome === ""
+                ?
+                <TouchableOpacity style={styles.buttons} 
+                disabled={true}
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
                 >
-                    <TouchableOpacity style={styles.buttons} 
-                    onPress={()=> navigation.navigate("LoginScreen")}
-                    //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
-                    >
-                        <Text style={styles.textButtons}
-                        //Texto do botão
-                        >Cadastrar</Text>
-                    </TouchableOpacity>
+                    <Text style={styles.textButtons}
+                    //Texto do botão
+                    >Cadastrar</Text>
+                </TouchableOpacity>
+                : ( confirmPassword != password ?
+                <TouchableOpacity style={styles.buttons} 
+                onPress={()=> {
+                    register()
+                    }
+                    }
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+                >
+                    <Text style={styles.textButtons}
+                    //Texto do botão
+                    >Cadastrar</Text>
+                </TouchableOpacity>
+                :
+                <TouchableOpacity style={styles.buttons} 
+                onPress={()=> {
+                    register()
+                    }
+                    }
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+                >
+                    <Text style={styles.textButtons}
+                    //Texto do botão
+                    >Cadastrar</Text>
+                </TouchableOpacity>
+                )
+                }
+            <View>
+                {errorRegister === true
+                    ?
+                    <View style={styles.error}>
+                        <Text style={styles.errorText}>Email ou/e senha inválido(s)</Text>
+                    </View>
+                    :
+                    <View/>
+                }
+            </View>
                     <View style={styles.loginLink}
                     //Link para entrar na tela de login
                     >    
@@ -83,8 +153,9 @@ const SinginScreen = ({navigation}) => {
             </View>
         
 
-            </View>
+
         </Pressable>
+        </KeyboardAvoidingView>
         </View>
     )
 
