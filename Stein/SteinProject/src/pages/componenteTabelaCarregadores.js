@@ -6,7 +6,7 @@ import estilos from "./style";
 export default function({validar, carr, onSelectCarregadores, ...props} ) {
   const [selectedCarregadores, setSelectedCarregadores] = useState(validar == [] || validar == undefined ? []: [validar]); // Use o estado para controlar os carregadores selecionados
   console.log()
-  console.log(selectedCarregadores);
+  console.log(carr);
 
   // imprimir os dados para identificcação dos carregadores
   const nomeCarregadores = [
@@ -60,7 +60,7 @@ export default function({validar, carr, onSelectCarregadores, ...props} ) {
   function renderCarregador(i) { // função para aparecer os carregadores na tela do usuário
     const carregadorIndex = i + 1;
     let isSelected = selectedCarregadores.includes(carregadorIndex);
-    isSelected = carr.includes(carregadorIndex);  
+    isSelected = carr == undefined?[]:carr.includes(carregadorIndex);  
     return (
       
       <TouchableOpacity

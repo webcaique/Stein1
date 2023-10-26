@@ -23,14 +23,6 @@ export default class Map extends Component {
     });
   };
 
-  componentDidMount() {
-    if (this.props.dest) {
-      this.setState({
-        destination: this.props.dest,
-      });
-    }
-  }
-
   render() {
     const {
       userMapRegion,
@@ -41,12 +33,10 @@ export default class Map extends Component {
       dest,
       verif,
     } = this.props;
- 
-
     let destination = this.state.destination;
     if(dest){
       destination = dest
-  }
+    }
     return (
       <View style={{flex: 1}}>
         <MapView
@@ -62,6 +52,7 @@ export default class Map extends Component {
               <Directions
                 origin={userMapRegion}
                 destination={destination}
+                desti={dest}
                 onReady={result => {
                   inf(result.distance, result.duration);
                   resetSrc(true);

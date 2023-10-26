@@ -1,10 +1,10 @@
 import React from "react";
 import MapViewDirections from "react-native-maps-directions";
 
-const Directions = ({destination, origin, onReady})=>{
+const Directions = ({destination, origin, onReady, desti})=>{
     return(
         <MapViewDirections
-        destination={destination}
+        destination={desti?desti:destination}
         origin={origin}
         onReady={onReady}
         apikey={"AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ"}

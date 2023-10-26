@@ -36,11 +36,13 @@ export default function Stein({navigation}) {
   const [locMenorDuracao, setLocMenorDuracao] = useState();
   const [verificacaoDestination, setVerificacaoDestination] = useState(false);
   const [durac, setDurac] = useState(null);
+  const [tabCarr, setTabCarr] = useState();
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
+  const tabelaUsuario = firestore.collection('usuario');
 
-  resetSearch = (srcVal, drc) => {
+  resetSearch = srcVal => {
     setSearchLoading(srcVal);
   };
 
@@ -53,56 +55,80 @@ export default function Stein({navigation}) {
     try {
       const listaLogra = [];
       const listCarr = [];
-      tabelaCarregadores.onSnapshot(datas=>{
-        datas._docs.forEach(data=>{
-          listCarr.push({id: data._ref._documentPath._parts[1], ...data._data})
+      const listUsuario = [];
+      tabelaCarregadores.onSnapshot(datas => {
+        datas._docs.forEach(data => {
+          listCarr.push({id: data._ref._documentPath._parts[1], ...data._data});
         });
 
         tabelaLogra.onSnapshot(dados => {
-          dados._docs.forEach(data=>{
-            listaLogra.push({id: data._ref._documentPath._parts[1], ...data._data})
-          })
+          dados._docs.forEach(data => {
+            listaLogra.push({
+              id: data._ref._documentPath._parts[1],
+              ...data._data,
+            });
+          });
 
-          const newMarkers = [];
+          tabelaUsuario.onSnapshot(datas => {
+            datas._docs.forEach(dado => {
+              listUsuario.push({
+                id: dado._ref._documentPath._parts[1],
+                ...dado._data,
+              });
 
-        listaLogra.forEach(docs => {
-          listCarr.forEach(datas => {
-            if (datas.IDLogradouro === docs.id) {
-              let nome = datas.nome;
-              const novoPonto = {...docs.geolocalizacao, nome};
-              newMarkers.push(novoPonto);
-            }
+              const newMarkers = [];
+
+              listCarr.forEach(datas => {
+                listaLogra.forEach(docs => {
+                  if (datas.IDLogradouro === docs.id) {
+                    let nome = datas.nome;
+                    const novoPonto = {...docs.geolocalizacao, nome};
+                    newMarkers.push(novoPonto);
+                  }
+                });
+                listUsuario.forEach(dados => {
+
+                  for (const numero1 of dados.IDTipoCarregador) {
+                    for (const numero2 of datas.IDTipoCarregador) {
+                      if (numero1 == numero2) {
+                        setTabCarr(newMarkers)
+                      }
+                    }
+                  }
+                });
+              });
+              setMarkers(newMarkers);
+              setLoading(false);
+              console.log(tabCarr);
+            });
           });
         });
-        setMarkers(newMarkers);
-        setLoading(false);
-        })
       });
-
     } catch (error) {
       setLoading(false);
     }
   };
 
   const [region, setRegion] = useState();
-  useEffect(()=>{
-    Geolocation.getCurrentPosition((position)=>{
-      let location;
-      location = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }
-      setRegion(location);
-    }, 
-    erro=>console.error(erro),
-    {
-      enableHighAccuracy: false,
-      timeout: 3000,
-    }
-    )
-  }, [])
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        let location;
+        location = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        };
+        setRegion(location);
+      },
+      erro => console.error(erro),
+      {
+        enableHighAccuracy: false,
+        timeout: 3000,
+      },
+    );
+  }, []);
 
   useEffect(() => {
     setDistancia('');
@@ -197,6 +223,7 @@ export default function Stein({navigation}) {
                       <View style={estilos.centerTabela}>
                         <TabelaCarregadores
                           onSelectCarregadores={toggleCarregadorSelection}
+                          carr={selectedCarregadores}
                         />
                       </View>
                     ) : (
@@ -342,45 +369,46 @@ export default function Stein({navigation}) {
 
           <TouchableOpacity
             style={estilos.iconBoltBg}
-            onPress={async () => {
-              if(verificacaoDestination || !verificacaoDestination){
-
+            onPressIn={() => {
               const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
               const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
               let minDuration = Infinity;
               markers.forEach(location => {
-                const destination = {
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                };
-
-                // Solicitar as direções do Google Maps
-                fetch(
-                  `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
-                )
-                  .then(response => response.json())
-                  .then(data => {
-                    if (data.routes && data.routes.length > 0) {
-                      const duration = data.routes[0].legs[0].duration.value;
-                      if (duration < minDuration) {
-                        minDuration = duration
-                        setDurac(minDuration);
-                        setLocMenorDuracao(destination);
-                      }
-                    }
-                  })
-                  .catch(error => {
-                    console.error(
-                      'Erro ao calcular a duração da viagem:',
-                      error,
-                    );
-                  }); 
+                tabCarr.forEach((inf)=>{
+                  if(inf == location){
+                    const destination = {
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                    };
+    
+    
+                    // Solicitar as direções do Google Maps
+                    fetch(
+                      `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
+                    )
+                      .then(response => response.json())
+                      .then(data => {
+                        if (data.routes && data.routes.length > 0) {
+                          const duration = data.routes[0].legs[0].duration.value;
+                          if (duration < minDuration) {
+                            minDuration = duration;
+                            setDurac(minDuration);
+                            setLocMenorDuracao(destination);
+                          }
+                        }
+                      })
+                      .catch(error => {
+                        console.error(
+                          'Erro ao calcular a duração da viagem:',
+                          error,
+                        );
+                      });
+                  }
+                });
               });
               setMenorDuracao(locMenorDuracao);
               setVerificacaoDestination(!verificacaoDestination);
               setSeach(false);
-            
-              }
             }}>
             <Image
               //Localizador de pontos pertos
@@ -429,7 +457,7 @@ export default function Stein({navigation}) {
           <TouchableOpacity
             onPress={() => {
               setSeach(true);
-              setLocMenorDuracao('');
+              setLocMenorDuracao(null);
               setMenorDuracao('');
               setDurac(null);
             }}>
@@ -449,7 +477,11 @@ export default function Stein({navigation}) {
             />
           </TouchableOpacity>
         </View>
-        {searchLoading ? <Rota distancia={distancia} duracao={duracao} durac={durac}/> : ''}
+        {searchLoading ? (
+          <Rota distancia={distancia} duracao={duracao} durac={durac} />
+        ) : (
+          ''
+        )}
       </View>
     );
   }
