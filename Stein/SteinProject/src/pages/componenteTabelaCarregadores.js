@@ -3,8 +3,10 @@ import { View, TouchableOpacity, Text, Image, ScrollView } from "react-native";
 import estilos from "./style";
 
 
-export default function({onFiltros, validar, carr, onSelectCarregadores, ...props} ) {
+export default function({validar, carr, onSelectCarregadores, ...props} ) {
   const [selectedCarregadores, setSelectedCarregadores] = useState(validar == [] || validar == undefined ? []: [validar]); // Use o estado para controlar os carregadores selecionados
+  console.log()
+  console.log(carr);
 
   // imprimir os dados para identificcação dos carregadores
   const nomeCarregadores = [
@@ -39,15 +41,26 @@ export default function({onFiltros, validar, carr, onSelectCarregadores, ...prop
         return [carregadorIndex]; // Se prevSelected for undefined, crie um novo array com carregadorIndex
       }
     });
-    onSelectCarregadores(selectedCarregadores);
+    onSelectCarregadores(prevSelected => {//manda os dados para outra páginas
+      if (Array.isArray(prevSelected)) {
+        if (prevSelected.includes(carregadorIndex)) {
+          return prevSelected.filter(index => index !== carregadorIndex);
+        } else {
+          return [...prevSelected, carregadorIndex];
+        }
+      } else {
+        return [carregadorIndex]; // Se prevSelected for undefined, crie um novo array com carregadorIndex
+      }
+    });
   }
+  
   
   
 
   function renderCarregador(i) { // função para aparecer os carregadores na tela do usuário
     const carregadorIndex = i + 1;
     let isSelected = selectedCarregadores.includes(carregadorIndex);
-    isSelected = carr.includes(carregadorIndex);
+    isSelected = carr == undefined?[]:carr.includes(carregadorIndex);  
     return (
       
       <TouchableOpacity
@@ -56,10 +69,7 @@ export default function({onFiltros, validar, carr, onSelectCarregadores, ...prop
           estilos.carregadores,
           isSelected ? estilos.bgPreto : estilos.bgBranco
         ]}
-        onPress={() => {
-          toggleCarregadorSelection(carregadorIndex)
-          onFiltros(selectedCarregadores);
-        }}
+        onPress={() => toggleCarregadorSelection(carregadorIndex)}
       >
         <View style={estilos.carregador}>
           <Image
@@ -160,7 +170,6 @@ export default function({onFiltros, validar, carr, onSelectCarregadores, ...prop
     
     
   </ScrollView>
-
   return (
     content
     
