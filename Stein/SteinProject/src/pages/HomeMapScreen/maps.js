@@ -31,12 +31,14 @@ export default class Map extends Component {
       searchVer,
       resetSrc,
       dest,
-      verif,
+      onFiltros,
+      tabelaLogradouro,
+      tabelaCarregador,
     } = this.props;
     let destination = this.state.destination;
-    if(dest){
-      destination = dest
-    }
+
+    
+
     return (
       <View style={{flex: 1}}>
         <MapView

@@ -17,6 +17,7 @@ import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
+import Table from "./filtros"
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
@@ -37,6 +38,8 @@ export default function Stein({navigation}) {
   const [verificacaoDestination, setVerificacaoDestination] = useState(false);
   const [durac, setDurac] = useState(null);
   const [tabCarr, setTabCarr] = useState();
+  const [tabelaCarregador, setTabelaCarregador] = useState();
+  const [tabelaLogradouro, setTabelaLogradouro] = useState();
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
@@ -86,12 +89,14 @@ export default function Stein({navigation}) {
                     newMarkers.push(novoPonto);
                   }
                 });
-                listUsuario.forEach(dados => {
 
+                setTabelaCarregador(listCarr);
+                setTabelaLogradouro(listaLogra);
+                listUsuario.forEach(dados => {
                   for (const numero1 of dados.IDTipoCarregador) {
                     for (const numero2 of datas.IDTipoCarregador) {
                       if (numero1 == numero2) {
-                        setTabCarr(newMarkers)
+                        setTabCarr(newMarkers);
                       }
                     }
                   }
@@ -99,7 +104,6 @@ export default function Stein({navigation}) {
               });
               setMarkers(newMarkers);
               setLoading(false);
-              console.log(tabCarr);
             });
           });
         });
@@ -145,7 +149,7 @@ export default function Stein({navigation}) {
   };
 
   const [selectedCarregadores, setSelectedCarregadores] = useState([]);
-  const toggleCarregadorSelection = carr => {
+  const toggleCarregadorSelection = (carr) => {
     setSelectedCarregadores(carr);
   };
 
@@ -221,10 +225,11 @@ export default function Stein({navigation}) {
                     </TouchableOpacity>
                     {filtros ? (
                       <View style={estilos.centerTabela}>
-                        <TabelaCarregadores
-                          onSelectCarregadores={toggleCarregadorSelection}
-                          carr={selectedCarregadores}
-                        />
+                          <TabelaCarregadores
+                            onSelectCarregadores={toggleCarregadorSelection}
+                            carr={selectedCarregadores}
+                            filtros={true}
+                          />
                       </View>
                     ) : (
                       <View></View>
@@ -350,11 +355,15 @@ export default function Stein({navigation}) {
         </View>
         <View style={estilos.fundo}>
           <Map
+          tabelaCarregador={tabelaCarregador}
+          tabelaLogradouro={tabelaLogradouro}
+          onFiltros={selectedCarregadores}
             dest={menorDuracao}
             resetSrc={resetSearch}
             searchVer={search} // Passando o valor atual de searchVer
             userMapRegion={region}
-            chargerMarkes={markers.map((coordenada, index) => (
+            chargerMarkes={markers.map((coordenada, index) => {
+              return(
               <Marker
                 key={index}
                 coordinate={{
@@ -363,7 +372,7 @@ export default function Stein({navigation}) {
                 }}
                 title={coordenada.nome}
               />
-            ))}
+            )})}
             inf={getInfo}
           />
 
@@ -374,14 +383,13 @@ export default function Stein({navigation}) {
               const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
               let minDuration = Infinity;
               markers.forEach(location => {
-                tabCarr.forEach((inf)=>{
-                  if(inf == location){
+                tabCarr.forEach(inf => {
+                  if (inf == location) {
                     const destination = {
                       latitude: location.latitude,
                       longitude: location.longitude,
                     };
-    
-    
+
                     // Solicitar as direções do Google Maps
                     fetch(
                       `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
@@ -389,7 +397,8 @@ export default function Stein({navigation}) {
                       .then(response => response.json())
                       .then(data => {
                         if (data.routes && data.routes.length > 0) {
-                          const duration = data.routes[0].legs[0].duration.value;
+                          const duration =
+                            data.routes[0].legs[0].duration.value;
                           if (duration < minDuration) {
                             minDuration = duration;
                             setDurac(minDuration);
