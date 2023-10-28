@@ -371,6 +371,7 @@ export default function Stein({navigation}) {
                   longitude: coordenada.longitude,
                 }}
                 title={coordenada.nome}
+                icon={{uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FpingCarregadores1.png?alt=media&token=769d4cfd-0682-4d23-99d5-4e51947f3196&_gl=1*1l5agxv*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODQ0OTM1Ny4xNDIuMS4xNjk4NDUwMTM5LjU1LjAuMA..`}}
               />
             )})}
             inf={getInfo}
