@@ -35,7 +35,7 @@ import DataBox from "./src/pages/HouseAndWork/boxData"
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-
+  console.log("AQUI")
   return (
     
     <NavigationContainer>

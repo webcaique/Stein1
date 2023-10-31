@@ -17,7 +17,6 @@ import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
-import Table from "./filtros"
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
