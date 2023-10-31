@@ -161,6 +161,15 @@ const styles = ScaledSheet.create({
     flexDirection:"row",
     justifyContent:"space-around",
     alignItems:"center",
+  },
+  aviso:{
+    width:300,
+    height:"auto",
+    padding:20,
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor:"white",
+    borderRadius:10,
   }
 });
 
