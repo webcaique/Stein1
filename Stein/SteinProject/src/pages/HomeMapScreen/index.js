@@ -23,6 +23,13 @@ const Img =
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+  //Dados para o Marker
+  const [cidade, setCidade] = useState([]);
+  const [endereco, setEndereco] = useState([]);
+  const [visivel, setVisivel] = useState(false);
+
+
+  //Dado para o destino
   const [distancia, setDistancia] = useState('');
   const [duracao, setDuracao] = useState('');
   const [search, setSeach] = useState('');
@@ -79,13 +86,17 @@ export default function Stein({navigation}) {
               });
 
               const newMarkers = [];
+              const listaEnd = [];
 
               listCarr.forEach(datas => {
                 listaLogra.forEach(docs => {
                   if (datas.IDLogradouro === docs.id) {
-                    let nome = datas.nome;
+                    let nome = `${docs.bairro}, \n${docs.cidade}`;
+                    let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
                     const novoPonto = {...docs.geolocalizacao, nome};
                     newMarkers.push(novoPonto);
+                    setCidade(docs._data.cidade);
+                    listaEnd.push(endereco);
                   }
                 });
 
@@ -102,6 +113,7 @@ export default function Stein({navigation}) {
                 });
               });
               setMarkers(newMarkers);
+              setEndereco(listaEnd);
               setLoading(false);
             });
           });
@@ -148,7 +160,7 @@ export default function Stein({navigation}) {
   };
 
   const [selectedCarregadores, setSelectedCarregadores] = useState([]);
-  const toggleCarregadorSelection = (carr) => {
+  const toggleCarregadorSelection = carr => {
     setSelectedCarregadores(carr);
   };
 
@@ -224,11 +236,11 @@ export default function Stein({navigation}) {
                     </TouchableOpacity>
                     {filtros ? (
                       <View style={estilos.centerTabela}>
-                          <TabelaCarregadores
-                            onSelectCarregadores={toggleCarregadorSelection}
-                            carr={selectedCarregadores}
-                            filtros={true}
-                          />
+                        <TabelaCarregadores
+                          onSelectCarregadores={toggleCarregadorSelection}
+                          carr={selectedCarregadores}
+                          filtros={true}
+                        />
                       </View>
                     ) : (
                       <View></View>
@@ -353,26 +365,171 @@ export default function Stein({navigation}) {
           </Modal>
         </View>
         <View style={estilos.fundo}>
+          <Modal visible={visivel}>
+            <View>
+              <View style={estilos.Img1}>
+                <ImageBackground
+                  style={estilos.Img}
+                  source={{
+                    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setVisivel(false);
+                    }}>
+                    <Image
+                      style={estilos.seta}
+                      source={{
+                        uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w',
+                      }}></Image>
+                  </TouchableOpacity>
+                </ImageBackground>
+              </View>
+
+              <View style={estilos.estrela}>
+                <Rating
+                  showRating
+                  onFinishRating={this.ratingCompleted}
+                  style={{paddingVertical: 10}}
+                />
+                <Text
+                  style={{
+                    fontSize: verticalScale(20),
+                    color: 'white',
+                    marginLeft: moderateScale(200),
+                  }}>
+                  {cidade}
+                </Text>
+              </View>
+
+              <View style={estilos.bff}>
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Favoritos
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festrela.png?alt=media&token=55c04446-3b9b-4666-bf4b-f8baf15913c5',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Favorito</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Galeria
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fgaleria.png?alt=media&token=2116fe7a-d830-4a5e-a028-be0940600f00',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Adicionar Foto</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //ROTAS
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fset2.png?alt=media&token=b9379978-0c83-4758-a591-4619509b3e09',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Direção</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Reportar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fperigo.png?alt=media&token=884eace5-04b9-450c-b168-bea02542e4ba',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Reportar</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={estilos.Strahd}>
+                {/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Localizar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fendereco.png?alt=media&token=073a9f5b-f866-4583-bec7-5a4615b11fbf',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>{end}</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Dinheiro
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fbufunfa.png?alt=media&token=e608fc97-e108-4180-ab19-97d66bfc1fcc',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>Grátis</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Estacionamento
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festacionamento.png?alt=media&token=a827952e-b37d-4383-8144-2c7c38ffe54d',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Tipo
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ftipo.png?alt=media&token=34abcf01-a2ac-4b54-92de-20a74a835ef6',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>
+                    Estacionamento para VE, Restaurante, Banheiros, Compras
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
           <Map
-          tabelaCarregador={tabelaCarregador}
-          tabelaLogradouro={tabelaLogradouro}
-          onFiltros={selectedCarregadores}
+            tabelaCarregador={tabelaCarregador}
+            tabelaLogradouro={tabelaLogradouro}
+            onFiltros={selectedCarregadores}
             dest={menorDuracao}
             resetSrc={resetSearch}
             searchVer={search} // Passando o valor atual de searchVer
             userMapRegion={region}
             chargerMarkes={markers.map((coordenada, index) => {
-              return(
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: coordenada.latitude,
-                  longitude: coordenada.longitude,
-                }}
-                title={coordenada.nome}
-                icon={{uri:`https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FpingCarregadores1.png?alt=media&token=769d4cfd-0682-4d23-99d5-4e51947f3196&_gl=1*1l5agxv*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODQ0OTM1Ny4xNDIuMS4xNjk4NDUwMTM5LjU1LjAuMA..`}}
-              />
-            )})}
+              return (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: coordenada.latitude,
+                    longitude: coordenada.longitude,
+                  }}
+                  title={coordenada.nome}
+                  icon={{
+                    uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FpingCarregadores1.png?alt=media&token=769d4cfd-0682-4d23-99d5-4e51947f3196&_gl=1*1l5agxv*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODQ0OTM1Ny4xNDIuMS4xNjk4NDUwMTM5LjU1LjAuMA..`,
+                  }}
+                  onPress={() => {
+                    setVisivel(true);
+                    setEnd(endereco[index]);
+                    setCidade(markers[index].nome);
+                    console.log('teste2o');
+                    console.log(cidade);
+                  }}
+                />
+              );
+            })}
             inf={getInfo}
           />
 
