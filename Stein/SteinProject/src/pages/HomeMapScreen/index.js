@@ -8,6 +8,7 @@ import {
   Modal,
   ScrollView,
   Dimensions,
+  ImageBackground
 } from 'react-native';
 import estilos from './style';
 import {moderateScale} from 'react-native-size-matters';
@@ -17,6 +18,8 @@ import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
+import { Rating } from 'react-native-ratings';
+import { verticalScale } from 'react-native-size-matters';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
@@ -27,7 +30,7 @@ export default function Stein({navigation}) {
   const [cidade, setCidade] = useState([]);
   const [endereco, setEndereco] = useState([]);
   const [visivel, setVisivel] = useState(false);
-
+  const [end, setEnd] = useState([]);
 
   //Dado para o destino
   const [distancia, setDistancia] = useState('');
@@ -46,10 +49,12 @@ export default function Stein({navigation}) {
   const [tabCarr, setTabCarr] = useState();
   const [tabelaCarregador, setTabelaCarregador] = useState();
   const [tabelaLogradouro, setTabelaLogradouro] = useState();
+  const [tabelaCarro, setTabelaCarro] = useState();
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
   const tabelaUsuario = firestore.collection('usuario');
+  const tabelaCarros = firestore.collection('carro');
 
   resetSearch = srcVal => {
     setSearchLoading(srcVal);
@@ -65,58 +70,75 @@ export default function Stein({navigation}) {
       const listaLogra = [];
       const listCarr = [];
       const listUsuario = [];
+      const listaCarro = [];
       tabelaCarregadores.onSnapshot(datas => {
         datas._docs.forEach(data => {
           listCarr.push({id: data._ref._documentPath._parts[1], ...data._data});
         });
 
-        tabelaLogra.onSnapshot(dados => {
-          dados._docs.forEach(data => {
-            listaLogra.push({
-              id: data._ref._documentPath._parts[1],
-              ...data._data,
+        tabelaCarros.onSnapshot(carros => {
+          carros.forEach(sobre => {
+            listaCarro.push({
+              id: sobre._ref._documentPath._parts[1],
+              ...sobre._data,
             });
           });
+          setTabelaCarro(listaCarro);
 
-          tabelaUsuario.onSnapshot(datas => {
-            datas._docs.forEach(dado => {
-              listUsuario.push({
-                id: dado._ref._documentPath._parts[1],
-                ...dado._data,
+          tabelaLogra.onSnapshot(dados => {
+            dados._docs.forEach(data => {
+              listaLogra.push({
+                id: data._ref._documentPath._parts[1],
+                ...data._data,
               });
-
-              const newMarkers = [];
-              const listaEnd = [];
-
-              listCarr.forEach(datas => {
-                listaLogra.forEach(docs => {
-                  if (datas.IDLogradouro === docs.id) {
-                    let nome = `${docs.bairro}, \n${docs.cidade}`;
-                    let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
-                    const novoPonto = {...docs.geolocalizacao, nome};
-                    newMarkers.push(novoPonto);
-                    setCidade(docs._data.cidade);
-                    listaEnd.push(endereco);
-                  }
+            });
+  
+            tabelaUsuario.onSnapshot(datas => {
+              datas._docs.forEach(dado => {
+                listUsuario.push({
+                  id: dado._ref._documentPath._parts[1],
+                  ...dado._data,
                 });
-
-                setTabelaCarregador(listCarr);
-                setTabelaLogradouro(listaLogra);
-                listUsuario.forEach(dados => {
-                  for (const numero1 of dados.IDTipoCarregador) {
-                    for (const numero2 of datas.IDTipoCarregador) {
-                      if (numero1 == numero2) {
-                        setTabCarr(newMarkers);
+  
+                const newMarkers = [];
+                const listaEnd = [];
+  
+                listCarr.forEach(datas => {
+                  listaLogra.forEach(docs => {
+                    if (datas.IDLogradouro === docs.id) {
+                      let nome = `${docs.bairro}, \n${docs.cidade}`;
+                      let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+                      const novoPonto = {...docs.geolocalizacao, nome};
+                      newMarkers.push(novoPonto);
+                      setCidade(docs.cidade);
+                      listaEnd.push(endereco);
+                    }
+                  });
+  
+                  setTabelaCarregador(listCarr);
+                  setTabelaLogradouro(listaLogra);
+                  listUsuario.forEach(dados => {
+                    console.log(tabelaCarro);
+                    for(const carro of listaCarro){
+                      if (carro.IDUsuario == dados.id) {
+                        for (const numero1 of carro.IDTipoCarregador) {
+                          for (const numero2 of datas.IDTipoCarregador) {
+                            if (numero1 == numero2) {
+                              setTabCarr(newMarkers);
+                            }
+                          }
+                        }
                       }
                     }
-                  }
+                  });
                 });
+                setMarkers(newMarkers);
+                setEndereco(listaEnd);
+                setLoading(false);
               });
-              setMarkers(newMarkers);
-              setEndereco(listaEnd);
-              setLoading(false);
             });
           });
+
         });
       });
     } catch (error) {
@@ -139,7 +161,7 @@ export default function Stein({navigation}) {
       },
       erro => console.error(erro),
       {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         timeout: 3000,
       },
     );
@@ -524,8 +546,6 @@ export default function Stein({navigation}) {
                     setVisivel(true);
                     setEnd(endereco[index]);
                     setCidade(markers[index].nome);
-                    console.log('teste2o');
-                    console.log(cidade);
                   }}
                 />
               );
