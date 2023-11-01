@@ -6,89 +6,171 @@ import {
   Keyboard,
   TextInput,
   TouchableOpacity,
+  Keyboard,
+  KeyboardAvoidingView, 
+  Platform,
+  ScrollView,
 } from 'react-native';
 import styles from './style';
 import CadastrarCarro from './cadastrarCarro';
+import {auth} from "../../config/configFirebase.js";
+import CheckBox from '@react-native-community/checkbox';
+
 
 const SinginScreen = ({navigation}) => {
   const [modal, setModal] = useState(false);
-  const [nome, setNome] = useState(false);
-  const [email, setEmail] = useState(false);
-  const [senha, setSenha] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [nome, setNome] = useState('');
+  const [errorRegister, setErrorRegister] = useState('');
+
+  const register = () => {
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then(userCredential => {
+        let user = userCredential.user;
+        navigation.navigate('LoginScreen');
+      })
+      .catch(error => {
+        setErrorRegister(true);
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.error(error.message);
+      });
+  };
 
   return (
     <View
       style={styles.conteiner}
       //Container principal
     >
-      <Pressable // Deixa a página clicável para desativar o teclado do usuário
-        onPress={Keyboard.dismiss}>
-        <View
-          style={styles.conteiner}
-          //Container para retirar bugs do Pressable
-        >
-          <TextInput //campo para escrever seu apelido no aplicativo
-            placeholder="Nome"
-            placeholderTextColor={'#000000'}
-            style={styles.textInput1}
-            keyboardType="email-address"
-            returnKeyLabel="email"
-            autoCapitalize="sentences"
-            onChangeText={setNome}
-          />
-          <TextInput // campo para colocar o email
-            placeholder="Email"
-            placeholderTextColor={'#000000'}
-            style={styles.textInputAll}
-            keyboardType="email-address"
-            returnKeyLabel="email"
-            autoCapitalize="none"
-            onChangeText={setEmail}
-
-          />
-          <TextInput // campo para colocar o senha
-            style={styles.textInputAll}
-            placeholder="Senha"
-            placeholderTextColor={'#000000'}
-            returnKeyLabel="Senha"
-            autoCapitalize="none"
-            secureTextEntry={true}
-            password={true}
-            autoCorrect={false}
-            textContentType={'password'}
-            onChangeText={setSenha}
-
-          />
-
-          <TextInput // campo para confirmar sua senha
-            style={styles.textInputAll}
-            placeholder="Confirmar senha"
-            placeholderTextColor={'#000000'}
-            returnKeyLabel="Senha"
-            autoCapitalize="none"
-            secureTextEntry={true}
-            password={true}
-            autoCorrect={false}
-            textContentType={'password'}
-          />
+      <KeyboardAvoidingView>
+        <Pressable // Deixa a página clicável para desativar o teclado do usuário
+          onPress={Keyboard.dismiss}>
           <View
-            styles={styles.viewButton}
-            //Container do botão para cadastrar o usuário
+            style={styles.conteiner}
+            //Container para retirar bugs do Pressable
           >
-            <TouchableOpacity
-              style={styles.buttons}
-              onPress={() =>{
-                setModal(true);         
-            }}
-              //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
-            >
-              <Text
-                style={styles.textButtons}
-                //Texto do botão
+            <TextInput //campo para escrever seu apelido no aplicativo
+              placeholder="Nome"
+              placeholderTextColor={'#000000'}
+              style={styles.textInput1}
+              keyboardType="email-address"
+              returnKeyLabel="email"
+              autoCapitalize="sentences"
+              onChangeText={text => setNome(text)}
+              value={nome}
+            />
+            <TextInput // campo para colocar o email
+              placeholder="Email"
+              placeholderTextColor={'#000000'}
+              style={styles.textInputAll}
+              keyboardType="email-address"
+              returnKeyLabel="email"
+              autoCapitalize="none"
+              onChangeText={text => setEmail(text)}
+              value={email}
+            />
+            <TextInput // campo para colocar o senha
+              style={styles.textInputAll}
+              placeholder="Senha"
+              placeholderTextColor={'#000000'}
+              returnKeyLabel="Senha"
+              autoCapitalize="none"
+              secureTextEntry={true}
+              password={true}
+              autoCorrect={false}
+              textContentType={'password'}
+              onChangeText={text => setPassword(text)}
+              value={password}
+            />
+
+<View style={styles.checkBox}>
+                    <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
+                        disabled={false}
+                        value={toggleCheckBox}
+                        onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                        tintColors={{true: "#000000"}}
+                        style={{padding: 10}}
+                        //Os textos abaixos compõem a CheckBox
+                    />
+                    <Text style={styles.textCheckbox}> Salve a senha</Text>
+                </View>
+
+            <TextInput // campo para confirmar sua senha
+              style={styles.textInputAll}
+              placeholder="Confirmar senha"
+              placeholderTextColor={'#000000'}
+              returnKeyLabel="Senha"
+              autoCapitalize="none"
+              secureTextEntry={true}
+              password={true}
+              autoCorrect={false}
+              textContentType={'password'}
+              onChangeText={text => setConfirmPassword(text)}
+              value={confirmPassword}
+            />
+
+            {email === '' ||
+            password === '' ||
+            confirmPassword === '' ||
+            nome === '' ? (
+              <TouchableOpacity
+                style={styles.buttons}
+                disabled={true}
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
               >
-                Avançar
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={styles.textButtons}
+                  //Texto do botão
+                >
+                  Cadastrar
+                </Text>
+              </TouchableOpacity>
+            ) : confirmPassword != password ? (
+              <TouchableOpacity
+                style={styles.buttons}
+                onPress={() => {
+                  console.log("ERRADO");
+                  register();
+                }}
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+              >
+                <Text
+                  style={styles.textButtons}
+                  //Texto do botão
+                >
+                  Cadastrar
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.buttons}
+                onPress={() => {
+                  setModal(true);
+                }}
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+              >
+                <Text
+                  style={styles.textButtons}
+                  //Texto do botão
+                >
+                  Cadastrar
+                </Text>
+              </TouchableOpacity>
+            )}
+            <View>
+              {errorRegister === true ? (
+                <View style={styles.error}>
+                  <Text style={styles.errorText}>
+                    Email ou/e senha inválido(s)
+                  </Text>
+                </View>
+              ) : (
+                <View />
+              )}
+            </View>
             <View
               style={styles.loginLink}
               //Link para entrar na tela de login
@@ -102,9 +184,7 @@ const SinginScreen = ({navigation}) => {
               </Text>
               <TouchableOpacity
                 style={styles.loginButton}
-                onPress={() => {
-                  navigation.navigate('LoginScreen');
-                }}
+                onPress={() => navigation.navigate('LoginScreen')}
                 //Link para ir para tela de login
               >
                 <Text
@@ -116,11 +196,19 @@ const SinginScreen = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        {modal?(
-            <CadastrarCarro onModal={(turn)=>{setModal(turn)}} navegacao={()=>{navigation.navigate('LoginScreen')}} getInfo={{nome: nome, email: email, senha: senha}}/>
-        ): null}
-      </Pressable>
+          {modal ? (
+        <CadastrarCarro
+          onModal={turn => {
+            setModal(turn);
+          }}
+          navegacao={() => {
+            navigation.navigate('LoginScreen');
+          }}
+          getInfo={{nome: nome, email: email, senha: password}}
+        />
+      ) : null}
+        </Pressable>
+      </KeyboardAvoidingView>
     </View>
   );
 };

@@ -119,3 +119,4 @@ const style = ScaledSheet.create({
       },
 })
 export default style;
+
