@@ -104,7 +104,7 @@ export default function Stein({navigation}) {
         console.error('Erro ao obter a localização:', error);
       },
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         timeout: 60000,
       },
     );
@@ -468,7 +468,7 @@ export default function Stein({navigation}) {
 <Rating
   showRating
   onFinishRating={this.ratingCompleted}
-  style={{ paddingVertical: 10 }}
+  style={{ paddingVertical: 10, }}
 />
  <Text style={{ fontSize: verticalScale(20), color: 'white', marginLeft: moderateScale(200)}}>{cidade}</Text>
 </View>
