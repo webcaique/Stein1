@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Pressable,
-  Keyboard,
   TextInput,
   TouchableOpacity,
   Keyboard,
@@ -30,6 +29,7 @@ const SinginScreen = ({navigation}) => {
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         let user = userCredential.user;
+        console.log(user);
         navigation.navigate('LoginScreen');
       })
       .catch(error => {
@@ -86,18 +86,6 @@ const SinginScreen = ({navigation}) => {
               value={password}
             />
 
-<View style={styles.checkBox}>
-                    <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
-                        disabled={false}
-                        value={toggleCheckBox}
-                        onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                        tintColors={{true: "#000000"}}
-                        style={{padding: 10}}
-                        //Os textos abaixos compõem a CheckBox
-                    />
-                    <Text style={styles.textCheckbox}> Salve a senha</Text>
-                </View>
-
             <TextInput // campo para confirmar sua senha
               style={styles.textInputAll}
               placeholder="Confirmar senha"
@@ -133,7 +121,6 @@ const SinginScreen = ({navigation}) => {
                 style={styles.buttons}
                 onPress={() => {
                   console.log("ERRADO");
-                  register();
                 }}
                 //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
               >
@@ -201,10 +188,9 @@ const SinginScreen = ({navigation}) => {
           onModal={turn => {
             setModal(turn);
           }}
-          navegacao={() => {
-            navigation.navigate('LoginScreen');
-          }}
           getInfo={{nome: nome, email: email, senha: password}}
+
+          register={()=>{register()}}
         />
       ) : null}
         </Pressable>

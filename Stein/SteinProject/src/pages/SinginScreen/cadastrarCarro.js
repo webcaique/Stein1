@@ -14,7 +14,7 @@ import styles from './style';
 import Table from './table';
 import {firestore} from '../../config/configFirebase';
 
-export default function CadastrarCarro({onModal, navegacao, getInfo}) {
+export default function CadastrarCarro({onModal, getInfo, register}) {
   const [rotation, setRotation] = useState(90);
   const [table, setTable] = useState(false);
   const [carregador, setCarregador] = useState(false);
@@ -237,8 +237,8 @@ export default function CadastrarCarro({onModal, navegacao, getInfo}) {
             style={styles.buttons}
             onPress={() => {
               if (desc && placa && uf && modelo && ano && cor && carregador) {
+                register();
                 add();
-                navegacao();
               } else {
                 let lista = [];
                 setValidAno(ano ? '#000' : '#f00');

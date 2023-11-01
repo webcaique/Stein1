@@ -114,23 +114,21 @@ export default function Stein({navigation}) {
                       listaEnd.push(endereco);
                     }
                   });
+
+                  listUsuario.forEach(dados => {
+                    listaCarro.forEach(carro => {
+                      listCarr.forEach(carr => {
+                        if(carro.IDUsuario == dados.id){
+                          if (carro.IDTipoCarregador == carr.IDTipoCarregador) {
+                            setTabCarr(newMarkers);
+                          }
+                        }
+                      });
+                    });
+                  });
   
                   setTabelaCarregador(listCarr);
                   setTabelaLogradouro(listaLogra);
-                  listUsuario.forEach(dados => {
-                    console.log(tabelaCarro);
-                    for(const carro of listaCarro){
-                      if (carro.IDUsuario == dados.id) {
-                        for (const numero1 of carro.IDTipoCarregador) {
-                          for (const numero2 of datas.IDTipoCarregador) {
-                            if (numero1 == numero2) {
-                              setTabCarr(newMarkers);
-                            }
-                          }
-                        }
-                      }
-                    }
-                  });
                 });
                 setMarkers(newMarkers);
                 setEndereco(listaEnd);
@@ -138,7 +136,6 @@ export default function Stein({navigation}) {
               });
             });
           });
-
         });
       });
     } catch (error) {
@@ -161,7 +158,7 @@ export default function Stein({navigation}) {
       },
       erro => console.error(erro),
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         timeout: 3000,
       },
     );
