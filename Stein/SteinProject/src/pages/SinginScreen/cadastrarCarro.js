@@ -96,16 +96,13 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
       cor: cor,
       placa: placa,
       IDTipoCarregador: carregador,
-      IDUsuario: contUser,
+      IDUsuario: userId,
     };
 
     tabelaCarro
       .doc(`${countCarro}`)
       .set(dados)
       .catch(error => console.error(error));
-    if (placa && desc && ano && modelo && uf && cor && info.length > 0) {
-      console.log();
-    }
   };
 
   return (
@@ -131,8 +128,8 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
             style={[styles.textCad1, {color: validDesc}]}
             placeholder="Descrição do Veículo"
             onChangeText={text => {
-              setDesc(text)
-              setValidDesc("#000")
+              setDesc(text);
+              setValidDesc('#000');
             }}
             value={desc}
             placeholderTextColor={validDesc}
@@ -143,23 +140,21 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
                 style={[styles.textCad2, {color: validPlaca}]}
                 placeholder="Placa"
                 onChangeText={text => {
-                  setPlaca(text)
-                  setValidPlaca("#000")
+                  setPlaca(text);
+                  setValidPlaca('#000');
                 }}
                 value={placa}
                 placeholderTextColor={validPlaca}
-
               />
               <TextInput
                 style={[styles.textCad2, {color: validUf}]}
                 placeholder="UF"
                 onChangeText={text => {
-                  setUf(text)
-                  setValidUf("#000")
+                  setUf(text);
+                  setValidUf('#000');
                 }}
-            value={uf}
-            placeholderTextColor={validUf}
-
+                value={uf}
+                placeholderTextColor={validUf}
               />
             </View>
             <View style={styles.row}>
@@ -167,23 +162,21 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
                 style={[styles.textCad2, {color: validModelo}]}
                 placeholder="Modelo"
                 onChangeText={text => {
-                  setModelo(text)
-                  setValidModelo("#000")
+                  setModelo(text);
+                  setValidModelo('#000');
                 }}
-            value={modelo}
-            placeholderTextColor={validModelo}
-
+                value={modelo}
+                placeholderTextColor={validModelo}
               />
               <TextInput
                 style={[styles.textCad2, {color: validAno}]}
                 placeholder="Ano do Modelo"
                 onChangeText={text => {
-                  setAno(text)
-                  setValidAno("#000")
+                  setAno(text);
+                  setValidAno('#000');
                 }}
-            value={ano}
-            placeholderTextColor={validAno}
-
+                value={ano}
+                placeholderTextColor={validAno}
               />
             </View>
             <View style={styles.row}>
@@ -191,13 +184,11 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
                 style={[styles.textCor, {color: validCor}]}
                 placeholder="Cor"
                 onChangeText={text => {
-                  setCor(text)
-                  setValidCor("#000")
-
+                  setCor(text);
+                  setValidCor('#000');
                 }}
-            value={cor}
-            placeholderTextColor={validCor}
-
+                value={cor}
+                placeholderTextColor={validCor}
               />
             </View>
           </View>
@@ -321,8 +312,7 @@ export default function CadastrarCarro({onModal, getInfo, register}) {
               </View>
             </Pressable>
           </Modal>
-        ) : (
-null        )}
+        ) : null}
       </ScrollView>
     </Modal>
   );

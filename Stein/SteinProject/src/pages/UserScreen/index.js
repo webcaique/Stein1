@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import {View, Text, Image, TouchableOpacity, ScrollView} from "react-native";
 import styles from "./style"
+import { auth, firestore, storage } from "../../config/configFirebase";
 
 const UserScreen = ({navigation})=>{
+    
+    const [userId, UserId] = useState(auth.currentUser.uid);
+
+    const tabelaUsuario = firestore.collection("usuario");
+
+    const getUserData = ()=>{
+        let usuario;
+        tabelaUsuario.onSnapshot(datas => {
+            datas._docs.forEach(dados => {
+                if(userId == dados._ref._documentPath._parts[1]){
+                    usuario = {id: dados._ref._documentPath._parts[1], ...dados._data}
+                }
+            });
+            
+
+        });
+    }
+
     return(
         <View style={styles.mainContainer}>
             <View style={styles.userImageBgBackgroudn}>

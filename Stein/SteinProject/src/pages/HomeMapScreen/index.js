@@ -8,7 +8,7 @@ import {
   Modal,
   ScrollView,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import estilos from './style';
 import {moderateScale} from 'react-native-size-matters';
@@ -16,16 +16,41 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
+import {auth} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
-import { Rating } from 'react-native-ratings';
-import { verticalScale } from 'react-native-size-matters';
+import {Rating} from 'react-native-ratings';
+import {verticalScale} from 'react-native-size-matters';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+  //USUÁRIO
+
+  // Set an initializing state whilst Firebase connects
+  const [user, setUser] = useState();
+  const [initializing, setInitializing] = useState(true);
+  const [userId, setUserId] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if(user){
+      setUserId(user.uid);
+    }
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    setMenorDuracao("");
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  ///
+
   //Dados para o Marker
   const [cidade, setCidade] = useState([]);
   const [endereco, setEndereco] = useState([]);
@@ -53,7 +78,6 @@ export default function Stein({navigation}) {
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
-  const tabelaUsuario = firestore.collection('usuario');
   const tabelaCarros = firestore.collection('carro');
 
   resetSearch = srcVal => {
@@ -92,52 +116,53 @@ export default function Stein({navigation}) {
                 ...data._data,
               });
             });
-  
-            tabelaUsuario.onSnapshot(datas => {
-              datas._docs.forEach(dado => {
-                listUsuario.push({
-                  id: dado._ref._documentPath._parts[1],
-                  ...dado._data,
-                });
-  
-                const newMarkers = [];
-                const listaEnd = [];
-  
-                listCarr.forEach(datas => {
-                  listaLogra.forEach(docs => {
-                    if (datas.IDLogradouro === docs.id) {
-                      let nome = `${docs.bairro}, \n${docs.cidade}`;
-                      let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
-                      const novoPonto = {...docs.geolocalizacao, nome};
-                      newMarkers.push(novoPonto);
-                      setCidade(docs.cidade);
-                      listaEnd.push(endereco);
-                    }
-                  });
 
-                  listUsuario.forEach(dados => {
+            datas._docs.forEach(dado => {
+              listUsuario.push({
+                id: dado._ref._documentPath._parts[1],
+                ...dado._data,
+              });
+
+              const newMarkers = [];
+              const nearCarr = [];
+              const listaEnd = [];
+
+              listCarr.forEach(datas => {
+                listaLogra.forEach(docs => {
+                  if (datas.IDLogradouro === docs.id) {
+                    let nome = `${docs.bairro}, \n${docs.cidade}`;
+                    let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+                    let novoPonto = {...docs.geolocalizacao, nome};
+                    newMarkers.push(novoPonto);
+                    setCidade(docs.cidade);
+                    listaEnd.push(endereco);
+
                     listaCarro.forEach(carro => {
-                      listCarr.forEach(carr => {
-                        if(carro.IDUsuario == dados.id){
-                          if (carro.IDTipoCarregador == carr.IDTipoCarregador) {
-                            setTabCarr(newMarkers);
+                      if (carro.IDUsuario == auth.currentUser.uid) {
+                        for (const idCarregador of datas.IDTipoCarregador) {
+                          if (carro.IDTipoCarregador == idCarregador) {
+                            nome = `${docs.bairro}, \n${docs.cidade}`;
+                            endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+                            novoPonto = {...docs.geolocalizacao, nome};
+                            nearCarr.push(novoPonto);
                           }
                         }
-                      });
+                      }
                     });
-                  });
-  
-                  setTabelaCarregador(listCarr);
-                  setTabelaLogradouro(listaLogra);
+                  }
                 });
-                setMarkers(newMarkers);
-                setEndereco(listaEnd);
-                setLoading(false);
+
+                setTabelaCarregador(listCarr);
+                setTabelaLogradouro(listaLogra);
               });
+              setTabCarr(nearCarr);
+              setMarkers(newMarkers);
+              setEndereco(listaEnd);
             });
           });
         });
       });
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -158,7 +183,7 @@ export default function Stein({navigation}) {
       },
       erro => console.error(erro),
       {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         timeout: 3000,
       },
     );
@@ -553,45 +578,51 @@ export default function Stein({navigation}) {
           <TouchableOpacity
             style={estilos.iconBoltBg}
             onPressIn={() => {
-              const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
-              const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
-              let minDuration = Infinity;
-              markers.forEach(location => {
-                tabCarr.forEach(inf => {
-                  if (inf == location) {
-                    const destination = {
-                      latitude: location.latitude,
-                      longitude: location.longitude,
-                    };
+              if (tabCarr) {
+                const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
+                const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
+                let minDuration = Infinity;
+                markers.forEach(location => {
+                  tabCarr.forEach(inf => {
+                    if (location.latitude == inf.latitude) {
+                      if (location.longitude == inf.longitude) {
+                        if (location.nome == inf.nome) {
+                          const destination = {
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                          };
 
-                    // Solicitar as direções do Google Maps
-                    fetch(
-                      `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
-                    )
-                      .then(response => response.json())
-                      .then(data => {
-                        if (data.routes && data.routes.length > 0) {
-                          const duration =
-                            data.routes[0].legs[0].duration.value;
-                          if (duration < minDuration) {
-                            minDuration = duration;
-                            setDurac(minDuration);
-                            setLocMenorDuracao(destination);
-                          }
+                          // Solicitar as direções do Google Maps
+                          fetch(
+                            `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
+                          )
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data.routes && data.routes.length > 0) {
+                                const duration =
+                                  data.routes[0].legs[0].duration.value;
+                                if (duration < minDuration) {
+                                  minDuration = duration;
+                                  setDurac(minDuration);
+                                  setLocMenorDuracao(destination);
+                                }
+                              }
+                            })
+                            .catch(error => {
+                              console.error(
+                                'Erro ao calcular a duração da viagem:',
+                                error,
+                              );
+                            });
                         }
-                      })
-                      .catch(error => {
-                        console.error(
-                          'Erro ao calcular a duração da viagem:',
-                          error,
-                        );
-                      });
-                  }
+                      }
+                    }
+                  });
                 });
-              });
-              setMenorDuracao(locMenorDuracao);
-              setVerificacaoDestination(!verificacaoDestination);
-              setSeach(false);
+                setMenorDuracao(locMenorDuracao);
+                setVerificacaoDestination(!verificacaoDestination);
+                setSeach(false);
+              }
             }}>
             <Image
               //Localizador de pontos pertos

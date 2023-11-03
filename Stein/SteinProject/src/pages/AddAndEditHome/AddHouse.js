@@ -14,6 +14,7 @@ import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
+import { auth } from '../../config/configFirebase';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -134,6 +135,7 @@ export default function AddHome({navigation}) {
         IDTipoCarregador: carregadores,
         nomeLocal: `${name}`,
         tipoLocal: `Casa`,
+        IDUsuario:auth.currentUser.uid,
       };
 
       // adionará os dados ao banco de dados

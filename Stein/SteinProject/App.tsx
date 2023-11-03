@@ -3,14 +3,15 @@
 TELA PARA CONECTAR AS PÁGINAS
 
 */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Linking, BackHandler} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 import AndroidOpenSettings from 'react-native-android-open-settings';
-import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Geolocation from '@react-native-community/geolocation';
+import {auth} from './src/config/configFirebase';
 
 import InitScreen from './src/pages/InitScreen/index';
 import LoginScreen from './src/pages/LoginScreen/index';
@@ -36,8 +37,33 @@ import DataBox from './src/pages/HouseAndWork/boxData';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-    
-      check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user){
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+  
+  var loading = true;
+
+  if (initializing) return null;
+
+  if(user){
+    loading = false;
+  } else {
+    loading = true;
+  }
+
+
+  check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
     .then(result => {
       switch (result) {
         case RESULTS.UNAVAILABLE:
@@ -47,26 +73,29 @@ const App = () => {
           console.log('Permissão de localização negada');
           break;
         case RESULTS.GRANTED:
-          Geolocation.getCurrentPosition(verif => {
-           console.log(); 
-          }, error => { 
-            Alert.alert(
-              'Localização desligada',
-              'Deseja ativar a localização?',
-              [
-                {
-                  text: 'Ativar',
-                  onPress: () => AndroidOpenSettings.locationSourceSettings(),
-                },
-                {
-                  text: 'Desativar',
-                  onPress: () => BackHandler.exitApp(),
-                  style: 'cancel', // Define este botão como o botão de cancelar (pode variar o nome)
-                },
-              ],
-              {cancelable: false}, // Define se o Alert pode ser cancelado tocando fora dele
-            );
-          });
+          Geolocation.getCurrentPosition(
+            verif => {
+              console.log('TE PEGUEI HOMEM');
+            },
+            error => {
+              Alert.alert(
+                'Localização desligada',
+                'Deseja ativar a localização?',
+                [
+                  {
+                    text: 'Ativar',
+                    onPress: () => AndroidOpenSettings.locationSourceSettings(),
+                  },
+                  {
+                    text: 'Desativar',
+                    onPress: () => BackHandler.exitApp(),
+                    style: 'cancel', // Define este botão como o botão de cancelar (pode variar o nome)
+                  },
+                ],
+                {cancelable: false}, // Define se o Alert pode ser cancelado tocando fora dele
+              );
+            },
+          );
           break;
         case RESULTS.BLOCKED:
           console.log('Permissão de localização bloqueada');
@@ -77,10 +106,9 @@ const App = () => {
       console.log('Erro ao verificar a permissão de localização', error);
     });
 
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName={loading? "InitScreen": "Stein"}>
         <Stack.Screen
           name="InitScreen"
           component={InitScreen}

@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import Search from './search';
 import Directions from './direction';
 import {getPixelRatio} from './editDirection';
-import { counterEvent } from 'react-native/Libraries/Performance/Systrace';
-import style from '../LoginScreen/style';
 
 export default class Map extends Component {
   state = {
@@ -70,10 +68,17 @@ export default class Map extends Component {
       resetSrc,
       dest,
       onFiltros,
-      tabelaLogradouro,
-      tabelaCarregador,
     } = this.props;
-    let {destination,markers} = this.state;
+    let {destination} = this.state;
+
+    let destino;
+
+    if(dest){
+      destino = dest;
+
+    } else {
+      destino = destination;
+    }
 
     
     return (
@@ -84,7 +89,7 @@ export default class Map extends Component {
           loadingEnabled
           ref={el => (this.mapView = el)}
           showsUserLocation>
-          {destination ? (
+          {destino ? (
             <>
               <Marker coordinate={userMapRegion} />
 
@@ -92,6 +97,7 @@ export default class Map extends Component {
                 origin={userMapRegion}
                 destination={destination}
                 desti={dest}
+                menorDuracao={searchVer}
                 onReady={result => {
                   inf(result.distance, result.duration);
                   resetSrc(true);
@@ -105,7 +111,7 @@ export default class Map extends Component {
                   });
                 }}
               />
-              <Marker coordinate={destination} />
+              <Marker coordinate={destino} />
             </>
           ) : null}
           {onFiltros.length > 0? this.filtrar(onFiltros): chargerMarkes}
