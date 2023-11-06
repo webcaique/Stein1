@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "348126047276",
+    "firebase_url": "https://stein-182fa-default-rtdb.firebaseio.com",
+    "project_id": "stein-182fa",
+    "storage_bucket": "stein-182fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348126047276:android:3df97f34c2a19a281bf589",
+        "android_client_info": {
+          "package_name": "com.Stein"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348126047276-ni4hus63d32rldm1bbp9nqcq4ac5pov7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTGVymdteOo_YIQD8yrG4T3GcIVw0esLE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348126047276-ni4hus63d32rldm1bbp9nqcq4ac5pov7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

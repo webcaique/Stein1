@@ -179,7 +179,9 @@ export default function LoginScreen({navigation}) {
 
                 <TouchableOpacity
                   style={styles.siginButton}
-                  onPress={() => navigation.navigate('SinginScreen')}>
+                  onPress={() => navigation.navigate('SinginScreen', {
+                    verif: true,
+                  })}>
                   <Text style={styles.textSiginButton}>Cadastrar-se</Text>
                 </TouchableOpacity>
               </View>

@@ -13,6 +13,7 @@ import {
   FlatList,
 } from 'react-native';
 import styles from './style';
+import {utils} from '@react-native-firebase/app';
 import {auth} from '../../config/configFirebase.js';
 import {firestore} from '../../config/configFirebase.js';
 import Table from './table';
@@ -40,22 +41,6 @@ const SinginScreen = ({navigation}) => {
         console.error(error.message);
       });
   };
-
-  useEffect(() => {
-    setAno("");
-    setCarregador("");
-    setConfirmPassword("");
-    setCor("");
-    setDesc("");
-    setEmail("");
-    setErrorRegister("");
-    setModal(false);
-    setModelo("");
-    setNome("");
-    setPassword("");
-    setPlaca("");
-    setUf("");
-  }, []);
 
   //Cadastrar o carro//
 
@@ -227,8 +212,7 @@ const SinginScreen = ({navigation}) => {
             email === undefined ||
             password === undefined ||
             confirmPassword === undefined ||
-            nome === undefined
-             ? (
+            nome === undefined ? (
               <TouchableOpacity
                 style={styles.buttons}
                 disabled={true}
@@ -241,7 +225,7 @@ const SinginScreen = ({navigation}) => {
                   Cadastrar
                 </Text>
               </TouchableOpacity>
-            ) : confirmPassword != password? (
+            ) : confirmPassword != password ? (
               <>
                 <View style={styles.error}>
                   <Text style={styles.errorText}>Verificar senha</Text>

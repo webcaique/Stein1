@@ -170,7 +170,16 @@ const styles = ScaledSheet.create({
     alignItems:"center",
     backgroundColor:"white",
     borderRadius:10,
-  }
+  },
+  error:{
+    fontSize: moderateVerticalScale(16),
+    paddingLeft: scale(5),
+    paddingTop: scale(25),
+    height: verticalScale(50),
+  },
+  errorText:{
+    color: "red"
+  },
 });
 
 export default styles;

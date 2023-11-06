@@ -184,7 +184,7 @@ export default function Stein({navigation}) {
       erro => console.error(erro),
       {
         enableHighAccuracy: true,
-        timeout: 3000,
+        timeout: 10000,
       },
     );
   }, []);
