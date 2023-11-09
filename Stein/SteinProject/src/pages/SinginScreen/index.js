@@ -1,163 +1,204 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView, Platform} from "react-native";
-import styles from "./style.js"
+import React, {useState, useEffect} from 'react';
+import {
+View,
+Text,
+TouchableOpacity,
+TextInput,
+Image,
+ScrollView,
+Pressable,
+Keyboard,
+KeyboardAvoidingView,
+Platform,
+} from 'react-native';
+import styles from './style.js';
 import CheckBox from '@react-native-community/checkbox';
-import {auth} from "../../config/configFirebase.js";
-import firebase from "../../config/configFirebase.js";
+import {auth} from '../../config/configFirebase.js';
+import firebase from '../../config/configFirebase.js';
 
 const SinginScreen = ({navigation}) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [nome, setNome] = useState('');
+    const [errorRegister, setErrorRegister] = useState('');
 
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [confirmPassword, setConfirmPassword] = useState("")
-    const [nome, setNome] = useState("")
-    const [errorRegister, setErrorRegister] = useState("")
+    const [verificarSenhar, setVerificarSenhar] = useState('');
 
-    const register =  () => {
-    auth.createUserWithEmailAndPassword(email, password)
-    .then((userCredential) => {
+    const register = () => {
+    auth
+        .createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
         let user = userCredential.user;
-        navigation.navigate("LoginScreen")
+        navigation.navigate('LoginScreen');
     })
-    .catch((error) => {
-        setErrorRegister(true)
+        .catch(error => {
+        setErrorRegister(true);
         let errorCode = error.code;
         let errorMessage = error.message;
-        console.error(error.message)
+        console.error(error.message);
     });
-    }
+};
 
-    return(
-        <View style={styles.conteiner} 
+return (
+    <View
+        style={styles.conteiner}
         //Container principal
-        >
-        <KeyboardAvoidingView>
+    >
+    <KeyboardAvoidingView>
         <Pressable // Deixa a página clicável para desativar o teclado do usuário
             onPress={Keyboard.dismiss}>
-                <View style={styles.conteiner} 
-                //Container para retirar bugs do Pressable
-                >
-            
-                
-                <TextInput //campo para escrever seu apelido no aplicativo
+            <View
+            style={styles.conteiner}
+            //Container para retirar bugs do Pressable
+            >
+            <TextInput //campo para escrever seu apelido no aplicativo
                 placeholder="Nome"
-                placeholderTextColor={"#000000"}
-                style={styles.textInput1} 
-                keyboardType="email-address" 
+                placeholderTextColor={'#000000'}
+                style={styles.textInput1}
+                keyboardType="email-address"
                 returnKeyLabel="email"
-                autoCapitalize='sentences'
-                onChangeText={(text)=>setNome(text)}
+                autoCapitalize="sentences"
+                onChangeText={text => setNome(text)}
                 value={nome}
-                />
-                <TextInput // campo para colocar o email
+            />
+            <TextInput // campo para colocar o email
                 placeholder="Email"
-                placeholderTextColor={"#000000"}
-                style={styles.textInputAll} 
-                keyboardType="email-address" 
+                placeholderTextColor={'#000000'}
+                style={styles.textInputAll}
+                keyboardType="email-address"
                 returnKeyLabel="email"
                 autoCapitalize="none"
-                onChangeText={(text)=>setEmail(text)}
+                onChangeText={text => setEmail(text)}
                 value={email}
-                />
-                <TextInput // campo para colocar o senha
-                style={styles.textInputAll} 
+            />
+            <TextInput // campo para colocar o senha
+                style={styles.textInputAll}
                 placeholder="Senha"
-                placeholderTextColor={"#000000"}
+                placeholderTextColor={'#000000'}
                 returnKeyLabel="Senha"
                 autoCapitalize="none"
                 secureTextEntry={true}
-                password={true} 
+                password={true}
                 autoCorrect={false}
                 textContentType={'password'}
-                onChangeText={(text)=>setPassword(text)}
+                onChangeText={text => setPassword(text)}
                 value={password}
-                />
+            />
 
-                <TextInput // campo para confirmar sua senha
-                style={styles.textInputAll} 
+            <TextInput // campo para confirmar sua senha
+                style={styles.textInputAll}
                 placeholder="Confirmar senha"
-                placeholderTextColor={"#000000"}
+                placeholderTextColor={'#000000'}
                 returnKeyLabel="Senha"
                 autoCapitalize="none"
                 secureTextEntry={true}
-                password={true} 
+                password={true}
                 autoCorrect={false}
                 textContentType={'password'}
-                onChangeText={(text)=>setConfirmPassword(text)}
+                onChangeText={text => setConfirmPassword(text)}
                 value={confirmPassword}
-                />
+            />
 
-                {email === "" || password === "" || confirmPassword === "" || nome === ""
-                ?
-                <TouchableOpacity style={styles.buttons} 
+            {email === '' ||
+            password === '' ||
+            confirmPassword === '' ||
+            nome === '' ? (
+            <TouchableOpacity
+                style={styles.buttons}
                 disabled={true}
                 //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+            >
+                <Text
+                    style={styles.textButtons}
+                //Texto do botão
                 >
-                    <Text style={styles.textButtons}
-                    //Texto do botão
-                    >Cadastrar</Text>
-                </TouchableOpacity>
-                : ( confirmPassword != password ?
-                <TouchableOpacity style={styles.buttons} 
-                onPress={()=> {
-                    register()
-                    }
-                    }
-                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+                    Cadastrar
+                </Text>
+            </TouchableOpacity>
+            ) : confirmPassword != password ? (
+            <>
+                <TouchableOpacity
+                    style={styles.buttons}
+                    onPress={() => {
+                        setVerificarSenhar(true)
+                }}
+                    //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
                 >
-                    <Text style={styles.textButtons}
+                <Text
+                    style={styles.textButtons}
                     //Texto do botão
-                    >Cadastrar</Text>
-                </TouchableOpacity>
-                :
-                <TouchableOpacity style={styles.buttons} 
-                onPress={()=> {
-                    register()
-                    }
-                    }
-                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
                 >
-                    <Text style={styles.textButtons}
-                    //Texto do botão
-                    >Cadastrar</Text>
+                    Cadastrar
+                </Text>
                 </TouchableOpacity>
-                )
-                }
-            <View>
-                {errorRegister === true
-                    ?
-                    <View style={styles.error}>
-                        <Text style={styles.errorText}>Email ou/e senha inválido(s)</Text>
-                    </View>
-                    :
-                    <View/>
-                }
-            </View>
-                    <View style={styles.loginLink}
-                    //Link para entrar na tela de login
-                    >    
-                        <Text style={styles.textLogin}
-                        //Texto de explicação caso já possio cadastro
-                        > Já possui cadastro? </Text>
-                        <TouchableOpacity style={styles.loginButton}
-                        onPress={()=> navigation.navigate("LoginScreen")}
-                        //Link para ir para tela de login
-                        >
-                                <Text style={styles.textLoginButton}
-                                //Text do link
-                                >
-                                    Entrar
-                                </Text>
-                        </TouchableOpacity>
+                {verificarSenhar
+                ?(
+                <View style={styles.error}>
+                    <Text style={styles.errorText}>
+                        As senhas não correspondem
+                    </Text>
                 </View>
+                )
+                :
+                <View></View>
+                }
+            </>
+            ) : (
+            <TouchableOpacity
+                style={styles.buttons}
+                onPress={() => {
+                    register();
+                }}
+                //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
+            >
+                <Text
+                    style={styles.textButtons}
+                  //Texto do botão
+                >
+                    Cadastrar
+                </Text>
+            </TouchableOpacity>
+            )}
+            <View>
+                {errorRegister === true ? (
+                <View style={styles.error}>
+                    <Text style={styles.errorText}>
+                        Email ou/e senha inválido(s)
+                    </Text>
+                </View>
+            ) : (
+                <View />
+            )}
             </View>
-        
-
-
-        </Pressable>
-        </KeyboardAvoidingView>
+            <View
+                style={styles.loginLink}
+                //Link para entrar na tela de login
+            >
+            <Text
+                style={styles.textLogin}
+                //Texto de explicação caso já possio cadastro
+            >
+                {' '}
+                Já possui cadastro?{' '}
+            </Text>
+            <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() => navigation.navigate('LoginScreen')}
+                //Link para ir para tela de login
+            >
+                <Text
+                    style={styles.textLoginButton}
+                  //Text do link
+                >
+                    Entrar
+                </Text>
+            </TouchableOpacity>
+            </View>
         </View>
-    )
-
-}
+        </Pressable>
+    </KeyboardAvoidingView>
+    </View>
+);
+};
 export default SinginScreen;
