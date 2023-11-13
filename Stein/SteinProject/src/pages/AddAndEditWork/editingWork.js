@@ -14,6 +14,7 @@ import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import TabelaCarregadores from '../componenteTabelaCarregadores';
+import {auth} from '../../config/configFirebase';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -80,26 +81,10 @@ export default function AddHome() {
       setListaCamposInvalidos([]);
     }, 5000);
 
-    console.log(route.params.idLocal);
     const edit = async () => {
       //vai tentar pegar os dados da tabela local
       try {
         const snapashotLocal = await tabelaLocal.get();
-        let listaLc = [];
-
-        snapashotLocal.forEach(dados => {
-          listaLc.push({id: dados.id, ...dados.data()});
-        });
-
-        let end;
-
-        listaLc.forEach(datas => {
-          if (datas.IDLogradouro == idFromOtherScreen) {
-            end = datas;
-            console.log(datas)
-          }
-        });
-        setIdLocal(end);
 
         const snapshotLogra = await tabelaLogra.get();
         let listaLg = [];
@@ -111,27 +96,44 @@ export default function AddHome() {
         let lg;
 
         listaLg.forEach(datas => {
-          if (datas.id == idFromOtherScreen) {
-            lg = datas;
+          if (datas.IDUsuario == auth.currentUser.uid) {
+            if (datas.id == idFromOtherScreen) {
+              lg = datas;
+            }
+            let listaLc = [];
+
+            snapashotLocal.forEach(dados => {
+              listaLc.push({id: dados.id, ...dados.data()});
+            });
+
+            let end;
+
+            listaLc.forEach(datas => {
+              if (datas.IDLogradouro == idFromOtherScreen) {
+                end = datas;
+              }
+            });
+            setIdLocal(end);
+
+            setLograEdit(lg);
+
+            console.log('END');
+            console.log(end);
+            console.log('Logra');
+            console.log(lg);
+
+            setBairro(lg.bairro);
+            setCarregadores(end.IDTipoCarregador);
+            setCep(lg.CEP);
+            setCidade(lg.cidade);
+            setComplemento(lg.complemento);
+            setLogra(lg.logradouro);
+            setSelectedUf(lg.UF);
+            setNumero(lg.numero);
+            setSelectedTipoLogra(lg.tipoLogradouro);
+            setName(end.nomeLocal);
           }
         });
-        setLograEdit(lg);
-
-        console.log('END');
-        console.log(end);
-        console.log('Logra');
-        console.log(lg);
-
-        setBairro(lg.bairro);
-        setCarregadores(end.IDTipoCarregador);
-        setCep(lg.CEP);
-        setCidade(lg.cidade);
-        setComplemento(lg.complemento);
-        setLogra(lg.logradouro);
-        setSelectedUf(lg.UF);
-        setNumero(lg.numero);
-        setSelectedTipoLogra(lg.tipoLogradouro);
-        setName(end.nomeLocal);
 
         setLoading(false);
       } catch (error) {
@@ -158,7 +160,6 @@ export default function AddHome() {
       }
 
       const data = await response.json();
-
 
       if (data.results && data.results.length > 0) {
         const location = data.results[0].geometry.location;
@@ -232,9 +233,7 @@ export default function AddHome() {
   const handleGeocode = async () => {
     try {
       // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
-      const response = await fetch(
-        `https://viacep.com.br/ws/${cep}/json/`,
-      );
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
       if (!response.ok) {
         setCep('CEP INVÁLIDO!');
@@ -290,9 +289,10 @@ export default function AddHome() {
         const data = await response.json();
 
         console.log(data.results[0].address_components[4].short_name);
-        var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0]
-        var tipoUf = data.results[0].address_components[4].short_name
-        setSelectedUf(tipoUf)
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0];
+        var tipoUf = data.results[0].address_components[4].short_name;
+        setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
 
         var cepNormal = data.results[0].address_components[6].long_name.replace(
@@ -395,7 +395,7 @@ export default function AddHome() {
           style={styles.container}
           onPress={() => {
             semCep();
-            console.log(cidade)
+            console.log(cidade);
             Keyboard.dismiss();
             if (cep.length == 8) {
               handleGeocode();

@@ -14,6 +14,7 @@ import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
+import { auth } from '../../config/configFirebase';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -134,6 +135,7 @@ export default function AddHome({navigation}) {
         IDTipoCarregador: carregadores,
         nomeLocal: `${name}`,
         tipoLocal: `Casa`,
+        IDUsuario:auth.currentUser.uid,
       };
 
       // adionará os dados ao banco de dados
@@ -268,10 +270,8 @@ export default function AddHome({navigation}) {
         
         const data = await response.json();
 
-        console.log(data.results[0].address_components[4].short_name);
         var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0]
         var tipoUf = data.results[0].address_components[4].short_name
-        console.log(data.results[0].address_components[4])
         setSelectedUf(tipoUf)
         setSelectedTipoLogra(tipoLogra);
 
@@ -279,7 +279,6 @@ export default function AddHome({navigation}) {
           '-',
           '',
         );
-        console.log(data.results[0]);
         setCep(cepNormal);
         setValidacaoLogradouro(true);
       }
@@ -333,7 +332,6 @@ export default function AddHome({navigation}) {
             setValidNumero(true);
             camposInvalidos.push('Número');
           }
-          console.log(carregadores);
           if (carregadores == [] || carregadores == undefined) {
             setValidSelectCarregadores(true);
             camposInvalidos.push('Nenhum carregador selecionado');
@@ -376,7 +374,6 @@ export default function AddHome({navigation}) {
           style={styles.container}
           onPress={() => {
             semCep();
-            console.log(cidade);
             Keyboard.dismiss();
             if (cepInput.length == 8 && !validcaoLogradouro) {
               handleGeocode();

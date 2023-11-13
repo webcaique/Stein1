@@ -58,21 +58,10 @@ const ConfigScreen = ({navigation}) => {
                     </View>
                     <View style={styles.line}/>
                     <View style={styles.rowText}>
-                        <Text style={styles.textContent}>Conteudo pessoal</Text>
+                        <Text style={styles.textContent}>Conteúdo pessoal</Text>
                         <TouchableOpacity
                         onPress={()=> navigation.navigate("PersonalContentScreen")}
                         >
-                            <Image
-                            source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
-                            style={styles.icons}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.line}/>
-                    <View style={styles.rowText}>
-                        <Text style={styles.textContent}>Alterar de conta</Text>
-                        <TouchableOpacity
-                        onPress={()=> navigation.navigate("ChangeAccount")}>
                             <Image
                             source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}}
                             style={styles.icons}

@@ -3,7 +3,40 @@ import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale
 
 
 const estilos=ScaledSheet.create({
- 
+  gps:{
+    marginHorizontal:5,
+  },
+  info:{
+    fontSize:12,
+    color:"#fff"
+  },  
+  horarioDeChegada:{
+    fontSize: 16,
+    color:"#fff",
+    fontWeight:"700",
+  },
+  cotainerInformacoes:{
+    width:"50%",
+    alignItems:"center",
+  },
+  informacoes:{
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent:"flex-start",
+  },
+  rotaContainer:{
+    position:"absolute",
+    bottom:0,
+    width:"100%",
+    alignItems:"center",
+    justifyContent:"center",
+    height:"10%"
+  },
+    barraDeBusca:{
+      height:1000,
+      width:1000,
+      flex:5
+    },
     inferior:{
       flex:1,
       position:'absolute',
@@ -136,67 +169,79 @@ const estilos=ScaledSheet.create({
       width:"100%",
       alignItems:"center"
     },
-bff:{
-  flexDirection:'row',
-justifyContent:'center',
-},
-icon:{
-  width:65, 
-  height:50,
- margin: 20,
-   resizeMode: 'contain',
-   flexDirection:'row',
-   
-
-  },
-iconsSpecs:{
-  borderWidth:2,
-  backgroundColor:'#D9D9D9',
-
-},
-textIcon:{
-fontSize:18,
-color: 'black',
-marginRight: 20,
-marginLeft: 20,
-maxWidth:80
-
-},
-Img:{
-  height:200,
-  width: 500,
-  resizeMode:'cover',
-},
-estrela:{
-height:100,
-width:432,
-backgroundColor: '#584086',
-flexDirection:'row-reverse',
-
-},
-Strahd:{
-
-},
-iconsSpecs1:{
-  borderWidth:2,
-  backgroundColor:'#D9D9D9',
-  height:verticalScale(75),
-  flexDirection:'row',
-  alignItems:'center'
-
-},
-textIcon1:{
-  color: 'black',
-  fontSize:18,
-maxWidth:270
-},
-seta:{
-  marginTop:10,
-  height:25,
-  width:25,
-  resizeMode:'contain',
-  transform:[{ rotate: '-180deg' }]
-}
+    Img:{
+      height:moderateScale(200),
+      width: moderateVerticalScale(500),
+      resizeMode:'cover',
+    },
+    
+    seta:{
+      marginTop: moderateScale(10),
+      height: moderateScale(25),
+      width: moderateScale(25),
+      resizeMode:'contain',
+      transform:[{ rotate: '-180deg' }]
+    },
+    estrela:{
+    height:moderateScale(100),
+    width: moderateVerticalScale(372),
+    backgroundColor: '#584086',
+    color: 'white'
+    
+    
+    },
+    bff:{
+      flexDirection:'row',
+    justifyContent:'center',
+    maxHeight:moderateScale(120),
+    width: moderateScale(350)
+    },
+    iconsSpecs:{
+      borderWidth:2,
+      backgroundColor:'#D9D9D9',
+      width: moderateVerticalScale(100)
+    },
+    icon:{
+      width:moderateVerticalScale(65), 
+      height:moderateScale(40),
+     margin: moderateVerticalScale(20),
+       resizeMode: 'contain',
+       flexDirection:'row',
+       
+    
+      },
+    
+    textIcon:{
+    fontSize:moderateScale(12),
+    color: 'black',
+    paddingLeft:20,
+    paddingRight: 20,
+    textAlign:'center',
+    flexDirection:'row'
+    
+    
+    },
+    
+    iconsSpecs:{
+      borderWidth:2,
+      backgroundColor:'#D9D9D9',
+      width: moderateVerticalScale(100)
+    },
+    
+    iconsSpecs1:{
+      borderWidth:2,
+      backgroundColor:'#D9D9D9',
+      height:verticalScale(57),
+      flexDirection:'row',
+      alignItems:'center',
+    
+    },
+    
+    textIcon1:{
+      color: 'black',
+      fontSize:moderateScale(15),
+      maxWidth: moderateScale(250)
+    },
     })
    
 export default estilos;
