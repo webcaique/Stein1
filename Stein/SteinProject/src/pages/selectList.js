@@ -17,33 +17,33 @@ export default function selectList({validar, onUfChange }) {
                 selectedValue={validar != ""? validar:uf}
                 onValueChange={handleUfChange}
             >
-        <Picker.Item label="AC" value="AC" style={styles.fontList} />
-        <Picker.Item label="AL" value="AL" style={styles.fontList} />
-        <Picker.Item label="AP" value="AP" style={styles.fontList} />
-        <Picker.Item label="AM" value="AM" style={styles.fontList} />
-        <Picker.Item label="BA" value="BA" style={styles.fontList} />
-        <Picker.Item label="CE" value="CE" style={styles.fontList} />
-        <Picker.Item label="DF" value="DF" style={styles.fontList} />
-        <Picker.Item label="ES" value="ES" style={styles.fontList} />
-        <Picker.Item label="GO" value="GO" style={styles.fontList} />
-        <Picker.Item label="MA" value="MA" style={styles.fontList} />
-        <Picker.Item label="MT" value="MT" style={styles.fontList} />
-        <Picker.Item label="MS" value="MS" style={styles.fontList} />
-        <Picker.Item label="MG" value="MG" style={styles.fontList} />
-        <Picker.Item label="PA" value="PA" style={styles.fontList} />
-        <Picker.Item label="PB" value="PB" style={styles.fontList} />
-        <Picker.Item label="PR" value="PR" style={styles.fontList} />
-        <Picker.Item label="PE" value="PE" style={styles.fontList} />
-        <Picker.Item label="PI" value="PI" style={styles.fontList} />
-        <Picker.Item label="RJ" value="RJ" style={styles.fontList} />
-        <Picker.Item label="RN" value="RN" style={styles.fontList} />
-        <Picker.Item label="RS" value="RS" style={styles.fontList} />
-        <Picker.Item label="RO" value="RO" style={styles.fontList} />
-        <Picker.Item label="RR" value="RR" style={styles.fontList} />
-        <Picker.Item label="SC" value="SC" style={styles.fontList} />
-        <Picker.Item label="SP" value="SP" style={styles.fontList} />
-        <Picker.Item label="SE" value="SE" style={styles.fontList} />
-        <Picker.Item label="TO" value="TO" style={styles.fontList} />
+        <Picker.Item label="AC" value="AC" style={[styles.fontList]} />
+        <Picker.Item label="AL" value="AL" style={[styles.fontList]} />
+        <Picker.Item label="AP" value="AP" style={[styles.fontList]} />
+        <Picker.Item label="AM" value="AM" style={[styles.fontList]} />
+        <Picker.Item label="BA" value="BA" style={[styles.fontList]} />
+        <Picker.Item label="CE" value="CE" style={[styles.fontList]} />
+        <Picker.Item label="DF" value="DF" style={[styles.fontList]} />
+        <Picker.Item label="ES" value="ES" style={[styles.fontList]} />
+        <Picker.Item label="GO" value="GO" style={[styles.fontList]} />
+        <Picker.Item label="MA" value="MA" style={[styles.fontList]} />
+        <Picker.Item label="MT" value="MT" style={[styles.fontList]} />
+        <Picker.Item label="MS" value="MS" style={[styles.fontList]} />
+        <Picker.Item label="MG" value="MG" style={[styles.fontList]} />
+        <Picker.Item label="PA" value="PA" style={[styles.fontList]} />
+        <Picker.Item label="PB" value="PB" style={[styles.fontList]} />
+        <Picker.Item label="PR" value="PR" style={[styles.fontList]} />
+        <Picker.Item label="PE" value="PE" style={[styles.fontList]} />
+        <Picker.Item label="PI" value="PI" style={[styles.fontList]} />
+        <Picker.Item label="RJ" value="RJ" style={[styles.fontList]} />
+        <Picker.Item label="RN" value="RN" style={[styles.fontList]} />
+        <Picker.Item label="RS" value="RS" style={[styles.fontList]} />
+        <Picker.Item label="RO" value="RO" style={[styles.fontList]} />
+        <Picker.Item label="RR" value="RR" style={[styles.fontList]} />
+        <Picker.Item label="SC" value="SC" style={[styles.fontList]} />
+        <Picker.Item label="SP" value="SP" style={[styles.fontList]} />
+        <Picker.Item label="SE" value="SE" style={[styles.fontList]} />
+        <Picker.Item label="TO" value="TO" style={[styles.fontList]} />
       </Picker>
     </View>
   );

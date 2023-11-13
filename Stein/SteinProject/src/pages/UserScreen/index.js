@@ -1,62 +1,93 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView,Platform, PermissionsAndroid} from 'react-native';
+import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
 import styles from './style';
-import {auth, firestore, storage} from '../../config/configFirebase';
+import {auth, firestore} from '../../config/configFirebase';
 import DocumentPicker from 'react-native-document-picker';
-import DocumentPickerConstants from 'react-native-document-picker';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import RNFS from 'react-native-fs';
-
-
+import { utils } from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
 
 const UserScreen = ({navigation}) => {
-  const [userId, UserId] = useState(auth.currentUser.uid);
+  const userId = auth.currentUser.uid;
   const [nomeUser, setNomeUser] = useState('');
+  const [prog, setProg] = useState();
 
   const tabelaUsuario = firestore.collection('usuario');
 
-
-  const createDirectory = async (directoryName) => {
-    let rootPath;
-    if (Platform.OS === 'android') {
-      rootPath = RNFS.ExternalStorageDirectoryPath; // Para Android
+  const uploadFileToFirebaseStorage = async (file) => {
+    // Verifique se a permissão já foi concedida
+    const permissionStatus = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+  
+    if (permissionStatus === RESULTS.GRANTED) {
+      // A permissão já foi concedida, faça o upload do arquivo
+      console.log(file[0].uri);
+      const upload = storage().ref(`/UserDir/${nomeUser}`).putFile(file[0].uri);
+      upload
+      .on(
+        "state_changed",
+        (snaphot)=>{
+          const prog = Math.round(
+            ((snaphot.bytesTransferred / snaphot.totalBytes) * 100),
+            
+          )
+          setProg(prog)
+        }, (error)=>{
+          console.error(error)
+        },
+        ()=>{
+          console.log("AQUI");
+          storage().ref("UserDir")
+          .child(file[0].name)
+          .getDownloadURL()
+          .then((url)=>{
+            console.log(url);
+          })
+        }
+      )
+      
+      console.log('Arquivo enviado com sucesso para o Firebase Storage.');
     } else {
-      rootPath = RNFS.DocumentDirectoryPath; // Para iOS
+      // A permissão ainda não foi concedida, solicite-a ao usuário
+      const permissionRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      if (permissionRequest === RESULTS.GRANTED) {
+        // Permissão concedida, faça o upload do arquivo
+      const upload = storage().ref(`UserDir/${nomeUser}`).putFile(file[0].uri);
+        console.log('Arquivo enviado com sucesso para o Firebase Storage.');
+      } else {
+        console.log('Permissão negada pelo usuário.');
+      }
     }
-  
-    const folderPath = `${rootPath}/${directoryName}`;
-    const exists = await RNFS.exists(folderPath);
-    if (!exists) {
-      await RNFS.mkdir(folderPath);
-    }
-    return folderPath;
   };
-  
-  const copyFileToDirectory = async (fileUri, directoryPath) => {
-    const fileName = fileUri.substring(fileUri.lastIndexOf('/') + 1);
-    const destPath = `${directoryPath}/${fileName}`;
-    await RNFS.copyFile(fileUri, destPath);
-    return destPath;
-  };
-  
-  
+
   const selectAndCopyFile = async () => {
     try {
-      const result = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
-      });
-  
-      if (result) {
-        const directoryName = 'YourDirectoryName'; // Altere para o nome do diretório desejado
-        const directoryPath = await createDirectory(directoryName);
-        const copiedFilePath = await copyFileToDirectory(result.uri, directoryPath);
-        console.log(`File copied to: ${copiedFilePath}`);
+      const permissionStatus = await check(
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      );
+      if (permissionStatus === RESULTS.GRANTED) {
+        const result = await DocumentPicker.pick({
+          type: [DocumentPicker.types.images],
+        });
+
+        if (result) {
+          uploadFileToFirebaseStorage(result);
+        } else {
+          console.log(result);
+        }
+      } else {
+        const permissionRequest = await request(
+          PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        );
+        if (permissionRequest === RESULTS.GRANTED) {
+          // Agora você pode chamar selectAndCopyFile() novamente.
+        } else {
+          console.log('Permissão negada pelo usuário.');
+        }
       }
     } catch (err) {
       console.error('Erro ao selecionar ou copiar o arquivo:', err);
     }
   };
-  
 
   const getUserData = () => {
     let usuario;
@@ -78,9 +109,7 @@ const UserScreen = ({navigation}) => {
       }
     });
   };
-    
-  
-    
+
   useEffect(() => {
     getUserData();
   }, []);

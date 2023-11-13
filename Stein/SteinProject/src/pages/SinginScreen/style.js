@@ -15,7 +15,7 @@ const styles = ScaledSheet.create({
     height: '100%',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 100,
+    paddingTop: 60,
     justifyContent: 'center',
   },
   textInput1: {
@@ -74,6 +74,7 @@ const styles = ScaledSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    margin:10,
   },
   view: {
     display: 'flex',
@@ -89,13 +90,12 @@ const styles = ScaledSheet.create({
     paddingLeft: 5,
     textAlign: 'center',
   },
-  textCor: {
-    width: '50%',
+  textUf: {
+    width: '60%',
     height: 50,
     margin: 10,
     backgroundColor: 'rgba(0,0,0,0.1))',
     borderRadius: 10,
-    paddingLeft: 5,
     textAlign: 'center',
   },
   row:{

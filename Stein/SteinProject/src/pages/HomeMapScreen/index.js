@@ -396,6 +396,32 @@ export default function Stein({navigation}) {
                         </View>
                       </View>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={estilos.links}
+                      onPress={() => {
+                        setModal(!modal);
+                        auth.signOut().then(()=>{console.log("BONITO!")})
+                        navigation.navigate("InitScreen")
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <View style={estilos.containerLink}>
+                          <Image
+                            style={estilos.imagemIcon1}
+                            source={{
+                              uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fsair.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48',
+                            }}
+                          />
+                          <Text style={estilos.textLink}>Logout</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+
                   </View>
                 </View>
                 <Pressable
@@ -431,11 +457,12 @@ export default function Stein({navigation}) {
               </View>
 
               <View style={estilos.estrela}>
-                <Rating
+                {/* <Rating
                   showRating
                   onFinishRating={this.ratingCompleted}
                   style={{paddingVertical: 10}}
-                />
+                  backgroundColor={'transparent'}
+                /> */}
                 <Text
                   style={{
                     fontSize: verticalScale(20),
