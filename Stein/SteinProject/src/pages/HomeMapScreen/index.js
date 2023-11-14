@@ -208,6 +208,90 @@ export default function Stein({navigation}) {
   const toggleCarregadorSelection = carr => {
     setSelectedCarregadores(carr);
   };
+  const [logra, setLogra] = useState();
+  const [nome, setNome]= useState([])
+  useEffect(() => {
+    const fetchBd = async () => {
+      const snapshotCarr = await tabelaCarregadores.get();
+      const listCarr = [];
+      snapshotCarr.forEach(data => {
+        listCarr.push({id: data.id, ...data.data()});
+      });
+
+      const snapshotLogra = await tabelaLogra.get();
+      const listaLogra = [];
+      snapshotLogra.forEach(doc => {
+        listaLogra.push({id: doc.id, ...doc.data()});
+      });
+
+      listCarr.forEach(datas => {
+        listaLogra.forEach(docs => {
+          if (datas.id == docs.id) {
+            console.log('DATAS');
+            console.log(datas.nome);
+            let nome = datas.nome;
+            setNome(datas.nome);
+            console.log('DOCS');
+            console.log(docs.geolocalizacao);
+            console.log(nome);
+            const novoPonto = {...docs.geolocalizacao, nome};
+            console.log('Novo ponto');
+            console.log(novoPonto);
+            setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
+          }
+        });
+      });
+    };
+
+    //   listaLogra.forEach(teste => {
+    //     console.log('DADOS');
+    //     console.log(teste.geolocalizacao);
+    //     setMarkers(prevMarkers => [
+    //       ...prevMarkers,
+    //       {...teste.geolocalizacao, nome: 'casa'},
+    //     ]);
+    //   });
+    // };
+
+    fetchBd();
+    getLocation();
+  }, []);
+
+  /*
+  logra.forEach((date)=>{
+      let dados = {
+        key: markers.length,
+        coords:{
+          latitude: parseFloat(date.geolocalizacao.latitude) ,
+          longitude: parseFloat(date.geolocalizacao.longitude)
+        },
+        pinColor: '#0000FF'
+      }
+      setMarkers(oldArray=>[...oldArray,dados])
+    });
+  */
+
+  function getLocation() {
+    Geolocation.getCurrentPosition(
+      info => {
+        console.log('LAT', info.coords.latitude);
+        console.log('LON', info.coords.longitude);
+        setRegion({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          longitudeDelta: 0.0922,
+          latitudeDelta: 0.0421,
+        });
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 2000,
+      },
+    );
+  }
 
  
   if (loading) {
