@@ -72,7 +72,7 @@ export default function Stein({navigation}) {
     setRefreshKey(prevKey => prevKey + 1);
   };
 
-  useFocusEffect(
+  useEffect(
     React.useCallback(() => {
       fetchMarkersFromFirestore();
     }, []),
@@ -576,7 +576,7 @@ export default function Stein({navigation}) {
             provider={PROVIDER_GOOGLE}
             style={{width: width, height: height}}
             region={region}
-            showsUserLocation={true}
+            showsUserLocation={false}
             loadingEnabled={true}>
             {markers.map((coordenada, index) => (
               <Marker

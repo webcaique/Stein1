@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
 
 TELA PARA CONECTAR AS PÁGINAS
@@ -20,6 +21,7 @@ import ShareToAFriendScreen from "./src/pages/ShareToAFriendScreen/index";
 import AddCharger from "./src/pages/AddCharger/index";
 import FaqScreen from "./src/pages/FaqScreen/index";
 import PersonalContentScreen from "./src/pages/PersonalContentScreen/index"
+import TradePassword from "./src/pages/TradePassword/index"
 import HouseAndWork from "./src/pages/HouseAndWork/index"
 import ChangeAccount from "./src/pages/ChangeAccount/index"
 import OQueFazemos from "./src/pages/oQueFazemos/index"
@@ -37,7 +39,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
 
   return (
-    
+  
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="InitScreen" component={InitScreen} 
@@ -51,6 +53,7 @@ const App = () => {
           },
         }}
         />
+    
         <Stack.Screen name="LoginScreen" component={LoginScreen}
         options={{ title:"ENTRAR",
         headerTransparent:true,
@@ -62,6 +65,19 @@ const App = () => {
         }
       }}
         />
+
+<Stack.Screen name="TradePassword" component={TradePassword}
+        options={{ title:"Alterar senha",
+        headerTransparent:true,
+        headerTitleAlign:'center',
+        headerTitleStyle:{
+          fontSize:34,
+          fontWeight:"900",
+          color:"#563595"
+        }
+      }}
+        />
+
         <Stack.Screen name="SinginScreen" component={SinginScreen}
         options={{ title:"Cadastrar",
         headerTransparent:true,

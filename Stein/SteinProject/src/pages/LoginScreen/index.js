@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard} from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image,ScrollView, Pressable, Keyboard, KeyboardAvoidingView} from "react-native";
 import styles from "./style.js"
 import CheckBox from '@react-native-community/checkbox';
 
