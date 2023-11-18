@@ -1,7 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity, Image, FlatList} from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Pressable,
+  Alert,
+} from 'react-native';
 import styles from './style';
 import {firestore, auth} from '../../config/configFirebase';
+import Table from './table';
+
+const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const PersonalContentScreen = () => {
   const [carregador, setCarregador] = useState([]);
@@ -10,23 +23,15 @@ const PersonalContentScreen = () => {
   const [senha, setSenha] = useState('');
   const [localizacao, setLocalizacao] = useState('');
   const [cep, setCep] = useState('');
+  const [carro, setCarro] = useState('');
+  const [numeroResidencia, setNumeroResidencia] = useState("");
+  const [numero, setNumero] = useState();
+  const user = auth.currentUser;
+
+  const [errorEmail, setErrorEmail] = useState('');
 
   const tabelaUsuario = firestore.collection('usuario');
   const tabelaCarro = firestore.collection('carro');
-
-  const handleGeocode = async cep => {
-    try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-
-      const data = await response.json();
-      setLocalizacao(
-        `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}`,
-      );
-    } catch (error) {
-      console.error('Erro:', error);
-    }
-  };
 
   useEffect(() => {
     tabelaUsuario.onSnapshot(info => {
@@ -37,8 +42,10 @@ const PersonalContentScreen = () => {
             dados._docs.forEach(datas => {
               const carroIdUsuario = datas._data.IDUsuario;
               if (carroIdUsuario == userId) {
+                setCarro(datas._ref._documentPath._parts[1]);
                 setNomeUser(inf._data.nomeUsuario);
                 setEmailUser(inf._data.email);
+                setNumeroResidencia(inf._data.numeroResidencia);
                 setSenha(inf._data.senha);
                 setCep(inf._data.CEP);
                 setCarregador(
@@ -46,7 +53,7 @@ const PersonalContentScreen = () => {
                     ? datas._data.IDTipoCarregador
                     : [datas._data.IDTipoCarregador],
                 );
-                handleGeocode(inf._data.CEP);
+                handleGeocode(inf._data.CEP, inf._data.numeroResidencia);
               }
             });
           });
@@ -55,24 +62,200 @@ const PersonalContentScreen = () => {
     });
   }, []);
 
+  console.log(numeroResidencia);
+
+
+  const [verifData, setVerifData] = useState(false);
+  const [nomeCampo, setNomeCampo] = useState('');
+  const [dado, setDado] = useState('');
+
+  const changeData = dado => {
+    let palavra1 = `${dado}`.charAt(0);
+    let palavra2 = `${dado}`.substring(1);
+    palavra1 = palavra1.toUpperCase();
+    let palavra = `${palavra1}${palavra2}`;
+    setNomeCampo(palavra);
+    setVerifData(true);
+    setDado('');
+    setNumero("");
+  };
+
+  const update = () => {
+    if (nomeCampo.toUpperCase() == 'CEP') {
+      handleGeocode(dado);
+      tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
+        CEP: dado,
+        numeroResidencia: numero,
+      });
+    } else if (nomeCampo.toUpperCase() == 'EMAIL') {
+      user
+        .updateEmail(`${dado}`)
+        .then(() => {
+          tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
+            email: dado,
+          });
+        })
+        .catch(error => {
+          Alert.alert('EMAIL INVÁLIDO', 'O email digitado é inválido.', [], {
+            cancelable: true,
+          });
+        });
+    } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') {
+      tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
+        nomeUsuario: dado,
+      });
+    }
+    setVerifData(false);
+  };
+
+  const handleGeocode = async (cep, num) => {
+    tabelaUsuario.doc(`${auth.currentUser.uid}`);
+    try {
+      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      let response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+      const data = await response.json();
+
+      if (data.erro) {
+        Alert.alert(
+          'CEP Inválido ou número não encontrado!',
+          'CEP ou o número digitado não encontrado.',
+          [],
+          {
+            cancelable: true,
+          },
+        );
+      } else {
+        setLocalizacao(
+          `${data.logradouro}, ${num}, ${data.bairro}, ${data.localidade}, ${data.uf}`,
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        'CEP Inválido ou número não encontrado!',
+        'CEP ou o número digitado não encontrado.',
+        [],
+        {
+          cancelable: true,
+        },
+      );
+    }
+  };
+
   return (
-    <View style={styles.mainContainer} /* VIEW PRINCIPAL */>
-      <View /* VIEW PARA TÍTULO DE CIMA */>
+    <KeyboardAvoidingView style={styles.mainContainer} /* VIEW PRINCIPAL */>
+      {verifData ? (
+        <Modal transparent>
+          <Pressable
+            style={styles.modal}
+            onPress={() => {
+              setNumero("");
+              setVerifData(false);
+            }}>
+            <KeyboardAvoidingView style={styles.modalView}>
+              <KeyboardAvoidingView style={{width: '100%'}}>
+                <Text style={styles.textoCampo}>{nomeCampo}</Text>
+              </KeyboardAvoidingView>
+              <KeyboardAvoidingView
+                style={
+                  nomeCampo.toUpperCase() == 'CARREGADORES'
+                    ? {width: '100%'}
+                    : nomeCampo.toUpperCase() == 'CEP'
+                    ? [styles.textInput, {width: '75%'}]
+                    : styles.textInput
+                }>
+                {nomeCampo.toUpperCase() != 'CARREGADORES' ? (
+                  <TextInput
+                    autoFocus
+                    keyboardType={
+                      nomeCampo.toUpperCase() == 'CEP'
+                        ? 'number-pad'
+                        : nomeCampo.toUpperCase() == 'EMAIL'
+                        ? 'email-address'
+                        : 'default'
+                    }
+                    placeholder={nomeCampo}
+                    onChangeText={text => {
+                      setDado(
+                        nomeCampo.toUpperCase() == 'EMAIL'
+                          ? text.toLowerCase()
+                          : text,
+                      );
+                    }}
+                    value={dado}
+                    maxLength={nomeCampo.toUpperCase() == 'CEP' ? 8 : 100}
+                    onBlur={() => {
+                      if (nomeCampo != 'CEP') {
+                        update();
+                      }
+                    }}
+                  />
+                ) : (
+                  <Table
+                    getInfo={info => {
+                      tabelaCarro.doc(`${carro}`).update({
+                        IDTipoCarregador: info,
+                      });
+                      setVerifData(false);
+                    }}
+                  />
+                )}
+                {nomeCampo.toUpperCase() == 'CEP' ? (
+                  <TextInput
+                    style={{
+                      width: '30%',
+                      borderLeftColor: '#000',
+                      borderLeftWidth: 1,
+                    }}
+                    onChangeText={setNumero}
+                    value={numero}
+                    keyboardType="number-pad"
+                    placeholder='Número'
+                  />
+                ) : null}
+                <TouchableOpacity
+                  onPress={() => {
+                    update();
+                  }}>
+                  <Image
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=3c7facb9-59cc-4c3b-b61c-7aafdf70a59f',
+                    }}
+                    width={25}
+                    height={25}
+                    resizeMode="contain"
+                    style={{
+                      transform: [{rotate: '45deg'}],
+                    }}
+                  />
+                </TouchableOpacity>
+              </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+          </Pressable>
+        </Modal>
+      ) : null}
+      <KeyboardAvoidingView /* VIEW PARA TÍTULO DE CIMA */>
         <Text style={styles.textTitlePage}>
           Edite as informações da sua conta pessoal.
         </Text>
-      </View>
-      <View style={styles.table} /* VIEW PARA TABELA  */>
-        <View /* VIEW TÍTULO TABELA */>
+      </KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.table} /* VIEW PARA TABELA  */>
+        <KeyboardAvoidingView /* VIEW TÍTULO TABELA */>
           <Text style={styles.textTitleTable}>Suas informações pessoais</Text>
-        </View>
-        <View style={styles.row} /* View para exibir a localização */>
-          <View /* Texto fixo */>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={
+            styles.row
+          } /* KeyboardAvoidingView para exibir a localização */
+        >
+          <KeyboardAvoidingView /* Texto fixo */>
             <Text style={styles.textFix}>Estado</Text>
-          </View>
+          </KeyboardAvoidingView>
           <TouchableOpacity
             style={styles.dinamicView} /* Texto dinâmico e imagem */
-          >
+            onPress={() => {
+              changeData('CEP');
+            }}>
             <Text style={styles.textDinamic}>{localizacao}</Text>
             <Image
               source={{
@@ -81,12 +264,16 @@ const PersonalContentScreen = () => {
               style={styles.imgs}
             />
           </TouchableOpacity>
-        </View>
-        <View style={styles.row} /* View para exibir carregadores */>
-          <View /* Texto Fixo*/>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.row} /* KeyboardAvoidingView para exibir carregadores */
+        >
+          <KeyboardAvoidingView /* Texto Fixo*/>
             <Text style={styles.textFix}>Carregadores</Text>
-          </View>
-          <View style={styles.dinamicView} /* Texto dinâmico e imagem */>
+          </KeyboardAvoidingView>
+          <KeyboardAvoidingView
+            style={styles.dinamicView} /* Texto dinâmico e imagem */
+          >
             <FlatList
               data={carregador}
               key={item => item.id}
@@ -103,7 +290,10 @@ const PersonalContentScreen = () => {
                 );
               }}
             />
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                changeData('Carregadores');
+              }}>
               <Image
                 source={{
                   uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48',
@@ -111,15 +301,19 @@ const PersonalContentScreen = () => {
                 style={styles.imgs}
               />
             </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.row} /* View para exibir email */>
-          <View /* Texto Fixo*/>
+          </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.row} /* KeyboardAvoidingView para exibir email */
+        >
+          <KeyboardAvoidingView /* Texto Fixo*/>
             <Text style={styles.textFix}>Email</Text>
-          </View>
+          </KeyboardAvoidingView>
           <TouchableOpacity
             style={styles.dinamicView} /* Texto dinâmico e imagem */
-          >
+            onPress={() => {
+              changeData('Email');
+            }}>
             <Text style={styles.textDinamic}>{emailUser}</Text>
             <Image
               source={{
@@ -128,14 +322,18 @@ const PersonalContentScreen = () => {
               style={styles.imgs}
             />
           </TouchableOpacity>
-        </View>
-        <View style={styles.row} /* View para exibir senha */>
-          <View /* Texto Fixo*/>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.row} /* KeyboardAvoidingView para exibir senha */
+        >
+          <KeyboardAvoidingView /* Texto Fixo*/>
             <Text style={styles.textFix}>Senha</Text>
-          </View>
+          </KeyboardAvoidingView>
           <TouchableOpacity
             style={styles.dinamicView} /* Texto dinâmico e imagem */
-          >
+            onPress={() => {
+              changeData('Senha');
+            }}>
             <Text style={styles.textDinamic}>{'*'.repeat(senha.length)}</Text>
             <Image
               source={{
@@ -144,14 +342,18 @@ const PersonalContentScreen = () => {
               style={styles.imgs}
             />
           </TouchableOpacity>
-        </View>
-        <View style={styles.row} /* View para o nome do usuário */>
-          <View /* Texto Fixo*/>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.row} /* KeyboardAvoidingView para o nome do usuário */
+        >
+          <KeyboardAvoidingView /* Texto Fixo*/>
             <Text style={styles.textFix}>Nome do usuário</Text>
-          </View>
+          </KeyboardAvoidingView>
           <TouchableOpacity
             style={styles.dinamicView} /* Texto dinâmico e imagem */
-          >
+            onPress={() => {
+              changeData('Nome do Usuário');
+            }}>
             <Text style={styles.textDinamic}>{nomeUser}</Text>
             <Image
               source={{
@@ -160,9 +362,9 @@ const PersonalContentScreen = () => {
               style={styles.imgs}
             />
           </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+        </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </KeyboardAvoidingView>
   );
 };
 

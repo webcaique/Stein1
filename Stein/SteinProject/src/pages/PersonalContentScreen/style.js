@@ -58,7 +58,39 @@ const styles = ScaledSheet.create({
   },
   flatList:{
     alignItems:"flex-end"
-  }
+  },
+  modalView:{
+    width: "100%",
+    height:"auto",
+    backgroundColor:"white",
+    justifyContent:"center",
+    alignItems:"center",
+    padding:10,
+    borderRadius:10,
+  },
+  modal:{
+    width:"100%",
+    height:"100%",
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    padding:20,
+  },
+  textInput:{
+    borderWidth:1,
+    width:"100%",
+    height:50,
+    borderRadius:10,
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:"center",
+    marginTop:10,
+    paddingHorizontal:10,
+    
+  },
+  textoCampo:{
+    fontWeight:"900",
+  },
 });
 
 export default styles;

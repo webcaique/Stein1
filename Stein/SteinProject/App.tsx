@@ -49,6 +49,7 @@ const App = () => {
 
   useEffect(() => {
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    console.log(auth.currentUser)
     return subscriber; // unsubscribe on unmount
   }, []);
   

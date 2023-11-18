@@ -47,6 +47,7 @@ const styles = ScaledSheet.create({
     padding: 10,
     marginTop: 15,
     justifyContent: 'center',
+    alignItems:"center"
   },
   placeholder: {
     fontSize: moderateVerticalScale(16),
@@ -77,6 +78,11 @@ const styles = ScaledSheet.create({
     justifyContent:"center",
     alignItems:"center",
     backgroundColor:"rgba(90,90,90,0.4)",
+  },
+  horario:{
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:"center",
   }
 });
 export default styles;

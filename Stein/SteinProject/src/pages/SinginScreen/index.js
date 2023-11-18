@@ -14,12 +14,13 @@ import {
   Switch,
 } from 'react-native';
 import styles from './style';
-import {utils} from '@react-native-firebase/app';
 import SelectList from '../selectList';
 import {auth} from '../../config/configFirebase.js';
 import {firestore} from '../../config/configFirebase.js';
 import Table from './table';
 import colorName from 'color-name';
+import CheckBox from '@react-native-community/checkbox';
+import TabelaLogradouro from '../tipoLogradouro';
 
 const cores = {
   Branco: 'White',
@@ -41,6 +42,18 @@ const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const SinginScreen = ({navigation}) => {
   const [modal, setModal] = useState(false);
+  const [termos, setTermos] = useState(false);
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [tipoLogradouro, setTipoLogradouro] = useState('');
+  const [codigoDeVeificacao, setCodigoDeVerificacao] = useState(
+    Math.floor(Math.random() * 9000) + 1000
+    )
+
+
+  const getTipoLogradouro = texto => {
+    setTipoLogradouro(texto);
+  };
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -51,30 +64,49 @@ const SinginScreen = ({navigation}) => {
   const [tipoPlaca, setTipoPlaca] = useState(true);
   const [cep, setCep] = useState('');
   const [keyboardTipo, setKeyboardTipo] = useState('default');
-  const [errorEmail, setErrorEmail] = useState("");
-  const [errorPassaword, setErrorPassword] = useState("");
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorPassaword, setErrorPassword] = useState('');
 
   const handleUfChange = uf => {
     setSelectedUf(uf);
   };
 
-  const register = () => {
+  
+
+  // Configuração do ActionCodeSettings
+const actionCodeSettings = {
+  url: `https://stein-182fa.firebaseapp.com/acctmgmt?mode=verify&oobCode=${codigoDeVeificacao}&apiKey=AIzaSyCDmoGS0vnyJWmSfAnEHsglPnMfUmShHGw`, // Substitua pela URL de destino do seu aplicativo
+  handleCodeInApp: true,
+  android: {
+    packageName: 'com.Stein.app', // Substitua pelo nome do pacote do seu aplicativo
+    installApp: true,
+    minimumVersion: '8',
+  },
+};
+
+  const register = async (teste) => {
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        console.log("AQUI");
+      .then(async (userCredential) => {
         let user = userCredential.user;
-        setErrorEmail("");
-        add(user.uid, true);
+        let emailVerific = auth.currentUser;
+        await emailVerific.sendEmailVerification(actionCodeSettings);
+        add(user.uid, true, teste);
+        
       })
       .catch(error => {
-        add(0,false)
+        add(0, false);
         setModal(false);
         setErrorRegister(true);
         let errorCode = error.code;
         let errorMessage = error.message;
-        setErrorEmail(errorCode == "auth/email-already-in-use" || errorCode == "auth/invalid-email"? true: false);
-        
+        setErrorEmail(
+          errorCode == 'auth/email-already-in-use' ||
+            errorCode == 'auth/invalid-email'
+            ? true
+            : false,
+        );
+
         console.error(errorMessage);
         console.log(errorCode);
       });
@@ -91,6 +123,7 @@ const SinginScreen = ({navigation}) => {
   const [modelo, setModelo] = useState(false);
   const [uf, setUf] = useState(false);
   const [ano, setAno] = useState(false);
+  const [numero, setNumero] = useState(false);
 
   //validacao
   const [validCarregador, setValidCarregador] = useState('#000');
@@ -102,6 +135,7 @@ const SinginScreen = ({navigation}) => {
   const [validUf, setValidUf] = useState('#000');
   const [validLista, setValidLista] = useState([]);
   const [validCep, setValidCep] = useState('#000');
+  const [validNumero, setValidNumero] = useState('#000');
 
   const tabelaCarro = firestore.collection('carro');
   const tabelaUsuario = firestore.collection('usuario');
@@ -117,9 +151,10 @@ const SinginScreen = ({navigation}) => {
     for (const datas of listaUsuario) {
       if (datas.nomeUsuario == nome) {
         setValidNome(true);
-        break;
+        return true;
       } else {
         setValidNome(false);
+        return false;
       }
     }
   };
@@ -144,9 +179,8 @@ const SinginScreen = ({navigation}) => {
     }
   };
 
-  const add = async (ID, verif) => {
-    if(verif){
-      const listaErros = [];
+  const verificacaoDados = () => {
+    const listaErros = [];
     const listValid = [];
 
     function isColorValid(color) {
@@ -294,72 +328,76 @@ const SinginScreen = ({navigation}) => {
       }
     }
 
-    if (teste) {
-      const getTabUser = await tabelaUsuario.get();
+    return teste;
+  };
 
-      const listaUser = [];
+  const add = async (ID, verif, teste) => {
+    if (verif) {
+      if (teste) {
+        const getTabUser = await tabelaUsuario.get();
 
-      getTabUser.forEach(doc => {
-        listaUser.push({id: doc.id, ...doc.data()});
-      });
+        const listaUser = [];
 
-      let dados = {
-        nomeUsuario: nome,
-        email: email,
-        senha: password,
-        imagemFundo: null,
-        imagemPerfil: null,
-        CEP: cep,
-      };
+        getTabUser.forEach(doc => {
+          listaUser.push({id: doc.id, ...doc.data()});
+        });
 
-      tabelaUsuario
-        .doc(`${ID}`)
-        .set(dados)
-        .catch(error => console.error(error));
+        let dados = {
+          nomeUsuario: nome,
+          email: email,
+          senha: password,
+          imagemFundo: null,
+          imagemPerfil: null,
+          CEP: cep,
+          numero: numero,
+          tipoLogradouro: tipoLogradouro,
+        };
 
-      let countCarro = 0;
+        tabelaUsuario
+          .doc(`${ID}`)
+          .set(dados)
+          .catch(error => console.error(error));
 
-      const getTabCarro = await tabelaCarro.get();
+        let countCarro = 0;
 
-      const listaCarro = [];
+        const getTabCarro = await tabelaCarro.get();
 
-      getTabCarro.forEach(doc => {
-        listaCarro.push({id: doc.id, ...doc.data()});
-      });
+        const listaCarro = [];
 
-      listaCarro.forEach(data => {
-        if (countCarro < parseInt(data.id)) {
-          countCarro = parseInt(data.id);
+        getTabCarro.forEach(doc => {
+          listaCarro.push({id: doc.id, ...doc.data()});
+        });
+
+        listaCarro.forEach(data => {
+          if (countCarro < parseInt(data.id)) {
+            countCarro = parseInt(data.id);
+          }
+        });
+
+        countCarro++;
+
+        dados = {
+          desc: desc,
+          ano: ano,
+          uf: uf,
+          cor: cor,
+          placa: placa,
+          IDTipoCarregador: carregador,
+          IDUsuario: `${ID}`,
+          modelo: modelo,
+        };
+
+        tabelaCarro
+          .doc(`${countCarro}`)
+          .set(dados)
+          .catch(error => console.error(error));
+
+        if (verif) {
+          navigation.navigate('LoginScreen');
+        } else {
+          setModal(false);
         }
-      });
-
-      countCarro++;
-
-      dados = {
-        desc: desc,
-        ano: ano,
-        uf: uf,
-        cor: cor,
-        placa: placa,
-        IDTipoCarregador: carregador,
-        IDUsuario: `${ID}`,
-        modelo: modelo,
-      };
-
-      tabelaCarro
-        .doc(`${countCarro}`)
-        .set(dados)
-        .catch(error => console.error(error));
-
-
-      if(verif){
-        navigation.navigate('LoginScreen');
-      } else {
-        setModal(false);
       }
-
-      
-    }
     }
   };
 
@@ -367,6 +405,78 @@ const SinginScreen = ({navigation}) => {
 
   return (
     <ScrollView>
+      <Modal visible={termos}>
+        <Pressable
+          style={styles.containerTermoDeUso}
+          onPress={() => {
+            setTermos(!termos);
+          }}>
+          <ScrollView>
+            <Image
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
+              }}
+              width={25}
+              height={25}
+              resizeMode="contain"
+              style={[
+                styles.imgSaidaTermoDeUso,
+                {
+                  transform: [{rotate: '45deg'}],
+                },
+              ]}
+            />
+            <View style={styles.termosContainerTexto}>
+              <Text style={styles.termosTitle}>TERMOS DE USO E CONDIÇÃO</Text>
+              <Text style={styles.textoTermo}>
+                Produzimos este aplicativo com o objetivo de expandir nossos
+                produtos e melhorar as qualidades de nossos serviços, assim,
+                proporcionando aos nossos clientes facilidades em suas compras
+              </Text>
+              <Text style={styles.textoTermo}>
+                A Stein não se responsabiliza por eventuais informações inexatas
+                ou imprecisas sobre seus serviços, bem como omissões do conteúdo
+                do seu site ou falha de equipamento
+              </Text>
+              <Text style={styles.textoTermo}>
+                O usuário tem total conhecimento e nada a se opor de que alguns
+                serviços inseridos no catalogo ou na própria página do site
+                poderão estar disponíveis em qualquer uma de nossas sedes ou
+                sediados. As cores apresentadas em nossos sites prezam pela
+                integridade e semelhança com o serviço, todavia, poderão sofrer
+                variações e não serem exatas, uma vez que dependem do monitor e
+                tecnologia utilizada por cada usuário, não podendo então a Stein
+                ser responsabilizada no caso de inexatidão de cores.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Em nenhum momento o aplicativo e seus colaboradores poderão ser
+                responsabilizados por quaisquer danos, perdas, despesas, falhas
+                de desempenho, interrupção, defeito, vírus ou falhas no sistema
+                do aplicativo.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Ao acessar esse aplicativo ou fornecer seus dados pessoais, o
+                usuário automaticamente declara conhecer e aceitar os Termos e
+                Condições de uso de Política de privacidade. Será de total
+                responsabilidade do usuário a garantir a exatidão dos seus dados
+                pessoais fornecidos, ficando certo que o usuário isenta a Stein
+                de quaisquer transtornos quanto a inexatidão de informações,
+                podendo ainda a mesma, suspender ou cancelar a conta de
+                cadastrado do usuário e recusar toda e qualquer utilização.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Somos obrigados a transmitir seus dados a terceiros caso isto
+                seja necessário para cumprir regulamentações legais (por exemplo
+                da lei federal de proteção de dados).
+              </Text>
+              <Text style={styles.textoTermo}>
+                As informações sobre os preços e disponibilidades de serviços
+                estão sujeitos a alterações.{' '}
+              </Text>
+            </View>
+          </ScrollView>
+        </Pressable>
+      </Modal>
       <View
         style={styles.conteiner}
         //Container principal
@@ -382,11 +492,14 @@ const SinginScreen = ({navigation}) => {
                 placeholder="Nome"
                 placeholderTextColor={'#000000'}
                 style={styles.textInput1}
-                keyboardType="email-address"
-                returnKeyLabel="email"
+                keyboardType="default"
+                returnKeyLabel="default"
                 autoCapitalize="sentences"
                 onChangeText={text => setNome(text)}
                 value={nome}
+                onBlur={() => {
+                  verifNome(nome);
+                }}
               />
               <TextInput // campo para colocar o email
                 placeholder="Email"
@@ -425,17 +538,71 @@ const SinginScreen = ({navigation}) => {
                 onChangeText={text => setConfirmPassword(text)}
                 value={confirmPassword}
               />
-              <TextInput
-                style={[styles.textInputAll, {color: validCep}]}
-                placeholderTextColor={validCep}
-                placeholder="CEP da sua Moradia"
-                onChangeText={setCep}
-                value={cep}
-                keyboardType="numeric"
-                onBlur={() => {
-                  cepFunction();
-                }}
+              <View
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <TextInput
+                  style={[styles.textInputAll, {color: validCep, width: '70%'}]}
+                  placeholderTextColor={validCep}
+                  placeholder="CEP da sua Moradia"
+                  onChangeText={setCep}
+                  value={cep}
+                  keyboardType="numeric"
+                  onBlur={() => {
+                    cepFunction();
+                  }}
+                  maxLength={8}
+                />
+                <TextInput
+                  style={[styles.textInputAll, {color: validCep, width: '25%'}]}
+                  placeholderTextColor={validNumero}
+                  placeholder="Número"
+                  onChangeText={setNumero}
+                  keyboardType="numeric"
+                  value={numero}
+                />
+              </View>
+              <View style={{marginVertical: 10}}>
+                <Text style={{color: '#f00', fontWeight: '900'}}>
+                  *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
+                </Text>
+              </View>
+              <TabelaLogradouro
+                onTipoLograChange={getTipoLogradouro}
+                validar={tipoLogradouro}
+                branco={true}
               />
+              <View
+                style={{
+                  width: '100%',
+                  marginTop: 5,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  flexDirection: 'row',
+                  height: 50,
+                }}>
+                <CheckBox
+                  value={toggleCheckBox}
+                  onValueChange={newValue => setToggleCheckBox(newValue)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setTermos(!termos);
+                  }}>
+                  <Text>
+                    Você concorda com os{' '}
+                    <Text style={styles.termosDeUso}>
+                      Termos de Uso e Condição
+                    </Text>
+                    .
+                  </Text>
+                </TouchableOpacity>
+              </View>
               {email === '' ||
               password === '' ||
               confirmPassword === '' ||
@@ -446,7 +613,10 @@ const SinginScreen = ({navigation}) => {
               nome === undefined ||
               cep == undefined ||
               cep == 'CEP INVÁLIDO!' ||
-              cep == '' ? (
+              cep == '' ||
+              !toggleCheckBox ||
+              numero == '' ||
+              numero == undefined ? (
                 <TouchableOpacity
                   style={styles.buttons}
                   disabled={true}
@@ -490,7 +660,7 @@ const SinginScreen = ({navigation}) => {
                     style={styles.buttons}
                     onPress={async () => {
                       await verifNome();
-                      if(!validNome){
+                      if (!validNome) {
                         setModal(true);
                       }
                     }}
@@ -750,7 +920,10 @@ const SinginScreen = ({navigation}) => {
                           carregador &&
                           cep
                         ) {
-                          register();
+                          const test = verificacaoDados();
+                          if (test) {
+                             const verif = register(test);
+                          }
                         } else {
                           let lista = [];
                           setValidAno(ano ? '#000' : '#f00');
@@ -761,6 +934,7 @@ const SinginScreen = ({navigation}) => {
                           setValidPlaca(placa ? '#000' : '#f00');
                           setValidUf(uf ? '#000' : '#f00');
                           setValidCep(cep ? '#000' : '#f00');
+                          setValidNumero(numero ? '#000' : '#f00');
 
                           if (!ano) {
                             lista.push('Ano do Modelo');
@@ -785,6 +959,9 @@ const SinginScreen = ({navigation}) => {
                           }
                           if (cep) {
                             lista.push('CEP');
+                          }
+                          if (numero) {
+                            lista.push('Número da residência');
                           }
 
                           setValidLista(lista);
@@ -853,3 +1030,8 @@ const SinginScreen = ({navigation}) => {
   );
 };
 export default SinginScreen;
+/*
+ 
+                          
+                          register();
+ */

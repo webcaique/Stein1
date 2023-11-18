@@ -10,6 +10,8 @@ import {
   Switch,
   Keyboard,
   Modal,
+  useAnimatedValue,
+  TurboModuleRegistry,
 } from 'react-native';
 import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
@@ -20,6 +22,25 @@ import {firestore} from '../../config/configFirebase';
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const AddCharger = ({navigation}) => {
+  const [horario1, setHorario1] = useState('');
+  const [horario2, setHorario2] = useState('');
+  const [horario24h, setHorario24h] = useState(false);
+  const [pagamento, setPagamento] = useState(false);
+
+  const [mensagemErro, setMensagemErro] = useState('');
+
+  const validarHorario = texto => {
+    // Expressão regular para validar o formato esperado
+    const regex = /^([01]\d|2[0-3])h([0-5]\d)$/;
+
+    if (regex.test(texto)) {
+      setMensagemErro('');
+      setValidHorarios('#000');
+    } else {
+      setMensagemErro('Formato inválido. Use o formato "hhmm"');
+      setValidHorarios('#f00');
+    }
+  };
   const tabelaCarregadores = firestore.collection('carregadores'); // Pega a tabela Carregadores do Firabase
   const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
 
@@ -47,6 +68,7 @@ const AddCharger = ({navigation}) => {
   const [validCidade, setValidCidade] = useState(false);
   const [validQtdeCarregadores, setValidQtdeCarregadores] = useState(false);
   const [validSelectCarregadores, setValidSelectCarregadores] = useState(false);
+  const [validHorarios, setValidHorarios] = useState('#000');
 
   // Variável para aparição da tabelas dos carregadores
   const [carregadores, setCarregadores] = useState(false);
@@ -92,12 +114,14 @@ const AddCharger = ({navigation}) => {
 
     const validarGeo = async () => {
       try {
-        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+        const address = `${selectedTipoLogra} ${logra}, ${numero} - ${bairro}, ${cidade} - ${selectedUf}, ${cepInput}`;
+
+        console.log(address);
 
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address,
-          )}&key=${apiKey}`,
+          )}&key=${apiKey}&components=country:BR&accuracy=high`,
         );
 
         if (!response.ok) {
@@ -164,6 +188,10 @@ const AddCharger = ({navigation}) => {
                 IDLogradouro: `${countLogra}`,
                 qtdeCarregadores: `${qtdeCarregadores}`,
                 IDTipoCarregador: selectCarregadores,
+                pagamentoNecessario: pagamento,
+                horarioAberto: !horario24h
+                  ? `${horario1} - ${horario2}`
+                  : '24/7',
               })
               .then(() => {
                 console.log('ADICIONADO!');
@@ -205,28 +233,70 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
 
+      const data = await response.json();
+
+      if (data.erro) {
+        // Construa a URL da API Geocoding do Google
+        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${cepInput}&key=${apiKey}`;
+
+        // Faça a solicitação à API usando o método fetch
+        fetch(apiUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(
+                `Erro na solicitação. Status: ${response.status}`,
+              );
+            }
+            return response.json();
+          })
+          .then(data => {
+            // Verifique se a resposta contém dados
+            if (data.results.length > 0) {
+              // Extraia a rua do primeiro resultado
+              const rua = obterRua(data.results[0]);
+            } else {
+              console.error('CEP não encontrado.');
+            }
+          })
+          .catch(error => {
+            console.error('Erro na solicitação:', error);
+          });
+
+        // Função para extrair a rua do resultado da API
+        function obterRua(result) {
+          // Itera pelos componentes do endereço
+          for (const component of result.address_components) {
+            // Verifica se o tipo do componente é 'route' (rua)
+            if (component.types.includes('route')) {
+              // Retorna o nome da rua
+              return component.long_name;
+            }
+          }
+          // Se não encontrar 'route', retorna null ou uma mensagem de erro, conforme necessário
+          return null;
+        }
+      } else {
+        setBairro(data.bairro);
+        setCidade(data.localidade);
+        setSelectedUf(data.uf);
+
+        const partes = data.logradouro.split(' ');
+
+        if (partes.length >= 2) {
+          const tipo = partes[0];
+          const logras = partes.slice(1).join(' ');
+
+          setSelectedTipoLogra(tipo);
+          setLogra(logras);
+        } else {
+          console.error('Texto não contém espaço.');
+        }
+      }
+
       setValidCidade(false);
       setValidLogra(false);
       setValidNumero(false);
       setValidBairro(false);
-
-      const data = await response.json();
-      setBairro(data.bairro);
-      setCidade(data.localidade);
-      setSelectedUf(data.uf);
-
-      const partes = data.logradouro.split(' ');
-
-      if (partes.length >= 2) {
-        const tipo = partes[0];
-        const logras = partes.slice(1).join(' ');
-
-        setSelectedTipoLogra(tipo);
-        console.log(tipo);
-        setLogra(logras);
-      } else {
-        console.error('Texto não contém espaço.');
-      }
     } catch (error) {
       console.error('Erro:', error);
     }
@@ -234,8 +304,14 @@ const AddCharger = ({navigation}) => {
 
   const semCep = async () => {
     try {
-      if (logra != '' && bairro != '' && cidade != '' && numero != '' && cepInput.length != 8) {
-        const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+      if (
+        logra != '' &&
+        bairro != '' &&
+        cidade != '' &&
+        numero != '' &&
+        cepInput.length != 8
+      ) {
+        const address = `${selectedTipoLogra} ${logra}, ${numero} - ${bairro}, ${cidade} - ${selectedUf}`;
 
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
@@ -253,7 +329,6 @@ const AddCharger = ({navigation}) => {
 
         const data = await response.json();
 
-        console.log(data.results[0].address_components[4].short_name);
         var tipoLogra =
           data.results[0].address_components[1].long_name.split(' ')[0];
         var tipoUf = data.results[0].address_components[4].short_name;
@@ -264,7 +339,6 @@ const AddCharger = ({navigation}) => {
           '-',
           '',
         );
-        console.log(cepNormal);
         setCep(cepNormal);
         setValidacaoLogradouro(true);
         setValidCidade(false);
@@ -276,7 +350,6 @@ const AddCharger = ({navigation}) => {
         setValidBairro(false);
       }
     } catch (error) {
-      console.log("ERRO: "+error);
       const validacao = async () => {
         let camposInvalidos = [];
         setValidCidade(true);
@@ -321,7 +394,9 @@ const AddCharger = ({navigation}) => {
         bairro != '' &&
         cidade != '' &&
         qtdeCarregadores != '' &&
-        selectCarregadores != []
+        selectCarregadores != [] &&
+        horario1 != '' &&
+        horario2 != ''
       ) {
         if (cepInput.length == 8 && !validcaoLogradouro) {
           handleGeocode();
@@ -362,8 +437,14 @@ const AddCharger = ({navigation}) => {
           }
           if (qtdeCarregadores < selectCarregadores.length) {
             setValidQtdeCarregadores(true);
-            camposInvalidos.push('Quantidade de carregadores', "Há mais carregadores selecionados do que quantidades deles");
-            
+            camposInvalidos.push(
+              'Quantidade de carregadores',
+              'Há mais carregadores selecionados do que quantidades deles',
+            );
+          }
+          if (horario1 == '') {
+            setValidHorarios('#f00');
+            camposInvalidos.push('Horários nos preenchidos');
           }
 
           setListaCamposInvalidos(camposInvalidos);
@@ -402,6 +483,7 @@ const AddCharger = ({navigation}) => {
             keyboardType="numeric"
             onChangeText={setCep}
             value={cepInput}
+            maxLength={8}
             onBlur={() => {
               if (cepInput.length == 8 && !validcaoLogradouro) {
                 handleGeocode();
@@ -409,6 +491,11 @@ const AddCharger = ({navigation}) => {
             }}
           />
 
+          <View>
+            <Text style={{color: '#f00', fontWeight: '900'}}>
+              *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
+            </Text>
+          </View>
           <View>
             <TipoLogradouro
               onTipoLograChange={handleTipoLograChange}
@@ -441,7 +528,6 @@ const AddCharger = ({navigation}) => {
             }}
             value={cidade}
             onBlur={() => {
-              console.log(cidade);
               semCep();
             }}
           />
@@ -481,15 +567,6 @@ const AddCharger = ({navigation}) => {
           <View
             style={{width: '100%', height: 2, backgroundColor: '#000'}}></View>
 
-          <TextInput
-            placeholder="Horário*"
-            style={styles.textInput}
-            placeholderTextColor={'#000'}
-          />
-          <View style={styles.acceptPay}>
-            <Switch />
-            <Text>Aberto 24/7</Text>
-          </View>
           <TouchableOpacity
             onPress={() => setCarregadores(!carregadores)}
             style={styles.charger}>
@@ -498,15 +575,23 @@ const AddCharger = ({navigation}) => {
                 styles.placeholder,
                 {color: validSelectCarregadores ? 'red' : '#000'},
               ]}>
-              Carregador
+              Carregadores
             </Text>
           </TouchableOpacity>
           {carregadores ? (
-            <TabelaCarregadores
-              notFiltro={true}
-              onSelectCarregadores={toggleCarregadorSelection}
-              carr={selectCarregadores}
-            />
+            <View
+              style={{
+                width: '100%',
+                height: 'auto',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <TabelaCarregadores
+                notFiltro={true}
+                onSelectCarregadores={toggleCarregadorSelection}
+                carr={selectCarregadores}
+              />
+            </View>
           ) : (
             <Text></Text>
           )}
@@ -521,16 +606,85 @@ const AddCharger = ({navigation}) => {
             placeholderTextColor={validQtdeCarregadores ? 'red' : '#000'}
           />
           <View style={styles.acceptPay}>
-            <Switch />
+            <Switch
+              onChange={() => {
+                setPagamento(!pagamento);
+              }}
+              value={pagamento}
+            />
             <Text>Pagamento Necessário</Text>
           </View>
-          <TextInput
+          {/*          <TextInput
             placeholder="Preço(Opcional)"
             style={styles.textInput}
             placeholderTextColor={'#000'}
-          />
+          />*/}
+
+          {!horario24h ? (
+            <View style={[styles.horario]}>
+              <TextInput
+                disabled={horario24h}
+                style={[
+                  styles.textInput,
+                  {width: '40%', fontSize: 16, color: validHorarios},
+                ]}
+                placeholder="Horário inicial"
+                placeholderTextColor={validHorarios}
+                onChangeText={async texto => {
+                  if (texto.length == 2) {
+                    setHorario1(`${texto.substring(0, 3)}h`);
+                  } else {
+                    setHorario1(texto);
+                  }
+                }}
+                onBlur={() => {
+                  validarHorario(horario1);
+                }}
+                maxLength={5}
+                keyboardType="number-pad"
+                value={horario1}
+              />
+              <Text>Até</Text>
+              <TextInput
+                placeholderTextColor={validHorarios}
+                style={[
+                  styles.textInput,
+                  {width: '40%', fontSize: 16, color: validHorarios},
+                ]}
+                placeholder="Horário final"
+                onChangeText={async texto => {
+                  if (texto.length == 2) {
+                    setHorario2(`${texto.substring(0, 3)}h`);
+                  } else {
+                    setHorario2(texto);
+                  }
+                }}
+                onBlur={() => {
+                  validarHorario(horario2);
+                }}
+                maxLength={5}
+                keyboardType="number-pad"
+                value={horario2}
+              />
+            </View>
+          ) : null}
+          <View style={styles.acceptPay}>
+            <Switch
+              onChange={() => {
+                setHorario1(!horario24h ? 'true' : false);
+                setHorario2(!horario24h ? 'true' : false);
+                setHorario24h(!horario24h);
+              }}
+              value={horario24h}
+            />
+            <Text>Aberto 24/7</Text>
+          </View>
+          {mensagemErro ? (
+            <Text style={{color: 'red'}}>{mensagemErro}</Text>
+          ) : null}
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity
+              disabled={mensagemErro ? true : false}
               style={styles.button}
               onPress={() => {
                 handlePress();

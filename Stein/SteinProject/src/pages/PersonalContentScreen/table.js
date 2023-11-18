@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 const numRows = 5;
 const numColumns = 3;
 
-const Table = ({getInfo, info}) => {
+const Table = ({getInfo}) => {
     const nomeCarregadores = [
         "Wall",
             "Nema 14-50",
@@ -33,9 +33,6 @@ const Table = ({getInfo, info}) => {
       for (let j = 0; j < numColumns; j++) {
         const carregadorIndex = i * numColumns + j + 1;
         let isSelected = selectedCarr === carregadorIndex;
-        if(info){
-            isSelected = info == carregadorIndex;
-        }
 
         row.push(
           <TouchableOpacity

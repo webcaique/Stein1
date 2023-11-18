@@ -180,6 +180,84 @@ const styles = ScaledSheet.create({
   errorText:{
     color: "red"
   },
+  termosDeUso:{
+    color:"#00a",
+    textDecorationLine:"underline",
+  },
+  containerTermoDeUso:{
+    marginTop:10,
+    textAlign:"justify",
+    alignItems:"center",
+    flex:1,
+    width:"100%",
+    height:"100%",
+  },
+  imgSaidaTermoDeUso:{
+    position:"absolute",
+    right:"5%",
+    top:"0%"
+  },
+  termosContainerTexto:{
+    width:"100%",
+    padding:20,
+  },
+  termosTitle:{
+    textAlign:"center",
+    fontWeight:"900",
+    fontSize:18,
+  },
+  textoTermo:{
+    marginTop:20,
+    textAlign:"justify",
+  },
+  verifEmail:{
+    fontSize:60,
+    borderWidth:1,
+    fontWeight:"700",
+    width:"20%",
+    height:100,
+    borderRadius:5,
+    textAlign:"center",
+
+  },
+  verifEmailTextInput:{
+    flexDirection:"row",
+    justifyContent:"space-between",
+  },
+  containerVerifEmail:{
+    width:"100%",
+    padding:20,
+    backgroundColor:"#fff",
+    height:"auto",
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    borderRadius:10,
+  },
+  mainContainerVerifEmail:{
+    width:"100%",
+    height:"100%",
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor:"transparent",
+    padding:10,
+  },
+  TitleVerifEmail:{
+    fontSize:20,
+    fontWeight:"700",
+  },
+  textInfo:{
+    fontStyle:"italic",
+    marginBottom:10,
+  },
+  imgSaidaVerifEmail:{
+    position:"absolute",
+    right:"5%",
+    marginTop:10,
+  }
 });
 
 export default styles;
