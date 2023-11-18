@@ -46,6 +46,13 @@ export default function LoginScreen({navigation}) {
     
   };
 
+
+  useEffect(()=>{
+    auth.onAuthStateChanged((userCredential)=>{
+      console.log(userCredential);
+    });
+  },[]);
+
   return (
     <KeyboardAvoidingView>
       <View

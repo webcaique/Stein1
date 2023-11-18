@@ -22,6 +22,7 @@ import colorName from 'color-name';
 import CheckBox from '@react-native-community/checkbox';
 import TabelaLogradouro from '../tipoLogradouro';
 
+
 const cores = {
   Branco: 'White',
   Preto: 'Black',
@@ -71,27 +72,34 @@ const SinginScreen = ({navigation}) => {
     setSelectedUf(uf);
   };
 
-  
-
-  // Configuração do ActionCodeSettings
-const actionCodeSettings = {
-  url: `https://stein-182fa.firebaseapp.com/acctmgmt?mode=verify&oobCode=${codigoDeVeificacao}&apiKey=AIzaSyCDmoGS0vnyJWmSfAnEHsglPnMfUmShHGw`, // Substitua pela URL de destino do seu aplicativo
-  handleCodeInApp: true,
-  android: {
-    packageName: 'com.Stein.app', // Substitua pelo nome do pacote do seu aplicativo
-    installApp: true,
-    minimumVersion: '8',
-  },
-};
-
   const register = async (teste) => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
         let user = userCredential.user;
         let emailVerific = auth.currentUser;
-        await emailVerific.sendEmailVerification(actionCodeSettings);
-        add(user.uid, true, teste);
+        if(emailVerific){
+          if(!emailVerific.emailVerified){
+            auth.sendSignInLinkToEmail(email)
+            .then(()=>{
+              auth.currentUser.emailVerified(email).then((data)=>{
+                console.log(data);
+                console.log("Verificado");
+                add(user.uid, true, teste);
+              })
+              .catch(error => {
+                console.log("Erro ao verificar: ", error)
+              });
+            })
+            .catch(error => {
+              console.log("Erro ao authenticar: ", error.message);
+            })
+          } else {
+            console.log('O e-mail já foi verificado.');
+          }
+        } else {
+          console.error('Nenhum usuário autenticado encontrado.');
+        }
         
       })
       .catch(error => {
