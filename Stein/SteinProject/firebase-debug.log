@@ -1,13 +1,175 @@
-[debug] [2023-11-18T13:04:03.133Z] ----------------------------------------------------------------------
-[debug] [2023-11-18T13:04:03.135Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\caiqu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js login
-[debug] [2023-11-18T13:04:03.135Z] CLI Version:   12.9.1
-[debug] [2023-11-18T13:04:03.135Z] Platform:      win32
-[debug] [2023-11-18T13:04:03.136Z] Node Version:  v18.16.0
-[debug] [2023-11-18T13:04:03.136Z] Time:          Sat Nov 18 2023 10:04:03 GMT-0300 (Horário Padrão de Brasília)
-[debug] [2023-11-18T13:04:03.137Z] ----------------------------------------------------------------------
+[debug] [2023-11-18T13:07:00.877Z] ----------------------------------------------------------------------
+[debug] [2023-11-18T13:07:00.880Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\caiqu\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2023-11-18T13:07:00.880Z] CLI Version:   12.9.1
+[debug] [2023-11-18T13:07:00.880Z] Platform:      win32
+[debug] [2023-11-18T13:07:00.880Z] Node Version:  v18.16.0
+[debug] [2023-11-18T13:07:00.881Z] Time:          Sat Nov 18 2023 10:07:00 GMT-0300 (Horário Padrão de Brasília)
+[debug] [2023-11-18T13:07:00.881Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2023-11-18T13:04:03.139Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
-[info] i  Firebase optionally collects CLI and Emulator Suite usage and error reporting information to help improve our products. Data is collected in accordance with Google's privacy policy (https://policies.google.com/privacy) and is not used to identify you.
- 
-[debug] [2023-11-18T13:04:03.602Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
-[debug] [2023-11-18T13:04:03.603Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2023-11-18T13:07:00.887Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-11-18T13:07:00.887Z] > authorizing via signed-in user (sidraocaique@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\caiqu\OneDrive\Documentos\GitHub\TCCProject\Stein1\Stein\SteinProject
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2023-11-18T13:07:15.620Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2023-11-18T13:07:16.591Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2023-11-18T13:07:16.591Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  Using project stein-182fa (Stein) 
+[info] 
+=== Firestore Setup
+[debug] [2023-11-18T13:07:20.609Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/firestore.googleapis.com [none]
+[debug] [2023-11-18T13:07:20.609Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/firestore.googleapis.com x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:07:21.752Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/firestore.googleapis.com 200
+[debug] [2023-11-18T13:07:21.752Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/firestore.googleapis.com [omitted]
+[debug] [2023-11-18T13:07:21.753Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default) [none]
+[debug] [2023-11-18T13:07:21.993Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default) 200
+[debug] [2023-11-18T13:07:21.993Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default) {"name":"projects/stein-182fa/databases/(default)","uid":"6d5b1fad-877c-451d-9f50-ebc67d15df2a","createTime":"2023-07-31T23:14:53.436680Z","updateTime":"2023-07-31T23:14:53.436680Z","locationId":"southamerica-east1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2023-11-18T12:07:21.672151Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"i","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","etag":"II2nvffOzYIDMKLUiMiwj4ID"}
+[debug] [2023-11-18T13:07:21.993Z] database_type: FIRESTORE_NATIVE
+[debug] [2023-11-18T13:07:21.993Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-11-18T13:07:21.993Z] > authorizing via signed-in user (sidraocaique@gmail.com)
+[debug] [2023-11-18T13:07:21.993Z] [iam] checking project stein-182fa for permissions ["firebase.projects.get"]
+[debug] [2023-11-18T13:07:21.993Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions [none]
+[debug] [2023-11-18T13:07:21.994Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:07:21.994Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-11-18T13:07:22.931Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions 200
+[debug] [2023-11-18T13:07:22.931Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[info] 
+[info] Firestore Security Rules allow you to define how and when to allow
+[info] requests. You can keep these rules in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2023-11-18T13:07:50.986Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/releases pageSize=10&pageToken=
+[debug] [2023-11-18T13:07:52.068Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/releases 200
+[debug] [2023-11-18T13:07:52.069Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/releases {"releases":[{"name":"projects/stein-182fa/releases/cloud.firestore","rulesetName":"projects/stein-182fa/rulesets/4900b033-cb41-4de6-a6b6-9ae12806a134","createTime":"2023-07-31T23:15:00.301481Z","updateTime":"2023-07-31T23:15:19.192902Z"},{"name":"projects/stein-182fa/releases/firebase.storage/stein-182fa.appspot.com","rulesetName":"projects/stein-182fa/rulesets/7c602d9d-646a-4a72-b6ec-35e7d42533e8","createTime":"2023-08-03T11:09:15.428294Z","updateTime":"2023-11-06T20:05:02.446785Z"}]}
+[debug] [2023-11-18T13:07:52.079Z] Found ruleset: projects/stein-182fa/rulesets/4900b033-cb41-4de6-a6b6-9ae12806a134
+[debug] [2023-11-18T13:07:52.079Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/rulesets/4900b033-cb41-4de6-a6b6-9ae12806a134 [none]
+[debug] [2023-11-18T13:07:53.109Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/rulesets/4900b033-cb41-4de6-a6b6-9ae12806a134 200
+[debug] [2023-11-18T13:07:53.109Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/stein-182fa/rulesets/4900b033-cb41-4de6-a6b6-9ae12806a134 [omitted]
+[info] 
+[info] Firestore indexes allow you to perform complex queries while
+[info] maintaining performance that scales with the size of the result
+[info] set. You can keep index definitions in your project directory
+[info] and publish them with firebase deploy.
+[info] 
+[debug] [2023-11-18T13:08:01.426Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2023-11-18T13:08:01.428Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2023-11-18T13:08:01.573Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2023-11-18T13:08:01.573Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/indexes {}
+[debug] [2023-11-18T13:08:01.643Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2023-11-18T13:08:01.643Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/stein-182fa/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/stein-182fa/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[info] 
+=== Functions Setup
+[debug] [2023-11-18T13:08:01.646Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-11-18T13:08:01.646Z] > authorizing via signed-in user (sidraocaique@gmail.com)
+[debug] [2023-11-18T13:08:01.646Z] [iam] checking project stein-182fa for permissions ["firebase.projects.get"]
+[debug] [2023-11-18T13:08:01.647Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions [none]
+[debug] [2023-11-18T13:08:01.647Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:08:01.647Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-11-18T13:08:02.503Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions 200
+[debug] [2023-11-18T13:08:02.503Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/stein-182fa:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2023-11-18T13:08:02.503Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-11-18T13:08:02.504Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:08:02.505Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/runtimeconfig.googleapis.com [none]
+[debug] [2023-11-18T13:08:02.505Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:08:03.538Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com 200
+[debug] [2023-11-18T13:08:03.538Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com [omitted]
+[debug] [2023-11-18T13:08:03.539Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com:enable [none]
+[debug] [2023-11-18T13:08:03.539Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com:enable x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:08:03.566Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/runtimeconfig.googleapis.com 200
+[debug] [2023-11-18T13:08:03.566Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2023-11-18T13:08:05.688Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com:enable 200
+[debug] [2023-11-18T13:08:05.688Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com:enable [omitted]
+[debug] [2023-11-18T13:08:15.696Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com [none]
+[debug] [2023-11-18T13:08:15.696Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/stein-182fa
+[debug] [2023-11-18T13:08:16.700Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com 200
+[debug] [2023-11-18T13:08:16.701Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/stein-182fa/services/cloudfunctions.googleapis.com [omitted]
+[info] Let's create a new codebase for your functions.
+[info] A directory corresponding to the codebase will be created in your project
+[info] with sample code pre-configured.
+
+[info] See https://firebase.google.com/docs/functions/organize-functions for
+[info] more information on organizing your functions using codebases.
+
+[info] Functions can be deployed with firebase deploy.
+
+[info] +  Wrote functions/package.json 
+[info] +  Wrote functions/.eslintrc.js 
+[info] +  Wrote functions/index.js 
+[info] +  Wrote functions/.gitignore 
+[info] 
+=== Hosting Setup
+[debug] [2023-11-18T13:09:36.801Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/stein-182fa [none]
+[debug] [2023-11-18T13:09:37.209Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/stein-182fa 200
+[debug] [2023-11-18T13:09:37.210Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/stein-182fa {"projectId":"stein-182fa","projectNumber":"348126047276","displayName":"Stein","name":"projects/stein-182fa","resources":{"hostingSite":"stein-182fa","realtimeDatabaseInstance":"stein-182fa-default-rtdb","storageBucket":"stein-182fa.appspot.com","locationId":"southamerica-east1"},"state":"ACTIVE","etag":"1_a4f200ca-eacc-44f1-aedc-c4adf5c7a2c9"}
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[debug] [2023-11-18T13:10:32.281Z] >>> [apiv2][query] GET https://www.gstatic.com/firebasejs/releases.json [none]
+[debug] [2023-11-18T13:10:32.414Z] <<< [apiv2][status] GET https://www.gstatic.com/firebasejs/releases.json 200
+[debug] [2023-11-18T13:10:32.415Z] <<< [apiv2][body] GET https://www.gstatic.com/firebasejs/releases.json {"current":{"version":"10.6.0","browserURL":"https://www.gstatic.com/firebasejs/10.6.0/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/10.6.0/firebase.tgz"},"live":{"version":"10.6","browserURL":"https://www.gstatic.com/firebasejs/live/10.6/firebase.js","packageURL":"https://www.gstatic.com/firebasejs/live/10.6/firebase.tgz"},"components":{"analytics":"https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js","app":"https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js","app-check":"https://www.gstatic.com/firebasejs/10.6.0/firebase-app-check.js","auth":"https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js","auth/cordova":"https://www.gstatic.com/firebasejs/10.6.0/firebase-auth/cordova.js","functions":"https://www.gstatic.com/firebasejs/10.6.0/firebase-functions.js","firestore":"https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js","firestore/lite":"https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore/lite.js","installations":"https://www.gstatic.com/firebasejs/10.6.0/firebase-installations.js","storage":"https://www.gstatic.com/firebasejs/10.6.0/firebase-storage.js","performance":"https://www.gstatic.com/firebasejs/10.6.0/firebase-performance.js","remote-config":"https://www.gstatic.com/firebasejs/10.6.0/firebase-remote-config.js","messaging":"https://www.gstatic.com/firebasejs/10.6.0/firebase-messaging.js","messaging/sw":"https://www.gstatic.com/firebasejs/10.6.0/firebase-messaging/sw.js","database":"https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js","firestore.memory":"https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.memory.js"}}
+[info] +  Wrote public/index.html 
+[info] 
+[info] i  Detected a .git folder at C:\Users\caiqu\OneDrive\Documentos\GitHub\TCCProject\Stein1 
+[info] i  Authorizing with GitHub to upload your service account to a GitHub repository's secrets store. 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://github.com/login/oauth/authorize?client_id=89cf50f02ac6aaed3484&state=369783499&redirect_uri=http%3A%2F%2Flocalhost%3A9005&scope=read%3Auser%20repo%20public_repo
+[info] 
+[info] Waiting for authentication...
+[debug] [2023-11-18T13:11:28.028Z] >>> [apiv2][query] POST https://github.com/login/oauth/access_token [none]
+[debug] [2023-11-18T13:11:28.028Z] >>> [apiv2][body] POST https://github.com/login/oauth/access_token [stream]
+[debug] [2023-11-18T13:11:28.355Z] <<< [apiv2][status] POST https://github.com/login/oauth/access_token 200
+[debug] [2023-11-18T13:11:28.355Z] <<< [apiv2][body] POST https://github.com/login/oauth/access_token {"access_token":"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","token_type":"bearer","scope":"read:user,repo"}
+[debug] [2023-11-18T13:11:28.361Z] >>> [apiv2][query] GET https://api.github.com/user [none]
+[debug] [2023-11-18T13:11:28.700Z] <<< [apiv2][status] GET https://api.github.com/user 200
+[debug] [2023-11-18T13:11:28.700Z] <<< [apiv2][body] GET https://api.github.com/user {"login":"webcaique","id":123769870,"node_id":"U_kgDOB2CUDg","avatar_url":"https://avatars.githubusercontent.com/u/123769870?v=4","gravatar_id":"","url":"https://api.github.com/users/webcaique","html_url":"https://github.com/webcaique","followers_url":"https://api.github.com/users/webcaique/followers","following_url":"https://api.github.com/users/webcaique/following{/other_user}","gists_url":"https://api.github.com/users/webcaique/gists{/gist_id}","starred_url":"https://api.github.com/users/webcaique/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/webcaique/subscriptions","organizations_url":"https://api.github.com/users/webcaique/orgs","repos_url":"https://api.github.com/users/webcaique/repos","events_url":"https://api.github.com/users/webcaique/events{/privacy}","received_events_url":"https://api.github.com/users/webcaique/received_events","type":"User","site_admin":false,"name":null,"company":null,"blog":"","location":null,"email":null,"hireable":null,"bio":null,"twitter_username":null,"public_repos":4,"public_gists":0,"followers":0,"following":0,"created_at":"2023-01-27T19:11:26Z","updated_at":"2023-11-18T13:11:20Z","private_gists":0,"total_private_repos":0,"owned_private_repos":0,"disk_usage":73941,"collaborators":0,"two_factor_authentication":true,"plan":{"name":"free","space":976562499,"collaborators":0,"private_repos":10000}}
+[info] 
+[info] +  Success! Logged into GitHub as webcaique 
+[info] 
+[debug] [2023-11-18T13:11:39.471Z] >>> [apiv2][query] GET https://api.github.com/repos//actions/secrets/public-key type=owner
+[debug] [2023-11-18T13:11:39.723Z] <<< [apiv2][status] GET https://api.github.com/repos//actions/secrets/public-key 404
+[debug] [2023-11-18T13:11:39.723Z] <<< [apiv2][body] GET https://api.github.com/repos//actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] !  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
+[debug] [2023-11-18T13:11:48.703Z] >>> [apiv2][query] GET https://api.github.com/repos//actions/secrets/public-key type=owner
+[debug] [2023-11-18T13:11:48.962Z] <<< [apiv2][status] GET https://api.github.com/repos//actions/secrets/public-key 404
+[debug] [2023-11-18T13:11:48.962Z] <<< [apiv2][body] GET https://api.github.com/repos//actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] !  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
+[debug] [2023-11-18T13:11:51.584Z] >>> [apiv2][query] GET https://api.github.com/repos/n/actions/secrets/public-key type=owner
+[debug] [2023-11-18T13:11:51.832Z] <<< [apiv2][status] GET https://api.github.com/repos/n/actions/secrets/public-key 404
+[debug] [2023-11-18T13:11:51.832Z] <<< [apiv2][body] GET https://api.github.com/repos/n/actions/secrets/public-key {"message":"Not Found","documentation_url":"https://docs.github.com/rest"}
+[info] 
+[info] 
+[error] !  The provided authorization cannot be used with this repository. If this repository is in an organization, did you remember to grant access? 
+[info] 
+[info] i  Action required: Visit this URL to ensure access has been granted to the appropriate organization(s) for the Firebase CLI GitHub OAuth App: 
+[info] https://github.com/settings/connections/applications/89cf50f02ac6aaed3484
+[info] 
