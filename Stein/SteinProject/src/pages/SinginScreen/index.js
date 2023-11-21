@@ -62,10 +62,27 @@ const SinginScreen = ({navigation}) => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
-        console.log("AQUI");
         let user = userCredential.user;
         setErrorEmail("");
-        add(user.uid, true);
+
+        fetch('http://seu-servidor:3000/enviar-email-verificacao', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: 'usuario@email.com',
+            }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            add(user.uid, true);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+
       })
       .catch(error => {
         add(0,false)
