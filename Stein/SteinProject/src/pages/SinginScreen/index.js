@@ -65,7 +65,7 @@ const SinginScreen = ({navigation}) => {
         let user = userCredential.user;
         setErrorEmail("");
 
-        fetch('http://seu-servidor:3000/enviar-email-verificacao', {
+        fetch('http://localhost:3000/enviar-email-verificacao', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
