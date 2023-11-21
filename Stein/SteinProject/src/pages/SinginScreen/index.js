@@ -15,13 +15,11 @@ import {
 } from 'react-native';
 import styles from './style';
 import SelectList from '../selectList';
-import {auth} from '../../config/configFirebase.js';
-import {firestore} from '../../config/configFirebase.js';
+import {auth, firestore} from '../../config/configFirebase.js';
 import Table from './table';
 import colorName from 'color-name';
 import CheckBox from '@react-native-community/checkbox';
 import TabelaLogradouro from '../tipoLogradouro';
-
 
 const cores = {
   Branco: 'White',
@@ -48,7 +46,8 @@ const SinginScreen = ({navigation}) => {
   const [tipoLogradouro, setTipoLogradouro] = useState('');
   const [codigoDeVeificacao, setCodigoDeVerificacao] = useState(
     Math.floor(Math.random() * 9000) + 1000
-    )
+    );
+  
 
 
   const getTipoLogradouro = texto => {

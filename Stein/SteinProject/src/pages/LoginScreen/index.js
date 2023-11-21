@@ -14,8 +14,6 @@ import {
 import styles from './style.js';
 import CheckBox from '@react-native-community/checkbox';
 import {auth} from '../../config/configFirebase.js';
-import firebase from '../../config/configFirebase.js';
-import firestore from '@react-native-firebase/auth';
 import { useRoute } from '@react-navigation/native';
 
 export default function LoginScreen({navigation}) {
@@ -45,13 +43,6 @@ export default function LoginScreen({navigation}) {
       });
     
   };
-
-
-  useEffect(()=>{
-    auth.onAuthStateChanged((userCredential)=>{
-      console.log(userCredential);
-    });
-  },[]);
 
   return (
     <KeyboardAvoidingView>
