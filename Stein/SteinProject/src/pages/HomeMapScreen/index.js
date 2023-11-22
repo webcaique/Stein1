@@ -535,8 +535,10 @@ export default function Stein({navigation}) {
             </ScrollView>
           </Modal>
         </View>
+        
         <View style={estilos.fundo}>
-          <Modal visible={visivel}>
+        
+          <Modal visible={visivel} >
             <View>
               <View style={estilos.Img1}>
                 <ImageBackground
@@ -557,22 +559,37 @@ export default function Stein({navigation}) {
                 </ImageBackground>
               </View>
 
-              <View style={estilos.estrela}>
-                {/* <Rating
-                  showRating
-                  onFinishRating={this.ratingCompleted}
-                  style={{paddingVertical: 10}}
-                  backgroundColor={'transparent'}
-                /> */}
-                <Text
-                  style={{
-                    fontSize: verticalScale(20),
-                    color: 'white',
-                    marginLeft: moderateScale(200),
-                  }}>
-                  {cidade}
-                </Text>
-              </View>
+              
+<View style={estilos.Img1}>
+
+    <ImageBackground
+  style={estilos.Img}
+  source={{
+    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'}}>
+       <TouchableOpacity
+       onPress={() => {
+        setVisivel(false);
+                       }}>
+   <Image 
+   style={estilos.seta}
+   source={{
+    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w'
+  }}>
+    
+  </Image>
+     </TouchableOpacity>
+    </ImageBackground>
+ 
+</View>
+
+<View style={estilos.estrela}>
+<Rating
+  showRating
+  onFinishRating={this.ratingCompleted}
+  style={{ paddingVertical: 10, }}
+/>
+ <Text style={{ fontSize: verticalScale(20), color: 'white', marginLeft: moderateScale(200)}}>{cidade}</Text>
+</View>
 
               <View style={estilos.bff}>
                 <TouchableOpacity style={estilos.iconsSpecs}>
@@ -623,7 +640,13 @@ export default function Stein({navigation}) {
               <View style={estilos.Strahd}>
                 {/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
 
-                <View style={estilos.iconsSpecs1}>
+
+{/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
+
+
+
+              <View style={estilos.iconsSpecs1}>
+                    
                   <Image
                     //Localizar
                     style={estilos.icon}
@@ -631,7 +654,7 @@ export default function Stein({navigation}) {
                       uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fendereco.png?alt=media&token=073a9f5b-f866-4583-bec7-5a4615b11fbf',
                     }}
                   />
-                  <Text style={estilos.textIcon1}>{end}</Text>
+                     <Text style={estilos.textIcon1}>{end}</Text>
                 </View>
 
                 <View style={estilos.iconsSpecs1}>
@@ -642,7 +665,7 @@ export default function Stein({navigation}) {
                       uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fbufunfa.png?alt=media&token=e608fc97-e108-4180-ab19-97d66bfc1fcc',
                     }}
                   />
-                  <Text style={estilos.textIcon1}>Grátis</Text>
+                    <Text style={estilos.textIcon1}>Grátis</Text>
                 </View>
 
                 <View style={estilos.iconsSpecs1}>
@@ -653,9 +676,11 @@ export default function Stein({navigation}) {
                       uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festacionamento.png?alt=media&token=a827952e-b37d-4383-8144-2c7c38ffe54d',
                     }}
                   />
-                  <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
+                    <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
                 </View>
 
+              
+             
                 <View style={estilos.iconsSpecs1}>
                   <Image
                     //Tipo
@@ -664,18 +689,18 @@ export default function Stein({navigation}) {
                       uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ftipo.png?alt=media&token=34abcf01-a2ac-4b54-92de-20a74a835ef6',
                     }}
                   />
-                  <Text style={estilos.textIcon1}>
-                    Estacionamento para VE, Restaurante, Banheiros, Compras
-                  </Text>
+                    <Text style={estilos.textIcon1}>Estacionamento para VE, Restaurante, 
+                      Banheiros, Compras</Text>
                 </View>
-                <Pressable
-                  style={{width: '10%', height: '100%'}}
-                  onPress={() => {
-                    setModal(false);
-                  }}
-                />
+              
+
+                
+
+           
               </View>
+              
             </View>
+            
           </Modal>
 
           <Map
