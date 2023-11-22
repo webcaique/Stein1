@@ -17,11 +17,14 @@ import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
-import {firestore} from '../../config/configFirebase';
+import {firestore, storage} from '../../config/configFirebase';
+import {request, PERMISSIONS} from 'react-native-permissions';
+import {launchCamera} from 'react-native-image-picker';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const AddCharger = ({navigation}) => {
+  const path = require('path');
   const [horario1, setHorario1] = useState('');
   const [horario2, setHorario2] = useState('');
   const [horario24h, setHorario24h] = useState(false);
@@ -55,6 +58,8 @@ const AddCharger = ({navigation}) => {
   const [selectCarregadores, setSelectCarregadores] = useState('');
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+  const [img, setImg] = useState();
+  const [imgPath, setImgPath] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
 
   //Campos inválidos
@@ -181,6 +186,16 @@ const AddCharger = ({navigation}) => {
             // aqui será incrementado um único valor, para criar um novo ID
             countCarregadores++;
 
+            await storage
+              .ref(
+                `Pontos/${cepInput}-${numero}/Ponto-${cepInput}-${numero}${img[1]}`,
+              )
+              .putFile(img[0])
+              .then(data => {
+                setImgPath(data.metadata.fullPath);
+              })
+              .catch(error => console.log(error));
+
             //Adiciona os dados dentro do banco de dados
             tabelaCarregadores
               .doc(`${countCarregadores}`)
@@ -192,6 +207,7 @@ const AddCharger = ({navigation}) => {
                 horarioAberto: !horario24h
                   ? `${horario1} - ${horario2}`
                   : '24/7',
+                imagem: imgPath,
               })
               .then(() => {
                 console.log('ADICIONADO!');
@@ -463,6 +479,18 @@ const AddCharger = ({navigation}) => {
     }
   };
 
+  const selectImage = async () => {
+    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+    if (status === 'granted') {
+      const imagem = await launchCamera();
+      const extencao = path.extname(imagem.assets[0].originalPath);
+      setImg([imagem.assets[0].originalPath, extencao]);
+    } else {
+      console.log('Permissão de escrita no armazenamento externo negada');
+    }
+  };
+
   return (
     <Pressable
       style={styles.container}
@@ -679,6 +707,13 @@ const AddCharger = ({navigation}) => {
             />
             <Text>Aberto 24/7</Text>
           </View>
+          <TouchableOpacity
+            onPress={() => selectImage()}
+            style={styles.charger}>
+            <Text style={[styles.placeholder, {color: '#000'}]}>
+              Selecionar imagem
+            </Text>
+          </TouchableOpacity>
           {mensagemErro ? (
             <Text style={{color: 'red'}}>{mensagemErro}</Text>
           ) : null}

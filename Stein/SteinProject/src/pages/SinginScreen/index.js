@@ -387,6 +387,9 @@ const SinginScreen = ({navigation}) => {
 
   return (
     <ScrollView>
+
+
+
       <Modal visible={termos}>
         <Pressable
           style={styles.containerTermoDeUso}
@@ -459,6 +462,17 @@ const SinginScreen = ({navigation}) => {
           </ScrollView>
         </Pressable>
       </Modal>
+
+
+
+
+
+
+
+
+
+
+
       <View
         style={styles.conteiner}
         //Container principal
@@ -693,6 +707,19 @@ const SinginScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             </View>
+
+
+
+
+
+
+
+
+
+
+
+
+            
             {modal ? (
               <Modal style={styles.modal}>
                 <ScrollView>
