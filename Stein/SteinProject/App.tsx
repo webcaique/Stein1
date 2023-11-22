@@ -33,6 +33,7 @@ import EditHome from './src/pages/AddAndEditHome/editingHouse';
 import AddWork from './src/pages/AddAndEditWork/AddWork';
 import EditWork from './src/pages/AddAndEditWork/editingWork';
 import DataBox from './src/pages/HouseAndWork/boxData';
+import TradePassword from './src/pages/TradePassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -385,6 +386,20 @@ const App = () => {
             },
             headerStyle: {
               backgroundColor: '#ffffff',
+            },
+          }}
+        />
+        <Stack.Screen
+          name="TradePassword"
+          component={TradePassword}
+          options={{
+            title: 'Mudar Senhas',
+            headerTransparent: true,
+            headerTitleAlign: 'left',
+            headerTitleStyle: {
+              fontSize: 34,
+              fontWeight: '900',
+              color: '#563595',
             },
           }}
         />

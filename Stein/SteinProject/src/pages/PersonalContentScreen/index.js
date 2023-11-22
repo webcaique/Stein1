@@ -16,7 +16,7 @@ import Table from './table';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
-const PersonalContentScreen = () => {
+const PersonalContentScreen = ({navigation}) => {
   const [carregador, setCarregador] = useState([]);
   const [nomeUser, setNomeUser] = useState('');
   const [emailUser, setEmailUser] = useState('');
@@ -332,7 +332,7 @@ const PersonalContentScreen = () => {
           <TouchableOpacity
             style={styles.dinamicView} /* Texto dinâmico e imagem */
             onPress={() => {
-              changeData('Senha');
+              navigation.navigate("TradePassword");
             }}>
             <Text style={styles.textDinamic}>{'*'.repeat(senha.length)}</Text>
             <Image
