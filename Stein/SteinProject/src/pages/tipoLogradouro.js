@@ -3,7 +3,7 @@ import styles from "./styles"
 import { View } from "react-native"
 import {Picker} from '@react-native-picker/picker';
 
-export default function tipoLogradouro({validar, onTipoLograChange}){
+export default function tipoLogradouro({validar, onTipoLograChange, branco}){
     const [tipoLogra, setTipoLogra] = useState()
     
     const handleTipoLograChange = (itemValue) => {
@@ -12,7 +12,7 @@ export default function tipoLogradouro({validar, onTipoLograChange}){
     };
 
     return (
-        <View style={styles.list}>
+        <View style={[styles.list, branco? {backgroundColor:"white", borderWidth:1}: null]}>
             <Picker
                 selectedValue={validar}
                 onValueChange={

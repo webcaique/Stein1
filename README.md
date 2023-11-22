@@ -1,2 +1,0 @@
-# Stein1
- TCC

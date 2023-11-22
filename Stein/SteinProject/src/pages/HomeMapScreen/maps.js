@@ -111,7 +111,6 @@ export default class Map extends Component {
                   });
                 }}
               />
-              <Marker coordinate={destino} />
             </>
           ) : null}
           {onFiltros.length > 0? this.filtrar(onFiltros): chargerMarkes}

@@ -1,6 +1,3 @@
-import { AppRegistry } from 'react-native';
-import { App } from '../../App';
-import { name as appName } from '../../app.json';
 import "@react-native-firebase/storage";
 import firebase from '@react-native-firebase/app';
 import '@react-native-firebase/auth';
@@ -18,6 +15,7 @@ const firebaseConfig = {
   measurementId: "G-7F7X3HCMS3"
 };
 
+
 let app;
 if (firebase.apps.length === 0) {
     app = firebase.initializeApp(firebaseConfig )
@@ -28,3 +26,4 @@ if (firebase.apps.length === 0) {
 export const firestore = firebase.firestore();
 export const auth = firebase.auth();
 export const storage = firebase.storage();
+

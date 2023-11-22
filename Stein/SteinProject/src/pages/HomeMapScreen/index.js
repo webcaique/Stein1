@@ -35,22 +35,36 @@ export default function Stein({navigation}) {
   const [initializing, setInitializing] = useState(true);
   const [userId, setUserId] = useState();
 
-  // Handle user state changes
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if(user){
-      setUserId(user.uid);
-    }
-    if (initializing) setInitializing(false);
-  }
-
   useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    setMenorDuracao("");
-    return subscriber; // unsubscribe on unmount
+    const subscriber = auth.onAuthStateChanged(userAuth => {
+      setUser(userAuth)
+      if(user) setUserId(userAuth.uid);
+      if (initializing) setInitializing(false);
+    });
+    setMenorDuracao('');
+    return () => subscriber; // unsubscribe on unmount
   }, []);
 
   ///
+
+  const enviarEmailVerificacao = async () => {
+    console.log("TESTE");
+    console.log(user)
+    try {
+      if (user) {
+        await user.sendEmailVerification();
+        console.log('E-mail de verificação enviado com sucesso!');
+      } else {
+        console.log('Usuário não autenticado.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar e-mail de verificação:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    enviarEmailVerificacao();
+  }, []);
 
   //Dados para o Marker
   const [cidade, setCidade] = useState([]);
@@ -487,8 +501,10 @@ export default function Stein({navigation}) {
                       style={estilos.links}
                       onPress={() => {
                         setModal(!modal);
-                        auth.signOut().then(()=>{console.log("BONITO!")})
-                        navigation.navigate("InitScreen")
+                        auth.signOut().then(() => {
+                          console.log('BONITO!');
+                        });
+                        navigation.navigate('InitScreen');
                       }}>
                       <View
                         style={{
@@ -507,7 +523,6 @@ export default function Stein({navigation}) {
                         </View>
                       </View>
                     </TouchableOpacity>
-
                   </View>
                 </View>
                 <Pressable
