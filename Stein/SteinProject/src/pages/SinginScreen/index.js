@@ -167,8 +167,10 @@ return (
                         Email ou/e senha inválido(s)
                     </Text>
                 </View>
-            ) : (
-                <View />
+            )
+            :
+            (
+                <View/>
             )}
             </View>
             <View
