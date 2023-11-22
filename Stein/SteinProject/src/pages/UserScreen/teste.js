@@ -1,75 +1,111 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
 import styles from './style';
-import {auth, firestore, storage} from '../../config/configFirebase';
+import {auth, firestore} from '../../config/configFirebase';
+import DocumentPicker from 'react-native-document-picker';
 import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {utils} from '@react-native-firebase/app';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { utils } from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
 
 const UserScreen = ({navigation}) => {
-  const path = require('path');
   const userId = auth.currentUser.uid;
-  const [userData, setUserData] = useState();
   const [nomeUser, setNomeUser] = useState('');
   const [prog, setProg] = useState();
-  const [imgFundo, setImgFundo] = useState();
-  const [imgPerfil, setImgPerfil] = useState();
 
   const tabelaUsuario = firestore.collection('usuario');
 
-
-  const selectImage = async (tipo) => {
-    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-
-    if (status === 'granted') {
-      const imagem = await launchImageLibrary();
-      console.log(imagem.assets[0].originalPath);
-      const extencao = path.extname(imagem.assets[0].originalPath)
-      console.log(extencao)
-
-
-      await storage
-      .ref(`UserDir/${nomeUser}/${tipo}${extencao}`)
-        .putFile(imagem.assets[0].originalPath)
-        .then(data => {
-          console.log(data);
-          if(tipo == "fundo"){
-            tabelaUsuario.doc(userId).update({
-              imagemFundo: data.metadata.fullPath,
-            })
-          } else {
-            tabelaUsuario.doc(userId).update({
-              imagemPerfil: data.metadata.fullPath,
-            })
-          }
-        })
-        .catch(error => console.log(error));
+  const uploadFileToFirebaseStorage = async (file) => {
+    // Verifique se a permissão já foi concedida
+    const permissionStatus = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+  
+    if (permissionStatus === RESULTS.GRANTED) {
+      // A permissão já foi concedida, faça o upload do arquivo
+      console.log(file[0].uri);
+      const upload = storage().ref(`/UserDir/${nomeUser}`).putFile(file[0].uri);
+      upload
+      .on(
+        "state_changed",
+        (snaphot)=>{
+          const prog = Math.round(
+            ((snaphot.bytesTransferred / snaphot.totalBytes) * 100),
+            
+          )
+          setProg(prog)
+        }, (error)=>{
+          console.error(error)
+        },
+        ()=>{
+          console.log("AQUI");
+          storage().ref("UserDir")
+          .child(file[0].name)
+          .getDownloadURL()
+          .then((url)=>{
+            console.log(url);
+          })
+        }
+      )
+      
+      console.log('Arquivo enviado com sucesso para o Firebase Storage.');
     } else {
-      console.log('Permissão de escrita no armazenamento externo negada');
+      // A permissão ainda não foi concedida, solicite-a ao usuário
+      const permissionRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+      if (permissionRequest === RESULTS.GRANTED) {
+        // Permissão concedida, faça o upload do arquivo
+      const upload = storage().ref(`UserDir/${nomeUser}`).putFile(file[0].uri);
+        console.log('Arquivo enviado com sucesso para o Firebase Storage.');
+      } else {
+        console.log('Permissão negada pelo usuário.');
+      }
     }
   };
 
-  const getUserData = async () => {
+  const selectAndCopyFile = async () => {
+    try {
+      const permissionStatus = await check(
+        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      );
+      if (permissionStatus === RESULTS.GRANTED) {
+        const result = await DocumentPicker.pick({
+          type: [DocumentPicker.types.images],
+        });
+
+        if (result) {
+          uploadFileToFirebaseStorage(result);
+        } else {
+          console.log(result);
+        }
+      } else {
+        const permissionRequest = await request(
+          PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+        );
+        if (permissionRequest === RESULTS.GRANTED) {
+          // Agora você pode chamar selectAndCopyFile() novamente.
+        } else {
+          console.log('Permissão negada pelo usuário.');
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao selecionar ou copiar o arquivo:', err);
+    }
+  };
+
+  const getUserData = () => {
     let usuario;
-    tabelaUsuario.onSnapshot( async datas => {
+    tabelaUsuario.onSnapshot(datas => {
       datas._docs.forEach(dados => {
         if (userId == dados._ref._documentPath._parts[1]) {
           usuario = {id: dados._ref._documentPath._parts[1], ...dados._data};
         }
       });
 
-      setUserData(usuario);
-      setNomeUser(usuario.nomeUsuario);
-
+      setNomeUser(usuario);
 
       if (usuario.imagemFundo) {
-        const imagemFundo = await storage.ref(`${usuario.imagemFundo}`).getDownloadURL();
-        setImgFundo(imagemFundo);
+        console.log('IMAGEM FUNDO');
       }
 
       if (usuario.imagemPerfil) {
-        const imagemPerfil = await storage.ref(`${usuario.imagemPerfil}`).getDownloadURL();
-        setImgPerfil(imagemPerfil);
+        console.log('IMAGEM PERFIL');
       }
     });
   };
@@ -82,38 +118,17 @@ const UserScreen = ({navigation}) => {
     <View style={styles.mainContainer}>
       <TouchableOpacity
         style={styles.userImageBgBackgroudn}
-        onPress={async () => {
-          selectImage("fundo");
-        }}>
+        onPress={() => selectAndCopyFile()}>
         <Image
           style={styles.userImageBg}
-          source={
-            imgPerfil?
-            require('../../../assets/UserAsset/TestUser/BgImage.png')
-            :
-            {
-              uri: imgPerfil,
-            }
-          }
+          source={require('../../../assets/UserAsset/TestUser/BgImage.png')}
         />
       </TouchableOpacity>
       <View style={styles.userImageBackGround}>
-        <TouchableOpacity 
-        style={styles.circule}
-        onPress={async () =>{
-          selectImage("perfil");
-        }}
-        >
+        <TouchableOpacity style={styles.circule}>
           <Image
             style={styles.useruserImage}
-            source={
-              imgPerfil?
-              require('../../../assets/UserAsset/TestUser/userImage.png')
-              :
-              {
-                uri: imgPerfil,
-              }
-            }
+            source={require('../../../assets/UserAsset/TestUser/userImage.png')}
           />
         </TouchableOpacity>
         <Text style={styles.userName}>Nome do usuário</Text>

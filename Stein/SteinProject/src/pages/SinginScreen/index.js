@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import styles from './style';
 import SelectList from '../selectList';
-import {auth, firestore} from '../../config/configFirebase.js';
+import {auth} from '../../config/configFirebase.js';
+import { firestore } from '../../config/configFirebase.js';
 import Table from './table';
 import colorName from 'color-name';
 import CheckBox from '@react-native-community/checkbox';
@@ -44,9 +45,6 @@ const SinginScreen = ({navigation}) => {
   const [termos, setTermos] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [tipoLogradouro, setTipoLogradouro] = useState('');
-  const [codigoDeVeificacao, setCodigoDeVerificacao] = useState(
-    Math.floor(Math.random() * 9000) + 1000
-    );
   
 
 
@@ -77,28 +75,7 @@ const SinginScreen = ({navigation}) => {
       .then(async (userCredential) => {
         let user = userCredential.user;
         let emailVerific = auth.currentUser;
-        if(emailVerific){
-          if(!emailVerific.emailVerified){
-            auth.sendSignInLinkToEmail(email)
-            .then(()=>{
-              auth.currentUser.emailVerified(email).then((data)=>{
-                console.log(data);
-                console.log("Verificado");
-                add(user.uid, true, teste);
-              })
-              .catch(error => {
-                console.log("Erro ao verificar: ", error)
-              });
-            })
-            .catch(error => {
-              console.log("Erro ao authenticar: ", error.message);
-            })
-          } else {
-            console.log('O e-mail já foi verificado.');
-          }
-        } else {
-          console.error('Nenhum usuário autenticado encontrado.');
-        }
+        add(user.uid, teste);
         
       })
       .catch(error => {
@@ -338,8 +315,7 @@ const SinginScreen = ({navigation}) => {
     return teste;
   };
 
-  const add = async (ID, verif, teste) => {
-    if (verif) {
+  const add = async (ID, teste) => {
       if (teste) {
         const getTabUser = await tabelaUsuario.get();
 
@@ -399,13 +375,12 @@ const SinginScreen = ({navigation}) => {
           .set(dados)
           .catch(error => console.error(error));
 
-        if (verif) {
+        if (teste) {
           navigation.navigate('LoginScreen');
         } else {
           setModal(false);
         }
       }
-    }
   };
 
   //
@@ -928,8 +903,9 @@ const SinginScreen = ({navigation}) => {
                           cep
                         ) {
                           const test = verificacaoDados();
+                          console.log(test);
                           if (test) {
-                             const verif = register(test);
+                            register(test);
                           }
                         } else {
                           let lista = [];
@@ -1037,8 +1013,3 @@ const SinginScreen = ({navigation}) => {
   );
 };
 export default SinginScreen;
-/*
- 
-                          
-                          register();
- */
