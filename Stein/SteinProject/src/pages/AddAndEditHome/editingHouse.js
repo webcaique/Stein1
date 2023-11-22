@@ -14,6 +14,7 @@ import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import TabelaCarregadores from '../componenteTabelaCarregadores';
+import {auth} from '../../config/configFirebase';
 
 export default function AddHome() {
   // Futuras atualizações do app para usuabilidade de facilidar a edição do cadastro, para colocar os dados nos campos e apenas editar o que quer
@@ -90,37 +91,41 @@ export default function AddHome() {
           });
 
           // guarda o idLocal, para fazer o update da tabela
-          listaLocal.forEach(datas => {
-            if (datas.IDLogradouro == idFromOtherScreen) {
-              setIdLocal(datas);
-              setName(datas.nomeLocal);
-              setCarregadores(datas.IDTipoCarregador);
-            }
-          });
+          listaLocal.forEach(async datas => {
+            if (datas.IDUsuario == auth.currentUser.uid) {
+              if (datas.IDLogradouro == idFromOtherScreen) {
+                setIdLocal(datas);
+                setName(datas.nomeLocal);
+                setCarregadores(datas.IDTipoCarregador);
+              }
 
-          // vai pegar os dados na tabela logradouros
-          const snapshotLogra = await tabelaLogra.get();
+              // vai pegar os dados na tabela logradouros
+              const snapshotLogra = await tabelaLogra.get();
 
-          // array que receberá os dados da tabela do Firebase
-          const listaLogra = [];
+              // array que receberá os dados da tabela do Firebase
+              const listaLogra = [];
 
-          // coloca os dados do firebase na lsita
-          snapshotLogra.forEach(doc => {
-            listaLogra.push({id: doc.id, ...doc.data()});
-          });
+              // coloca os dados do firebase na lsita
+              snapshotLogra.forEach(doc => {
+                listaLogra.push({id: doc.id, ...doc.data()});
+              });
 
-          // guardará os dados da tabela para ser atualizada
-          listaLogra.forEach(datas => {
-            if (datas.id == idFromOtherScreen) {
-              setLograEdit(datas);
-              setBairro(datas.bairro);
-              setCep(datas.CEP);
-              setCidade(datas.cidade);
-              setComplemento(datas.complemento);
-              setLogra(datas.logradouro);
-              setNumero(datas.numero);
-              setSelectedTipoLogra(datas.tipoLogradouro);
-              setSelectedUf(datas.UF);
+              // guardará os dados da tabela para ser atualizada
+              listaLogra.forEach(datas => {
+                if (datas.IDUsuario == auth.currentUser.uid) {
+                  if (datas.id == idFromOtherScreen) {
+                    setLograEdit(datas);
+                    setBairro(datas.bairro);
+                    setCep(datas.CEP);
+                    setCidade(datas.cidade);
+                    setComplemento(datas.complemento);
+                    setLogra(datas.logradouro);
+                    setNumero(datas.numero);
+                    setSelectedTipoLogra(datas.tipoLogradouro);
+                    setSelectedUf(datas.UF);
+                  }
+                }
+              });
             }
           });
 
@@ -192,6 +197,7 @@ export default function AddHome() {
         IDTipoCarregador: carregadores,
         IDLogradouro: `${idLocal.IDLogradouro}`,
         tipoLocal: `Casa`,
+        IDUsuario: auth.currentUser.uid,
       });
     }
   };

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import {
   Text,
@@ -8,6 +9,7 @@ import {
   Modal,
   ScrollView,
   Dimensions,
+  ImageBackground,
 } from 'react-native';
 import estilos from './style';
 import {moderateScale} from 'react-native-size-matters';
@@ -15,14 +17,48 @@ import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import {firestore} from '../../config/configFirebase';
+import {auth} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
+import {Rating} from 'react-native-ratings';
+import {verticalScale} from 'react-native-size-matters';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+  //USUÁRIO
+
+  // Set an initializing state whilst Firebase connects
+  const [user, setUser] = useState();
+  const [initializing, setInitializing] = useState(true);
+  const [userId, setUserId] = useState();
+
+  // Handle user state changes
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if(user){
+      setUserId(user.uid);
+    }
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    setMenorDuracao("");
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  ///
+
+  //Dados para o Marker
+  const [cidade, setCidade] = useState([]);
+  const [endereco, setEndereco] = useState([]);
+  const [visivel, setVisivel] = useState(false);
+  const [end, setEnd] = useState([]);
+
+  //Dado para o destino
   const [distancia, setDistancia] = useState('');
   const [duracao, setDuracao] = useState('');
   const [search, setSeach] = useState('');
@@ -37,10 +73,13 @@ export default function Stein({navigation}) {
   const [verificacaoDestination, setVerificacaoDestination] = useState(false);
   const [durac, setDurac] = useState(null);
   const [tabCarr, setTabCarr] = useState();
+  const [tabelaCarregador, setTabelaCarregador] = useState();
+  const [tabelaLogradouro, setTabelaLogradouro] = useState();
+  const [tabelaCarro, setTabelaCarro] = useState();
 
   const tabelaLogra = firestore.collection('logradouro');
   const tabelaCarregadores = firestore.collection('carregadores');
-  const tabelaUsuario = firestore.collection('usuario');
+  const tabelaCarros = firestore.collection('carro');
 
   resetSearch = srcVal => {
     setSearchLoading(srcVal);
@@ -56,20 +95,29 @@ export default function Stein({navigation}) {
       const listaLogra = [];
       const listCarr = [];
       const listUsuario = [];
+      const listaCarro = [];
       tabelaCarregadores.onSnapshot(datas => {
         datas._docs.forEach(data => {
           listCarr.push({id: data._ref._documentPath._parts[1], ...data._data});
         });
 
-        tabelaLogra.onSnapshot(dados => {
-          dados._docs.forEach(data => {
-            listaLogra.push({
-              id: data._ref._documentPath._parts[1],
-              ...data._data,
+        tabelaCarros.onSnapshot(carros => {
+          carros.forEach(sobre => {
+            listaCarro.push({
+              id: sobre._ref._documentPath._parts[1],
+              ...sobre._data,
             });
           });
+          setTabelaCarro(listaCarro);
 
-          tabelaUsuario.onSnapshot(datas => {
+          tabelaLogra.onSnapshot(dados => {
+            dados._docs.forEach(data => {
+              listaLogra.push({
+                id: data._ref._documentPath._parts[1],
+                ...data._data,
+              });
+            });
+
             datas._docs.forEach(dado => {
               listUsuario.push({
                 id: dado._ref._documentPath._parts[1],
@@ -77,33 +125,45 @@ export default function Stein({navigation}) {
               });
 
               const newMarkers = [];
+              const nearCarr = [];
+              const listaEnd = [];
 
               listCarr.forEach(datas => {
                 listaLogra.forEach(docs => {
                   if (datas.IDLogradouro === docs.id) {
-                    let nome = datas.nome;
-                    const novoPonto = {...docs.geolocalizacao, nome};
+                    let nome = `${docs.bairro}, \n${docs.cidade}`;
+                    let endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+                    let novoPonto = {...docs.geolocalizacao, nome};
                     newMarkers.push(novoPonto);
-                  }
-                });
-                listUsuario.forEach(dados => {
+                    setCidade(docs.cidade);
+                    listaEnd.push(endereco);
 
-                  for (const numero1 of dados.IDTipoCarregador) {
-                    for (const numero2 of datas.IDTipoCarregador) {
-                      if (numero1 == numero2) {
-                        setTabCarr(newMarkers)
+                    listaCarro.forEach(carro => {
+                      if (carro.IDUsuario == auth.currentUser.uid) {
+                        for (const idCarregador of datas.IDTipoCarregador) {
+                          if (carro.IDTipoCarregador == idCarregador) {
+                            nome = `${docs.bairro}, \n${docs.cidade}`;
+                            endereco = `${docs.logradouro}, ${docs.numero} \n ${docs.bairro},  ${docs.cidade} `;
+                            novoPonto = {...docs.geolocalizacao, nome};
+                            nearCarr.push(novoPonto);
+                          }
+                        }
                       }
-                    }
+                    });
                   }
                 });
+
+                setTabelaCarregador(listCarr);
+                setTabelaLogradouro(listaLogra);
               });
+              setTabCarr(nearCarr);
               setMarkers(newMarkers);
-              setLoading(false);
-              console.log(tabCarr);
+              setEndereco(listaEnd);
             });
           });
         });
       });
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -124,8 +184,8 @@ export default function Stein({navigation}) {
       },
       erro => console.error(erro),
       {
-        enableHighAccuracy: false,
-        timeout: 3000,
+        enableHighAccuracy: true,
+        timeout: 10000,
       },
     );
   }, []);
@@ -148,7 +208,92 @@ export default function Stein({navigation}) {
   const toggleCarregadorSelection = carr => {
     setSelectedCarregadores(carr);
   };
+  const [logra, setLogra] = useState();
+  const [nome, setNome]= useState([])
+  useEffect(() => {
+    const fetchBd = async () => {
+      const snapshotCarr = await tabelaCarregadores.get();
+      const listCarr = [];
+      snapshotCarr.forEach(data => {
+        listCarr.push({id: data.id, ...data.data()});
+      });
 
+      const snapshotLogra = await tabelaLogra.get();
+      const listaLogra = [];
+      snapshotLogra.forEach(doc => {
+        listaLogra.push({id: doc.id, ...doc.data()});
+      });
+
+      listCarr.forEach(datas => {
+        listaLogra.forEach(docs => {
+          if (datas.id == docs.id) {
+            console.log('DATAS');
+            console.log(datas.nome);
+            let nome = datas.nome;
+            setNome(datas.nome);
+            console.log('DOCS');
+            console.log(docs.geolocalizacao);
+            console.log(nome);
+            const novoPonto = {...docs.geolocalizacao, nome};
+            console.log('Novo ponto');
+            console.log(novoPonto);
+            setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
+          }
+        });
+      });
+    };
+
+    //   listaLogra.forEach(teste => {
+    //     console.log('DADOS');
+    //     console.log(teste.geolocalizacao);
+    //     setMarkers(prevMarkers => [
+    //       ...prevMarkers,
+    //       {...teste.geolocalizacao, nome: 'casa'},
+    //     ]);
+    //   });
+    // };
+
+    fetchBd();
+    getLocation();
+  }, []);
+
+  /*
+  logra.forEach((date)=>{
+      let dados = {
+        key: markers.length,
+        coords:{
+          latitude: parseFloat(date.geolocalizacao.latitude) ,
+          longitude: parseFloat(date.geolocalizacao.longitude)
+        },
+        pinColor: '#0000FF'
+      }
+      setMarkers(oldArray=>[...oldArray,dados])
+    });
+  */
+
+  function getLocation() {
+    Geolocation.getCurrentPosition(
+      info => {
+        console.log('LAT', info.coords.latitude);
+        console.log('LON', info.coords.longitude);
+        setRegion({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          longitudeDelta: 0.0922,
+          latitudeDelta: 0.0421,
+        });
+      },
+      error => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 2000,
+      },
+    );
+  }
+
+ 
   if (loading) {
     return <Text>Carregando</Text>;
   } else {
@@ -224,6 +369,7 @@ export default function Stein({navigation}) {
                         <TabelaCarregadores
                           onSelectCarregadores={toggleCarregadorSelection}
                           carr={selectedCarregadores}
+                          filtros={true}
                         />
                       </View>
                     ) : (
@@ -336,6 +482,32 @@ export default function Stein({navigation}) {
                         </View>
                       </View>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={estilos.links}
+                      onPress={() => {
+                        setModal(!modal);
+                        auth.signOut().then(()=>{console.log("BONITO!")})
+                        navigation.navigate("InitScreen")
+                      }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <View style={estilos.containerLink}>
+                          <Image
+                            style={estilos.imagemIcon1}
+                            source={{
+                              uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fsair.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48',
+                            }}
+                          />
+                          <Text style={estilos.textLink}>Logout</Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+
                   </View>
                 </View>
                 <Pressable
@@ -349,66 +521,227 @@ export default function Stein({navigation}) {
           </Modal>
         </View>
         <View style={estilos.fundo}>
+          <Modal visible={visivel}>
+            <View>
+              <View style={estilos.Img1}>
+                <ImageBackground
+                  style={estilos.Img}
+                  source={{
+                    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setVisivel(false);
+                    }}>
+                    <Image
+                      style={estilos.seta}
+                      source={{
+                        uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w',
+                      }}></Image>
+                  </TouchableOpacity>
+                </ImageBackground>
+              </View>
+
+              <View style={estilos.estrela}>
+                {/* <Rating
+                  showRating
+                  onFinishRating={this.ratingCompleted}
+                  style={{paddingVertical: 10}}
+                  backgroundColor={'transparent'}
+                /> */}
+                <Text
+                  style={{
+                    fontSize: verticalScale(20),
+                    color: 'white',
+                    marginLeft: moderateScale(200),
+                  }}>
+                  {cidade}
+                </Text>
+              </View>
+
+              <View style={estilos.bff}>
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Favoritos
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festrela.png?alt=media&token=55c04446-3b9b-4666-bf4b-f8baf15913c5',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Favorito</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Galeria
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fgaleria.png?alt=media&token=2116fe7a-d830-4a5e-a028-be0940600f00',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Adicionar Foto</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //ROTAS
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fset2.png?alt=media&token=b9379978-0c83-4758-a591-4619509b3e09',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Direção</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={estilos.iconsSpecs}>
+                  <Image
+                    //Reportar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fperigo.png?alt=media&token=884eace5-04b9-450c-b168-bea02542e4ba',
+                    }}
+                  />
+                  <Text style={estilos.textIcon}>Reportar</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={estilos.Strahd}>
+                {/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Localizar
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fendereco.png?alt=media&token=073a9f5b-f866-4583-bec7-5a4615b11fbf',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>{end}</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Dinheiro
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fbufunfa.png?alt=media&token=e608fc97-e108-4180-ab19-97d66bfc1fcc',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>Grátis</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Estacionamento
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festacionamento.png?alt=media&token=a827952e-b37d-4383-8144-2c7c38ffe54d',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
+                </View>
+
+                <View style={estilos.iconsSpecs1}>
+                  <Image
+                    //Tipo
+                    style={estilos.icon}
+                    source={{
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ftipo.png?alt=media&token=34abcf01-a2ac-4b54-92de-20a74a835ef6',
+                    }}
+                  />
+                  <Text style={estilos.textIcon1}>
+                    Estacionamento para VE, Restaurante, Banheiros, Compras
+                  </Text>
+                </View>
+                <Pressable
+                  style={{width: '10%', height: '100%'}}
+                  onPress={() => {
+                    setModal(false);
+                  }}
+                />
+              </View>
+            </View>
+          </Modal>
+
           <Map
+            tabelaCarregador={tabelaCarregador}
+            tabelaLogradouro={tabelaLogradouro}
+            onFiltros={selectedCarregadores}
             dest={menorDuracao}
             resetSrc={resetSearch}
             searchVer={search} // Passando o valor atual de searchVer
             userMapRegion={region}
-            chargerMarkes={markers.map((coordenada, index) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: coordenada.latitude,
-                  longitude: coordenada.longitude,
-                }}
-                title={coordenada.nome}
-              />
-            ))}
+            chargerMarkes={markers.map((coordenada, index) => {
+              return (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: coordenada.latitude,
+                    longitude: coordenada.longitude,
+                  }}
+                  title={coordenada.nome}
+                  icon={{
+                    uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FpingCarregadores1.png?alt=media&token=769d4cfd-0682-4d23-99d5-4e51947f3196&_gl=1*1l5agxv*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODQ0OTM1Ny4xNDIuMS4xNjk4NDUwMTM5LjU1LjAuMA..`,
+                  }}
+                  onPress={() => {
+                    setVisivel(true);
+                    setEnd(endereco[index]);
+                    setCidade(markers[index].nome);
+                  }}
+                />
+              );
+            })}
             inf={getInfo}
           />
 
           <TouchableOpacity
             style={estilos.iconBoltBg}
             onPressIn={() => {
-              const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
-              const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
-              let minDuration = Infinity;
-              markers.forEach(location => {
-                tabCarr.forEach((inf)=>{
-                  if(inf == location){
-                    const destination = {
-                      latitude: location.latitude,
-                      longitude: location.longitude,
-                    };
-    
-    
-                    // Solicitar as direções do Google Maps
-                    fetch(
-                      `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
-                    )
-                      .then(response => response.json())
-                      .then(data => {
-                        if (data.routes && data.routes.length > 0) {
-                          const duration = data.routes[0].legs[0].duration.value;
-                          if (duration < minDuration) {
-                            minDuration = duration;
-                            setDurac(minDuration);
-                            setLocMenorDuracao(destination);
-                          }
+              if (tabCarr) {
+                const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
+                const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
+                let minDuration = Infinity;
+                markers.forEach(location => {
+                  tabCarr.forEach(inf => {
+                    if (location.latitude == inf.latitude) {
+                      if (location.longitude == inf.longitude) {
+                        if (location.nome == inf.nome) {
+                          const destination = {
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                          };
+
+                          // Solicitar as direções do Google Maps
+                          fetch(
+                            `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
+                          )
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data.routes && data.routes.length > 0) {
+                                const duration =
+                                  data.routes[0].legs[0].duration.value;
+                                if (duration < minDuration) {
+                                  minDuration = duration;
+                                  setDurac(minDuration);
+                                  setLocMenorDuracao(destination);
+                                }
+                              }
+                            })
+                            .catch(error => {
+                              console.error(
+                                'Erro ao calcular a duração da viagem:',
+                                error,
+                              );
+                            });
                         }
-                      })
-                      .catch(error => {
-                        console.error(
-                          'Erro ao calcular a duração da viagem:',
-                          error,
-                        );
-                      });
-                  }
+                      }
+                    }
+                  });
                 });
-              });
-              setMenorDuracao(locMenorDuracao);
-              setVerificacaoDestination(!verificacaoDestination);
-              setSeach(false);
+                setMenorDuracao(locMenorDuracao);
+                setVerificacaoDestination(!verificacaoDestination);
+                setSeach(false);
+              }
             }}>
             <Image
               //Localizador de pontos pertos
@@ -486,3 +819,20 @@ export default function Stein({navigation}) {
     );
   }
 }
+
+/*
+
+<Image
+                        style={estilos.imagemIcon2}
+                        source={{
+                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
+                        }}
+                      />
+
+<Image
+                        style={estilos.imagemIcon2}
+                        source={{
+                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6',
+                        }}
+                      />
+*/

@@ -1,63 +1,64 @@
-import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
+import {
+  ScaledSheet,
+  scale,
+  moderateScale,
+  verticalScale,
+  moderateVerticalScale,
+  moderateHorizontalScale,
+} from 'react-native-size-matters';
 
 const styles = ScaledSheet.create({
-    mainContainer:{
-        padding:10,
-        width:"100%",
-        height:"100%",
-        flex:1,
+  mainContainer: {
+    margin:10,
+    height: "auto",
+    flex:1,
+  },
+  textTitlePage:{
+    fontSize:16,
+    fontWeight:"700",
+  },
+  textTitleTable:{
+    fontSize:25,
+    fontWeight:"900",
+  },
+  table:{
+    width:"100%",
+    height:"auto",
+    borderWidth:1,
+    alignItems:"center",
+    justifyContent:"center",
 
-    },
-    textTop:{
-        fontSize: 16,
-        marginBottom:10,
-    },
-    containerTextTop:{
-        width:"100%",
-    },
-    box:{
-        width:"100%",
-        height:"auto",
-        padding:10,
-        alignItems:"center",
-        borderWidth:1,
-    },
-    containerMainText:{
-        marginBottom:10,
-    },
-    mainText:{
-        fontSize:20,
-        fontWeight:"700",
-    },
-    line:{
-        width:"100%",
-        flexDirection:"row",
-        justifyContent:"space-between",
-        marginVertical:10,
-
-    },
-    iconsLine:{
-        flexDirection:"row",
-        alignItems:"center",
-    },
-    imageSet:{
-        alignItems:"flex-end",
-        width:125,
-        height:25,
-    },
-    imgs:{
-        marginLeft:5,
-        width:25,
-        resizeMode:"contain",
-        height:25,
-    },
-    textLine:{
-        fontSize:18,
-    },
-    containerTextLine:{
-        width:"auto",
-}
-
-})
+  },
+  row:{
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"space-between",
+    alignItems:"center",
+    height:60,
+    paddingHorizontal:5,
+  },
+  dinamicView:{
+    flexDirection:"row",
+    alignItems:"center",
+    justifyContent:"flex-end",
+    width:"60%"
+  },
+  textFix:{
+    fontSize:16,
+  },
+  textDinamic:{
+    fontSize:10,
+    textAlign:"center",
+  },
+  imgs:{
+    width:25,
+    height:25,
+    resizeMode:"contain",
+    marginLeft:5,
+  },
+  flatList:{
+    alignItems:"flex-end"
+  }
+});
 
 export default styles;

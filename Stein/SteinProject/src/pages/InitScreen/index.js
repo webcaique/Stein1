@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, Image, TouchableOpacity,} from 'react-native';
 import styles from "./style";
+import { storage } from '../../config/configFirebase';
 
 
 
 export default function InitScreen({navigation}) {
+
   return (
     <View style={{width:"100%",height:"100%",flex:1}}>
 
@@ -15,11 +17,8 @@ export default function InitScreen({navigation}) {
             uri: "https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fcircle.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6"
           }
           } style={styles.circle} /* O circulo */ />
-          <Image source={
-            {
-              uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FlogoStein.png?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6"
-            }
-            } style={styles.logoStein} /* A logo *//>
+          <Image source={{uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FlogoStein.png?alt=media&token=e84c9536-ff29-4e40-865c-56e3af072121&_gl=1*owvztj*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5OTI2ODYzNi4xNTguMS4xNjk5MjcwNzY1LjE3LjAuMA"}} style={styles.logoStein} /* A logo */
+          />
         </View>
         <Text style={styles.textAbove}
          numberOfLines={1}

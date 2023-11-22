@@ -1,6 +1,7 @@
 import React from "react";
 import {View, Text, ScrollView, Image, TouchableOpacity} from "react-native";
 import styles from "./style"
+import { auth } from "../../config/configFirebase";
 
 const ChangeAccount = ({navigation}) => {
     return(
@@ -57,7 +58,11 @@ const ChangeAccount = ({navigation}) => {
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.circuleButton} 
-                    onPress={()=>navigation.navigate("InitScreen")}
+                    onPress={()=>{
+                        auth.signOut().then(()=>{console.log("BONITO!")})
+                        navigation.navigate("InitScreen")
+                    
+                    }}
                     >
                         <Image source={
                             {uri:"https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fsair.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48"}
