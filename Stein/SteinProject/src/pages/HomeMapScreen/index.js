@@ -449,7 +449,7 @@ export default function Stein({navigation}) {
 </View>
 
 <View style={estilos.estrela}>
- <Text style={{color:"white", fontSize: verticalScale(25)}}>{nome}</Text>
+ <Text style={{color:"white", fontSize: verticalScale(25)}}>{}</Text>
 </View>
 
               <View style={estilos.bff}>

@@ -16,9 +16,10 @@ import {firestore} from '../../config/configFirebase';
 import styles from "./style";
 import {useState, useEffect} from "react";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { auth } from "../../config/configFirebase";
 export default function TradePassword({ navigation }) {
-const [password, setPassword] = useState([])
+const [senha, setSenha] = useState([])
+
 // useEffect(( )=>{
 //     database.collection("usuarios").onSnapshot((query)=>{
 //         const list = []
@@ -84,7 +85,7 @@ const [password, setPassword] = useState([])
 
             <TouchableOpacity
               style={styles.buttons}
-              onPress={(console.log(""))}
+              onPress={()=>auth.currentUser.updatePassword(setSenha)}
             >
               <Text style={styles.textButtons}>Salvar</Text>
             </TouchableOpacity>
