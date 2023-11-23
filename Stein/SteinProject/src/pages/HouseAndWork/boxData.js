@@ -212,6 +212,7 @@ export default function (props) {
           </View>
           <View style={[styles.link, {width: 85}]}>
             <FlatList
+            inverted
               style={{flexDirection: 'row', width: 50}}
               data={props.carregador}
               keyExtractor={item => item.id}

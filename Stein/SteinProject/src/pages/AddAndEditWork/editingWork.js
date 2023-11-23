@@ -96,7 +96,6 @@ export default function AddHome() {
         let lg;
 
         listaLg.forEach(datas => {
-          if (datas.IDUsuario == auth.currentUser.uid) {
             if (datas.id == idFromOtherScreen) {
               lg = datas;
             }
@@ -114,14 +113,7 @@ export default function AddHome() {
               }
             });
             setIdLocal(end);
-
             setLograEdit(lg);
-
-            console.log('END');
-            console.log(end);
-            console.log('Logra');
-            console.log(lg);
-
             setBairro(lg.bairro);
             setCarregadores(end.IDTipoCarregador);
             setCep(lg.CEP);
@@ -132,7 +124,6 @@ export default function AddHome() {
             setNumero(lg.numero);
             setSelectedTipoLogra(lg.tipoLogradouro);
             setName(end.nomeLocal);
-          }
         });
 
         setLoading(false);

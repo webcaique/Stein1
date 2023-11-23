@@ -12,14 +12,15 @@ import {
   Modal,
   useAnimatedValue,
   TurboModuleRegistry,
+  Platform
 } from 'react-native';
 import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore, storage} from '../../config/configFirebase';
-import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera} from 'react-native-image-picker';
+import { PERMISSIONS, request, check, openSettings  } from 'react-native-permissions';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -480,16 +481,104 @@ const AddCharger = ({navigation}) => {
   };
 
   const selectImage = async () => {
-    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-
-    if (status === 'granted') {
-      const imagem = await launchCamera();
-      const extencao = path.extname(imagem.assets[0].originalPath);
-      setImg([imagem.assets[0].originalPath, extencao]);
-    } else {
-      console.log('Permissão de escrita no armazenamento externo negada');
+    if(Platform.OS === "ios"){
+      try {
+        const result = await request(PERMISSIONS.IOS.CAMERA);
+        if (result === 'granted') {
+          const status = await request(
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+          );
+  
+          if (status === 'granted') {
+            const imagem = await launchCamera();
+            const extencao = path.extname(imagem.assets[0].originalPath);
+            setImg([imagem.assets[0].originalPath, extencao]);
+          } else {
+            console.log('Permissão de escrita no armazenamento externo negada');
+          }
+        } else {
+          console.log('Permissão da câmera negada');
+        }
+      } catch (error) {
+        console.error('Erro ao solicitar permissão da câmera:', error);
+  
+        // No iOS, pode ser necessário direcionar o usuário para as configurações do aplicativo para conceder permissão
+        if (error?.toString().includes('OPEN_SETTINGS')) {
+          abrirConfiguracoes();
+        }
+      };
+    } else if(Platform.OS === "android"){
+      try {
+        
+        const result = await request(PERMISSIONS.ANDROID.CAMERA);
+        if (result === 'granted') {
+          const status = await request(
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+          );
+  
+          if (status === 'granted') {
+            const imagem = await launchCamera();
+            const extencao = path.extname(imagem.assets[0].originalPath);
+            setImg([imagem.assets[0].originalPath, extencao]);
+          } else {
+            console.log('Permissão de escrita no armazenamento externo negada');
+          }
+        } else {
+          console.log('Permissão da câmera negada');
+        }
+      } catch (error) {
+        console.log('Erro ao solicitar permissão da câmera:', error);
+  
+        // No Android, pode ser necessário direcionar o usuário para as configurações do aplicativo para conceder permissão
+        if (error?.toString().includes('OPEN_SETTINGS')) {
+          abrirConfiguracoes();
+        }
+      }
     }
   };
+
+  const abrirConfiguracoes = () => {
+    openSettings();
+  };
+
+  useEffect(() => {
+    // Verifique se a permissão já foi concedida
+    check(PERMISSIONS.IOS.CAMERA)
+      .then(result => {
+        switch (result) {
+          case 'denied':
+            console.log('A permissão da câmera foi negada');
+            break;
+          case 'granted':
+            console.log('A permissão da câmera foi concedida');
+            break;
+          case 'blocked':
+            console.log('A permissão da câmera está bloqueada');
+            break;
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao verificar permissão:', error);
+      });
+
+      check(PERMISSIONS.ANDROID.CAMERA)
+      .then((result) => {
+        switch (result) {
+          case 'denied':
+            console.log('A permissão da câmera foi negada');
+            break;
+          case 'granted':
+            console.log('A permissão da câmera foi concedida');
+            break;
+          case 'blocked':
+            console.log('A permissão da câmera está bloqueada');
+            break;
+        }
+      })
+      .catch((error) => {
+        console.error('Erro ao verificar permissão:', error);
+      });
+  }, []);
 
   return (
     <Pressable

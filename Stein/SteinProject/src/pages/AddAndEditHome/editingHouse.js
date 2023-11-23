@@ -109,11 +109,11 @@ export default function AddHome() {
               snapshotLogra.forEach(doc => {
                 listaLogra.push({id: doc.id, ...doc.data()});
               });
-
               // guardará os dados da tabela para ser atualizada
               listaLogra.forEach(datas => {
-                if (datas.IDUsuario == auth.currentUser.uid) {
+                console.log(datas)
                   if (datas.id == idFromOtherScreen) {
+                    
                     setLograEdit(datas);
                     setBairro(datas.bairro);
                     setCep(datas.CEP);
@@ -124,7 +124,7 @@ export default function AddHome() {
                     setSelectedTipoLogra(datas.tipoLogradouro);
                     setSelectedUf(datas.UF);
                   }
-                }
+                
               });
             }
           });
