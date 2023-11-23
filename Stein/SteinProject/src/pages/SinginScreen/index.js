@@ -432,6 +432,7 @@ const cepFunction = async () => {
                 onBlur={() => {
                     cepFunction();
                 }}
+                maxLength={cep == "CEP INVÁLIDO!"?13:8}
             />
             {email === '' ||
             password === '' ||
@@ -487,7 +488,8 @@ const cepFunction = async () => {
                     style={styles.buttons}
                     onPress={async () => {
                         await verifNome();
-                        if(!validNome){
+                        await cepFunction()
+                        if(!validNome && cep != "" && cep != undefined && cep != "CEP INVÁLIDO" && cep.length == 8){
                         setModal(true);
                     }
                     }}
