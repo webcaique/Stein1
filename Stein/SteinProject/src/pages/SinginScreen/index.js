@@ -12,6 +12,7 @@ Modal,
 Image,
 FlatList,
 Switch,
+Alert,
 } from 'react-native';
 import styles from './style';
 import {utils} from '@react-native-firebase/app';
@@ -53,6 +54,7 @@ const [cep, setCep] = useState('');
 const [keyboardTipo, setKeyboardTipo] = useState('default');
 const [errorEmail, setErrorEmail] = useState("");
 const [errorPassaword, setErrorPassword] = useState("");
+const [letraMaiuscula, setLetraMaiuscula] = useState();
 
 const handleUfChange = uf => {
     setSelectedUf(uf);
@@ -444,7 +446,8 @@ const cepFunction = async () => {
             nome === undefined ||
             cep == undefined ||
             cep == 'CEP INVÁLIDO!' ||
-            cep == '' ? (
+            cep == '' ||
+            password.length < 8 ? (
                 <TouchableOpacity
                     style={styles.buttons}
                     disabled={true}
@@ -460,7 +463,7 @@ const cepFunction = async () => {
             ) : confirmPassword != password ? (
                 <>
                     <View style={styles.error}>
-                    <Text style={styles.errorText}>Verificar senha</Text>
+                    <Text style={styles.errorText}>As senhas devem ser iguais</Text>
                     </View>
                 <TouchableOpacity
                     style={styles.buttons}
@@ -511,7 +514,13 @@ const cepFunction = async () => {
                         Email ou/e senha inválido(s)
                     </Text>
                 </View>
-                ) : (
+                ) : password.length < 8 && password.length > 0
+                    ? 
+                    <View style={styles.error}>
+                    <Text style={styles.errorText}>A sua senha deve conter 8 caracteres ou mais</Text>
+                    </View>
+                
+                : (
                     <View />
                 )}
             </View>
