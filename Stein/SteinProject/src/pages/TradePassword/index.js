@@ -10,6 +10,7 @@ import {
   Pressable,
   Keyboard,
   ScrollView,
+  Alert,
 } from 'react-native';
 import {firestore} from '../../config/configFirebase';
 import styles from './style';
@@ -18,6 +19,19 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {auth} from '../../config/configFirebase';
 export default function TradePassword({navigation}) {
   const [senha, setSenha] = useState([]);
+  const [senhaAntiga, setSenhaAntiga] = useState([]);
+  const [senhaAntigaConf, setSenhaAntigaConf] = useState([]);
+  const [senhaConf, setSenhaConf] = useState([]);
+  const tabelaUsuario = firestore.collection('usuario');
+  useEffect(() => {
+    tabelaUsuario.onSnapshot(datas => {
+      datas._docs.forEach(data => {
+        if (auth.currentUser.uid == data._ref._documentPath._parts[1]) {
+          setSenhaAntiga(data._data.senha);
+        }
+      });
+    });
+  });
 
   // useEffect(( )=>{
   //     database.collection("usuarios").onSnapshot((query)=>{
@@ -30,6 +44,11 @@ export default function TradePassword({navigation}) {
   // }
 
   // )
+  if(senha.length>=8){
+    console.log("AI ZÉ DA MANGA")
+  }{
+    console.log("miguellllll")
+  }
   return (
     <View style={{height: '100%', minHeight: '100%'}}>
       <KeyboardAwareScrollView>
@@ -54,6 +73,15 @@ export default function TradePassword({navigation}) {
                 password={true}
                 autoCorrect={false}
                 textContentType={'password'}
+                onBlur={
+                  ()=>{
+                    if(senhaAntiga!=senhaAntigaConf){
+                      console.log('daniel dá a bunda')
+                    }
+                  }
+                }
+                onChangeText={setSenhaAntigaConf}
+                value={senhaAntigaConf}
               />
 
               <TextInput
@@ -66,6 +94,9 @@ export default function TradePassword({navigation}) {
                 password={true}
                 autoCorrect={false}
                 textContentType={'password'}
+                onChangeText={setSenha}
+                value={senha}
+                
               />
 
               <TextInput
@@ -78,12 +109,23 @@ export default function TradePassword({navigation}) {
                 password={true}
                 autoCorrect={false}
                 textContentType={'password'}
+                onBlur={
+                  ()=>{
+                    if(senhaConf!=senha){
+                      console.log('daniel dá a bunda?')
+                    }
+                  }
+                }
+                onChangeText={setSenhaConf}
+                value={senhaConf}
               />
             </View>
 
             <TouchableOpacity
               style={styles.buttons}
-              onPress={() => auth.currentUser.updatePassword(setSenha)}>
+              onPress={() => {
+                auth.currentUser.updatePassword(senha) 
+                tabelaUsuario.doc(auth.currentUser.uid).update({senha:senha})}}>
               <Text style={styles.textButtons}>Salvar</Text>
             </TouchableOpacity>
           </View>
