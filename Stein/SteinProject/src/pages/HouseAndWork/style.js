@@ -72,7 +72,6 @@ const styles = ScaledSheet.create({
         fontSize:moderateScale(25),
         fontWeight:"900",
         color:"#ffffff",
-        textAlign:"center"
     },
     buttonBox:{
         width:"100%",

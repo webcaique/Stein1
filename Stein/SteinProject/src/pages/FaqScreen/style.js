@@ -18,12 +18,12 @@ const styles = ScaledSheet.create({
         width:moderateScale(25),
         height:moderateScale(25),
         resizeMode:"contain",
+        transform: [{rotate:'90deg'}],
     },
     boxes:{
         width:"100%",
         flexDirection:"row",
         justifyContent:"space-between",
-        alignItems:"center"
     },
     lines:{
         width:"100%",
@@ -36,27 +36,6 @@ const styles = ScaledSheet.create({
     },
     txt:{
         fontSize:moderateScale(16),
-        textAlign:"center",
-        fontWeight:"700",
-    },
-    textFaq:{
-        padding:10,
-        padding:10,
-        borderWidth:1,
-        borderRadius:10,
-        marginTop:10,
-    },
-    txtFaq:{
-        fontSize:18,
-    },
-    textDecoration:{
-        fontWeight:"600", fontStyle:"italic"
-    },
-    faq:{
-        textAlign:"center", 
-        fontSize:16,
-        marginTop:10,
-
     }
     
 })

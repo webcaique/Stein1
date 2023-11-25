@@ -54,38 +54,7 @@ const styles = ScaledSheet.create({
         width:20,
         height:20,
         resizeMode:"contain",
-    },
-    
-  termosDeUso:{
-    color:"#00a",
-    textDecorationLine:"underline",
-  },
-  containerTermoDeUso:{
-    marginTop:10,
-    textAlign:"justify",
-    alignItems:"center",
-    flex:1,
-    width:"100%",
-    height:"100%",
-  },
-  imgSaidaTermoDeUso:{
-    position:"absolute",
-    right:"5%",
-    top:"0%"
-  },
-  termosContainerTexto:{
-    width:"100%",
-    padding:20,
-  },
-  termosTitle:{
-    textAlign:"center",
-    fontWeight:"900",
-    fontSize:18,
-  },
-  textoTermo:{
-    marginTop:20,
-    textAlign:"justify",
-  },
+    }
 })
 
 export default styles;
