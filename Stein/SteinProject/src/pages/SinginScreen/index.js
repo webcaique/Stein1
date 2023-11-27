@@ -13,6 +13,8 @@ Image,
 FlatList,
 Switch,
 Alert,
+Button,
+
 } from 'react-native';
 import styles from './style';
 import {utils} from '@react-native-firebase/app';
@@ -59,6 +61,50 @@ const [letraMaiuscula, setLetraMaiuscula] = useState();
 const handleUfChange = uf => {
     setSelectedUf(uf);
 };
+
+const verificarCaracteresEspeciais = () => {
+    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+    return regex.test(password);
+  };
+
+  const handleVerificarCaracteresEspeciais = () => {
+    const contemEspeciais = verificarCaracteresEspeciais();
+    console.log(`Texto ${contemEspeciais ? 'contém' : 'não contém'} caracteres especiais.`);
+  };
+
+const verificarNumeros = () => {
+    const regex = /\d/;
+    return regex.test(password);
+  };
+
+  const handleVerificarNumeros = () => {
+    const contemNumeros = verificarNumeros();
+    console.log(contemNumeros);
+  };
+
+const verificarLetrasMaiusculas = () => {
+    for (let i = 0; i < password.length; i++) {
+      if (password[i] === password[i].toUpperCase() && password[i] !== password[i].toLowerCase()) {
+        // Se o caractere atual for uma letra maiúscula
+        return true;
+      }
+    }
+
+    // Se nenhum caractere maiúsculo for encontrado
+    return false
+  };
+
+  const verificarLetrasMinusculas = () => {
+    for (let i = 0; i < password.length; i++) {
+      if (password[i] === password[i].toLowerCase() && password[i] !== password[i].toUpperCase()) {
+        // Se o caractere atual for uma letra minúscula
+        return true;
+      }
+    }
+
+    // Se nenhum caractere minúsculo for encontrado
+    return false;
+  };
 
 const register = () => {
     auth
@@ -436,6 +482,9 @@ const cepFunction = async () => {
                 }}
                 maxLength={cep == "CEP INVÁLIDO!"?13:8}
             />
+
+
+
             {email === '' ||
             password === '' ||
             confirmPassword === '' ||
@@ -447,7 +496,11 @@ const cepFunction = async () => {
             cep == undefined ||
             cep == 'CEP INVÁLIDO!' ||
             cep == '' ||
-            password.length < 8 ? (
+            password.length < 8 ||
+            verificarLetrasMaiusculas() == false ||
+            verificarLetrasMinusculas() == false ||
+            verificarNumeros() == false ||
+            verificarCaracteresEspeciais() == false ? (
                 <TouchableOpacity
                     style={styles.buttons}
                     disabled={true}
@@ -519,7 +572,26 @@ const cepFunction = async () => {
                     <View style={styles.error}>
                     <Text style={styles.errorText}>A sua senha deve conter 8 caracteres ou mais</Text>
                     </View>
-                
+                : verificarLetrasMaiusculas() == false && password.length >= 8
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter uma letra maiúscula</Text>
+                </View>
+                : verificarLetrasMinusculas() == false && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter uma letra minúscula</Text>
+                </View>
+                : verificarNumeros() == false && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter um número</Text>
+                </View>
+                : verificarCaracteresEspeciais() == false && verificarNumeros() == true && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter um caractere especial</Text>
+                </View>
                 : (
                     <View />
                 )}
