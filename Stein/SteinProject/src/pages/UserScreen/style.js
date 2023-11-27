@@ -41,21 +41,24 @@ const styles = StyleSheet.create({
 
     },
     useruserImage:{
-        width:"95%",
-        height:"95%",
+        width:220,
+        height:220,
         resizeMode:"contain",
+        borderRadius:110,
+        overflow:"hidden",
+        
     },
     userName:{
         fontSize:16,
         fontWeight:"bold",
     },
     userPowerSupplyUnit:{
-        width:"50%",
+        width:"100%",
         height:"10%",
         resizeMode:"contain",
         flexDirection:"row",
         marginTop:10,
-    
+        justifyContent:"center"    
     },
     powerSupplyUnit:{
         width:50,
@@ -126,6 +129,13 @@ const styles = StyleSheet.create({
     button:{
         width:75,
         alignItems:"center",
+    },
+    rodinhaCarregamento:{
+        width:"100%",
+        height:"100%",
+        flex:1,
+        alignItems:"center",
+        justifyContent:"center",
     }
 })
 

@@ -1,0 +1,249 @@
+> Task :app:signingReport
+Variant: debug
+Config: debug
+Store: C:\Users\caiqu\OneDrive\Documentos\GitHub\TCCProject\Stein1\Stein\SteinProject\android\app\debug.keystore
+Alias: androiddebugkey
+MD5: 20:F4:61:48:B7:2D:8E:5E:5C:A2:3D:37:A4:F4:14:90
+SHA1: 5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+SHA-256: FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C
+Valid until: terþa-feira, 30 de abril de 2052
+----------
+Variant: release
+Config: debug
+Store: C:\Users\caiqu\OneDrive\Documentos\GitHub\TCCProject\Stein1\Stein\SteinProject\android\app\debug.keystore
+Alias: androiddebugkey
+MD5: 20:F4:61:48:B7:2D:8E:5E:5C:A2:3D:37:A4:F4:14:90
+SHA1: 5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+SHA-256: FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C
+Valid until: terþa-feira, 30 de abril de 2052
+----------
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\OneDrive\Documentos\GitHub\TCCProject\Stein1\Stein\SteinProject\android\app\debug.keystore
+Alias: androiddebugkey
+MD5: 20:F4:61:48:B7:2D:8E:5E:5C:A2:3D:37:A4:F4:14:90
+SHA1: 5E:8F:16:06:2E:A3:CD:2C:4A:0D:54:78:76:BA:A6:F3:8C:AB:F6:25
+SHA-256: FA:C6:17:45:DC:09:03:78:6F:B9:ED:E6:2A:96:2B:39:9F:73:48:F0:BB:6F:89:9B:83:32:66:75:91:03:3B:9C
+Valid until: terþa-feira, 30 de abril de 2052
+----------
+
+> Task :react-native-android-open-settings:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-community_checkbox:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-community_geolocation:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-document-picker:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-firebase_app:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-firebase_auth:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-firebase_dynamic-links:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-firebase_firestore:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-firebase_storage:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-fs:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-geolocation-service:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-gesture-handler:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-image-picker:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-mail:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-maps:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-permissions:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-picker_picker:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-safe-area-context:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-screens:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+
+> Task :react-native-share:signingReport
+Variant: debugAndroidTest
+Config: debug
+Store: C:\Users\caiqu\.android\debug.keystore
+Alias: AndroidDebugKey
+MD5: 0F:7B:E4:47:3E:99:41:B2:20:83:21:7B:CB:62:C8:36
+SHA1: 0A:60:D5:14:5E:DE:60:CA:C3:47:5D:8D:54:59:7F:D8:24:DC:F6:46
+SHA-256: 08:9D:C5:FF:81:88:1B:57:A5:DB:8A:49:21:1F:35:75:68:26:4C:7E:1B:27:32:30:9B:25:2A:B5:70:53:CF:AE
+Valid until: quinta-feira, 11 de setembro de 2053
+----------
+ReactNativeFirebase WARNING: NPM package '@react-native-firebase/dynamic-links' depends on '@react-native-firebase/app' v18.6.1 but found v18.6.0, this might cause build issues or runtime crashes.
