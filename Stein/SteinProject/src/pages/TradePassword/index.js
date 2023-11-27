@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+
 import React from "react";
 import {
   View,
@@ -91,8 +92,6 @@ const [senha, setSenha] = useState([])
             </TouchableOpacity>
           </View>
         </Pressable>
-      
-        </KeyboardAwareScrollView>
     </View>
   );
 }
