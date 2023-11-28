@@ -1,3 +1,4 @@
+import { RFValue } from 'react-native-responsive-fontsize';
 import {
   verticalScale,
   scale,
@@ -5,6 +6,8 @@ import {
   moderateScale,
   moderateVerticalScale,
 } from 'react-native-size-matters';
+
+
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
@@ -18,30 +21,30 @@ const styles = ScaledSheet.create({
   },
   textInput: {
     width: '100%',
-    height: verticalScale(60),
+    height: RFValue(60),
     backgroundColor: 'rgba(0,0,0,0.10)',
     borderRadius: 10,
     padding: 10,
     marginVertical: 15,
-    fontSize: moderateVerticalScale(16),
+    fontSize: RFValue(16),
     fontWeight: '400',
     color: '#000000',
   },
   button: {
     flex: 1,
-    width: moderateScale(100),
-    height: verticalScale(50),
+    width: RFValue(200),
+    height: RFValue(50),
     backgroundColor: 'rgba(0,0,0,0.10)',
     marginVertical: 15,
-    padding: moderateScale(10),
+    padding: RFValue(10),
     backgroundColor: 'purple',
-    borderRadius: moderateVerticalScale(10),
+    borderRadius: RFValue(10),
     justifyContent: 'center',
     alignItems: 'center',
   },
   charger: {
     width: '100%',
-    height: verticalScale(60),
+    height: RFValue(60),
     backgroundColor: 'rgba(0,0,0,0.10)',
     borderRadius: 10,
     padding: 10,
@@ -50,12 +53,12 @@ const styles = ScaledSheet.create({
     alignItems:"center"
   },
   placeholder: {
-    fontSize: moderateVerticalScale(16),
+    fontSize: RFValue(16),
     fontWeight: '400',
     color: 'rgba(0,0,0,0.4)',
   },
   textButtons: {
-    fontSize: moderateScale(20),
+    fontSize: RFValue(20),
     fontWeight: '900',
     color: 'white',
   },
@@ -63,10 +66,10 @@ const styles = ScaledSheet.create({
     backgroundColor: 'rgba(0,0,0,0.10)',
     marginVertical: 10,
     borderRadius: 10,
-    height: moderateVerticalScale(50),
+    height: RFValue(50),
   },
   modal: {
-    width: 300,
+    width: RFValue(300),
     height: "auto",
     backgroundColor: 'white',
     padding:10,
@@ -83,6 +86,21 @@ const styles = ScaledSheet.create({
     flexDirection:"row",
     justifyContent:"space-between",
     alignItems:"center",
+  },
+  verifTipoLogra:{
+    color: '#f00',
+    fontWeight: '900',
+    fontSize:RFValue(15),
+  },
+  pagamento:{
+    fontSize:RFValue(15),
+  },
+  switch:{
+    transform: [{ scaleX: RFValue(1) }, { scaleY: RFValue(1) }],
+  },
+  horarioTXT:{
+    fontSize:RFValue(15),
   }
+
 });
 export default styles;

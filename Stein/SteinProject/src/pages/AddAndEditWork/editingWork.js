@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
+  Keyboard
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -85,55 +86,48 @@ export default function AddHome() {
       //vai tentar pegar os dados da tabela local
       try {
         const snapashotLocal = await tabelaLocal.get();
+        const listLocal = []
 
         const snapshotLogra = await tabelaLogra.get();
-        let listaLg = [];
+        const listLogra = []
 
-        snapshotLogra.forEach(dados => {
-          listaLg.push({id: dados.id, ...dados.data()});
+
+        snapashotLocal.forEach((dados)=>{
+          listLocal.push({id: dados.id, ...dados.data()})
         });
 
-        let lg;
+        snapshotLogra.forEach((dados)=>{          
+          listLogra.push({id: dados.id, ...dados.data()});
+        });
 
-        listaLg.forEach(datas => {
-          if (datas.IDUsuario == auth.currentUser.uid) {
-            if (datas.id == idFromOtherScreen) {
-              lg = datas;
-            }
-            let listaLc = [];
+        let listaLocal = [];
+        let listaLogra = [];
 
-            snapashotLocal.forEach(dados => {
-              listaLc.push({id: dados.id, ...dados.data()});
-            });
-
-            let end;
-
-            listaLc.forEach(datas => {
-              if (datas.IDLogradouro == idFromOtherScreen) {
-                end = datas;
+        listLocal.forEach((dados)=>{
+          if(dados.IDUsuario == auth.currentUser.uid){
+            
+            listLogra.forEach((datas)=>{
+              if(dados.IDLogradouro == idFromOtherScreen){
+                if(dados.IDLogradouro == datas.id){
+                  listaLocal = dados;
+                  listaLogra = datas;
+                }
               }
             });
-            setIdLocal(end);
-
-            setLograEdit(lg);
-
-            console.log('END');
-            console.log(end);
-            console.log('Logra');
-            console.log(lg);
-
-            setBairro(lg.bairro);
-            setCarregadores(end.IDTipoCarregador);
-            setCep(lg.CEP);
-            setCidade(lg.cidade);
-            setComplemento(lg.complemento);
-            setLogra(lg.logradouro);
-            setSelectedUf(lg.UF);
-            setNumero(lg.numero);
-            setSelectedTipoLogra(lg.tipoLogradouro);
-            setName(end.nomeLocal);
           }
         });
+
+        setName(listaLocal.nomeLocal);
+        setBairro(listaLogra.bairro);
+        setCep(listaLogra.CEP);
+        setSelectedUf(listaLogra.UF);
+        setLogra(listaLogra.logradouro);
+        setSelectedTipoLogra(listaLogra.tipoLogradouro);
+        setCidade(listaLogra.cidade);
+        setNumero(listaLogra.numero);
+        setCarregadores(listaLocal.IDTipoCarregador);
+        setComplemento(listaLogra.complemento);
+
 
         setLoading(false);
       } catch (error) {
@@ -249,7 +243,6 @@ export default function AddHome() {
       setBairro(data.bairro);
       setCidade(data.localidade);
       setSelectedUf(data.uf);
-      console.log(data);
 
       const partes = data.logradouro.split(' ');
 
@@ -288,7 +281,6 @@ export default function AddHome() {
 
         const data = await response.json();
 
-        console.log(data.results[0].address_components[4].short_name);
         var tipoLogra =
           data.results[0].address_components[1].long_name.split(' ')[0];
         var tipoUf = data.results[0].address_components[4].short_name;
@@ -299,7 +291,6 @@ export default function AddHome() {
           '-',
           '',
         );
-        console.log(cepNormal);
         setCep(cepNormal);
       }
     } catch (error) {
@@ -352,7 +343,6 @@ export default function AddHome() {
             setValidNumero(true);
             camposInvalidos.push('Número');
           }
-          console.log('Teste');
           if (carregadores == []) {
             setValidSelectCarregadores(true);
             camposInvalidos.push('Nenhum carregador selecionado');
@@ -395,7 +385,6 @@ export default function AddHome() {
           style={styles.container}
           onPress={() => {
             semCep();
-            console.log(cidade);
             Keyboard.dismiss();
             if (cep.length == 8) {
               handleGeocode();
@@ -417,7 +406,7 @@ export default function AddHome() {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : '#000'}]}
               // Campo para pegar o apelido
             >
               Nome da empresa:
@@ -429,9 +418,49 @@ export default function AddHome() {
             />
           </View>
 
+          <View style={styles.row5}>
+            <View
+              style={
+                styles.column3
+                // Campo para pegar o CEP
+              }>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
+                CEP:
+              </Text>
+              <TextInput
+                style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cep}
+                keyboardType="number-pad"
+                placeholderTextColor={validCep ? 'red' : '#000'}
+                onBlur={() => {
+                  if (cep.length == 8) {
+                    handleGeocode();
+                  }
+                }}
+              />
+            </View>
+            <View
+              style={styles.column4}
+              // Campo para pegar o bairro
+            >
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
+                Bairro:
+              </Text>
+              <TextInput
+                style={styles.textInputBairro}
+                onChangeText={setBairro}
+                value={bairro}
+                placeholderTextColor={validBairro ? 'red' : '#000'}
+              />
+            </View>
+          </View>
+
           <View style={styles.row3}>
             <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
               Logradouro:
             </Text>
             <View
@@ -445,11 +474,36 @@ export default function AddHome() {
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
+                  placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
                 />
               </View>
+            </View>
+          </View>
+
+          <View style={styles.row6}>
+            <View
+              style={styles.column6}
+              // Campo para pegar o município
+            >
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
+                Município:
+              </Text>
+              <TextInput
+                style={styles.textInputMunicipio}
+                onChangeText={setCidade}
+                value={cidade}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
+              />
+            </View>
+            <View
+              style={styles.column5}
+              // Campo para pegar o estado
+            >
+              <Text style={styles.textIsInputEstado}>Estado:</Text>
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
             </View>
           </View>
 
@@ -458,18 +512,18 @@ export default function AddHome() {
               style={styles.column2}
               // Campo para pegar o número
             >
-              <View>
+              <View style={{width:"40%"}}>
                 <Text
                   style={[
                     styles.textIsInput,
                     ,
-                    {color: validNumero ? 'red' : ''},
+                    {color: validNumero ? 'red' : '#000'},
                   ]}>
                   Número:
                 </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
+                  placeholderTextColor={validNumero ? 'red' : '#000'}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -483,7 +537,7 @@ export default function AddHome() {
                 <Text
                   style={[
                     styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
+                    {color: validSelectCarregadores ? 'red' : '#000'},
                   ]}>
                   Carregadores
                 </Text>
@@ -514,70 +568,6 @@ export default function AddHome() {
             />
           </View>
 
-          <View style={styles.row5}>
-            <View
-              style={
-                styles.column3
-                // Campo para pegar o CEP
-              }>
-              <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
-                CEP:
-              </Text>
-              <TextInput
-                style={styles.textInputCep}
-                onChangeText={setCep}
-                value={cep}
-                keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
-                onBlur={() => {
-                  if (cep.length == 8) {
-                    handleGeocode();
-                  }
-                }}
-              />
-            </View>
-            <View
-              style={styles.column4}
-              // Campo para pegar o bairro
-            >
-              <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
-                Bairro:
-              </Text>
-              <TextInput
-                style={styles.textInputBairro}
-                onChangeText={setBairro}
-                value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
-              />
-            </View>
-          </View>
-
-          <View style={styles.row6}>
-            <View
-              style={styles.column6}
-              // Campo para pegar o município
-            >
-              <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
-                Município:
-              </Text>
-              <TextInput
-                style={styles.textInputMunicipio}
-                onChangeText={setCidade}
-                value={cidade}
-                placeholderTextColor={validCidade ? 'red' : ''}
-              />
-            </View>
-            <View
-              style={styles.column5}
-              // Campo para pegar o estado
-            >
-              <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
-            </View>
-          </View>
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={handlePress}
@@ -630,7 +620,6 @@ export default function AddHome() {
   if (loading) {
     return <Text>Carregando...</Text>;
   } else {
-    console.log(listaCamposInvalidos);
     return res;
   }
 }

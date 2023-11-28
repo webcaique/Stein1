@@ -111,18 +111,19 @@ export default function AddHome() {
               });
 
               // guardará os dados da tabela para ser atualizada
-              listaLogra.forEach(datas => {
+              listaLogra.forEach(dados => {
                 if (datas.IDUsuario == auth.currentUser.uid) {
-                  if (datas.id == idFromOtherScreen) {
-                    setLograEdit(datas);
-                    setBairro(datas.bairro);
-                    setCep(datas.CEP);
-                    setCidade(datas.cidade);
-                    setComplemento(datas.complemento);
-                    setLogra(datas.logradouro);
-                    setNumero(datas.numero);
-                    setSelectedTipoLogra(datas.tipoLogradouro);
-                    setSelectedUf(datas.UF);
+                  if (dados.id == idFromOtherScreen) {
+                    console.log(dados.id)
+                    setLograEdit(dados);
+                    setBairro(dados.bairro);
+                    setCep(dados.CEP);
+                    setCidade(dados.cidade);
+                    setComplemento(dados.complemento);
+                    setLogra(dados.logradouro);
+                    setNumero(dados.numero);
+                    setSelectedTipoLogra(dados.tipoLogradouro);
+                    setSelectedUf(dados.UF);
                   }
                 }
               });
@@ -228,13 +229,48 @@ export default function AddHome() {
               style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
               // Campo para pegar o apelido
             >
-              Nome da empresa:
+              Nome da residência:
             </Text>
             <TextInput
               style={[styles.textInput, {}]}
               onChangeText={setName}
               value={name}
             />
+          </View>
+
+          <View style={styles.row5}>
+            <View
+              style={
+                styles.column3
+                // Campo para pegar o CEP
+              }>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                CEP:
+              </Text>
+              <TextInput
+                style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cep}
+                keyboardType="number-pad"
+                placeholderTextColor={validCep ? 'red' : ''}
+              />
+            </View>
+            <View
+              style={styles.column4}
+              // Campo para pegar o bairro
+            >
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                Bairro:
+              </Text>
+              <TextInput
+                style={styles.textInputBairro}
+                onChangeText={setBairro}
+                value={bairro}
+                placeholderTextColor={validBairro ? 'red' : ''}
+              />
+            </View>
           </View>
 
           <View style={styles.row3}>
@@ -320,41 +356,6 @@ export default function AddHome() {
               onChangeText={setComplemento}
               value={complemento}
             />
-          </View>
-
-          <View style={styles.row5}>
-            <View
-              style={
-                styles.column3
-                // Campo para pegar o CEP
-              }>
-              <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
-                CEP:
-              </Text>
-              <TextInput
-                style={styles.textInputCep}
-                onChangeText={setCep}
-                value={cep}
-                keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
-              />
-            </View>
-            <View
-              style={styles.column4}
-              // Campo para pegar o bairro
-            >
-              <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
-                Bairro:
-              </Text>
-              <TextInput
-                style={styles.textInputBairro}
-                onChangeText={setBairro}
-                value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
-              />
-            </View>
           </View>
 
           <View style={styles.row6}>

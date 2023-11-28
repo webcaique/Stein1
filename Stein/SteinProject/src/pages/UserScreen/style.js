@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const styles = StyleSheet.create({
     mainContainer:{
@@ -30,10 +31,10 @@ const styles = StyleSheet.create({
 
     },
     circule:{
-        width:250,
-        height:250,
+        width:RFValue(250),
+        height:RFValue(250),
         backgroundColor:"#470A51",
-        borderRadius:250/2,
+        borderRadius:RFValue(250/2),
         alignItems:"center",
         alignContent:"center",
         justifyContent:"center",
@@ -41,15 +42,15 @@ const styles = StyleSheet.create({
 
     },
     useruserImage:{
-        width:220,
-        height:220,
+        width:RFValue(220),
+        height:RFValue(220),
         resizeMode:"contain",
-        borderRadius:110,
+        borderRadius:RFValue(220/2),
         overflow:"hidden",
         
     },
     userName:{
-        fontSize:16,
+        fontSize:RFValue(16),
         fontWeight:"bold",
     },
     userPowerSupplyUnit:{
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
         justifyContent:"center"    
     },
     powerSupplyUnit:{
-        width:50,
+        width:RFValue(50),
         resizeMode:"contain",
 
         height:"auto",
@@ -71,7 +72,8 @@ const styles = StyleSheet.create({
         width:"100%",
         height:"30%",
         resizeMode:"contain",
-        marginTop:"60%",
+        position:"absolute",
+        bottom:0,
         
 
 
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     },
     texts:{
         textAlign:"left",
-        fontSize:12,
+        fontSize:RFValue(12),
     },
     textFromList2:{
         width:"50%",
@@ -106,8 +108,8 @@ const styles = StyleSheet.create({
         justifyContent:"center",
     },
     iconArrowToRight:{
-      height:25,
-      width:25,
+      height:RFValue(25),
+      width:RFValue(25),
       resizeMode:"contain"
     },
     lines:{
@@ -117,17 +119,17 @@ const styles = StyleSheet.create({
         marginTop:10,
     },
     locaisSalvos:{
-        fontSize:20,
+        fontSize:RFValue(20),
         fontWeight:"900",
     },
     recente:{
-        fontSize:20,
+        fontSize:RFValue(20),
         fontWeight:"900",
         color:"purple",
         textDecorationLine:"underline",
     },
     button:{
-        width:75,
+        width:RFValue(75),
         alignItems:"center",
     },
     rodinhaCarregamento:{

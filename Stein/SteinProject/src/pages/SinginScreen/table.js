@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const numRows = 5;
 const numColumns = 3;
@@ -72,8 +73,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   Carr: {
-    width: 100,
-    height: 100,
+    width: RFValue(100),
+    height: RFValue(100),
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.75)',
@@ -83,15 +84,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
   },
   text: {
-    fontSize: 10,
+    fontSize: RFValue(10),
     textAlign:"center"
   },
   selectedText: {
-    fontSize: 10,
+    fontSize: RFValue(10),
   },
   imgCarr:{
-    width:50,
-    height:50,
+    width:RFValue(50),
+    height:RFValue(50),
     resizeMode:"contain",
   }
 });

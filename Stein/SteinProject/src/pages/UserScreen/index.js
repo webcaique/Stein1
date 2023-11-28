@@ -73,7 +73,9 @@ const UserScreen = ({navigation}) => {
     if (status === 'granted') {
       const imagem = await launchImageLibrary();
       setLoading(true);
-      const extencao = path.extname(imagem.assets[0].originalPath);
+      console.log(imagem);
+      if(!imagem.didCancel){
+        const extencao = path.extname(imagem.assets[0].originalPath);
 
       await storage
         .ref(`UserDir/${userId}/${tipo}${extencao}`)
@@ -92,9 +94,14 @@ const UserScreen = ({navigation}) => {
           getUserData();
         })
         .catch(error => console.log(error));
+      } else {
         setLoading(false);
+      }
+      setLoading(false);
     } else {
       console.log('Permissão de escrita no armazenamento externo negada');
+      setLoading(false);
+
     }
   };
 

@@ -1,16 +1,18 @@
 import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const styles = ScaledSheet.create({
     fontList:{
-        fontSize:moderateScale(16),
+        fontSize:RFValue(16),
     },
     list:{
         width:"100%",
-        borderRadius:5,
-        backgroundColor:"rgba(0,0,0,0.1))",
+        borderRadius:RFValue(5),
+        backgroundColor:"#fff",
         justifyContent:"center",
-        height:50,
-        marginTop:10,
+        height:RFValue(50),
+        marginTop:RFValue(10),
+        borderWidth:1,
     },
 })
 

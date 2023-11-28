@@ -414,6 +414,52 @@ export default function AddHome({navigation}) {
             />
           </View>
 
+
+          <View style={styles.row5}>
+            <View
+              style={
+                styles.column3
+                // Campo para pegar o CEP
+              }>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
+                CEP:
+              </Text>
+              <TextInput
+                style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cepInput}
+                keyboardType="number-pad"
+                placeholderTextColor={validCep ? 'red' : '#000'}
+                onBlur={() => {
+                  if (cepInput.length == 8 && !validcaoLogradouro) {
+                    handleGeocode();
+                  }
+                }}
+              />
+            </View>
+            <View
+              style={styles.column4}
+              // Campo para pegar o bairro
+            >
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
+                Bairro:
+              </Text>
+              <TextInput
+                style={styles.textInputBairro}
+                onChangeText={setBairro}
+                value={bairro}
+                placeholderTextColor={validBairro ? 'red' : '#000'}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+          </View>
+
+
+
           <View style={styles.row3}>
             <Text
               style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
@@ -441,12 +487,40 @@ export default function AddHome({navigation}) {
             </View>
           </View>
 
+          <View style={styles.row6}>
+            <View
+              style={styles.column6}
+              // Campo para pegar o município
+            >
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
+                Município:
+              </Text>
+              <TextInput
+                style={styles.textInputMunicipio}
+                onChangeText={setCidade}
+                value={cidade}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+            <View
+              style={styles.column5}
+              // Campo para pegar o estado
+            >
+              <Text style={styles.textIsInputEstado}>Estado:</Text>
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
+            </View>
+          </View>
+
           <View style={styles.row7}>
             <View
               style={styles.column2}
               // Campo para pegar o número
             >
-              <View>
+              <View style={{width:"40%"}}>
                 <Text
                   style={[
                     styles.textIsInput,
@@ -506,77 +580,8 @@ export default function AddHome({navigation}) {
                 semCep();
               }}
             />
-          </View>
 
-          <View style={styles.row5}>
-            <View
-              style={
-                styles.column3
-                // Campo para pegar o CEP
-              }>
-              <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
-                CEP:
-              </Text>
-              <TextInput
-                style={styles.textInputCep}
-                onChangeText={setCep}
-                value={cepInput}
-                keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : '#000'}
-                onBlur={() => {
-                  if (cepInput.length == 8 && !validcaoLogradouro) {
-                    handleGeocode();
-                  }
-                }}
-              />
-            </View>
-            <View
-              style={styles.column4}
-              // Campo para pegar o bairro
-            >
-              <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
-                Bairro:
-              </Text>
-              <TextInput
-                style={styles.textInputBairro}
-                onChangeText={setBairro}
-                value={bairro}
-                placeholderTextColor={validBairro ? 'red' : '#000'}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-          </View>
 
-          <View style={styles.row6}>
-            <View
-              style={styles.column6}
-              // Campo para pegar o município
-            >
-              <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
-                Município:
-              </Text>
-              <TextInput
-                style={styles.textInputMunicipio}
-                onChangeText={setCidade}
-                value={cidade}
-                placeholderTextColor={validCidade ? 'red' : '#000'}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-            <View
-              style={styles.column5}
-              // Campo para pegar o estado
-            >
-              <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
-            </View>
           </View>
           <TouchableOpacity
             style={styles.editionButton}

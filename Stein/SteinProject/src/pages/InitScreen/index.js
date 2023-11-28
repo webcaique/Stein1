@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Text, View, Image, TouchableOpacity,} from 'react-native';
 import styles from "./style";
-import { storage } from '../../config/configFirebase';
 
 
 

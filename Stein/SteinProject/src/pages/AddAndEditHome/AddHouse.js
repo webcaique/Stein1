@@ -407,6 +407,53 @@ export default function AddHome({navigation}) {
             />
           </View>
 
+
+          <View style={styles.row5}>
+            <View
+              style={
+                styles.column3
+                // Campo para pegar o CEP
+              }>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                CEP:
+              </Text>
+              <TextInput
+                style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cepInput}
+                keyboardType="number-pad"
+                placeholderTextColor={validCep ? 'red' : ''}
+                onBlur={() => {
+                  if (cepInput.length == 8 && !validcaoLogradouro) {
+                    handleGeocode();
+                  }
+                }}
+              />
+            </View>
+            <View
+              style={styles.column4}
+              // Campo para pegar o bairro
+            >
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                Bairro:
+              </Text>
+              <TextInput
+                style={styles.textInputBairro}
+                onChangeText={setBairro}
+                value={bairro}
+                placeholderTextColor={validBairro ? 'red' : ''}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+          </View>
+
+
+
+
           <View style={styles.row3}>
             <Text
               style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
@@ -433,13 +480,14 @@ export default function AddHome({navigation}) {
               </View>
             </View>
           </View>
+          
 
           <View style={styles.row7}>
             <View
               style={styles.column2}
               // Campo para pegar o número
             >
-              <View>
+              <View style={{width:"40%"}}>
                 <Text
                   style={[
                     styles.textIsInput,
@@ -501,48 +549,6 @@ export default function AddHome({navigation}) {
             />
           </View>
 
-          <View style={styles.row5}>
-            <View
-              style={
-                styles.column3
-                // Campo para pegar o CEP
-              }>
-              <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
-                CEP:
-              </Text>
-              <TextInput
-                style={styles.textInputCep}
-                onChangeText={setCep}
-                value={cepInput}
-                keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
-                onBlur={() => {
-                  if (cepInput.length == 8 && !validcaoLogradouro) {
-                    handleGeocode();
-                  }
-                }}
-              />
-            </View>
-            <View
-              style={styles.column4}
-              // Campo para pegar o bairro
-            >
-              <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
-                Bairro:
-              </Text>
-              <TextInput
-                style={styles.textInputBairro}
-                onChangeText={setBairro}
-                value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-          </View>
 
           <View style={styles.row6}>
             <View

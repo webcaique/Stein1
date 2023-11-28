@@ -1,13 +1,15 @@
 import { ScaledSheet } from 'react-native-size-matters';
 import { verticalScale, scale, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+import { RFValue } from "react-native-responsive-fontsize";
 
 const styles = ScaledSheet.create({
     conteiner:{
       flex: 1,
           justifyContent: 'flex-start',
           alignItems: 'center',
-          padding: 55,
-          marginTop:scale(24),
+          //padding: 25,
+          //marginTop:RFValue(24),
+          backgroundColor:"#fff"
     },
     backgroundLogo:{
       width: "100%",
@@ -31,31 +33,31 @@ const styles = ScaledSheet.create({
         textLogo:{
           marginBottom: (13),
           fontWeight:"600",
-          fontSize: scale(17),
+          fontSize: RFValue(17),
           color:"#000000",
         },
         textAbove:{
           marginTop:(9),
           fontWeight:"600",
-          fontSize: moderateScale(17),
+          fontSize: RFValue(17),
           color:"#000000",
         },
         buttons:{
-          width: scale(265),
-          height: verticalScale(60),
+          width: RFValue(265),
+          height: RFValue(60),
           backgroundColor: "purple",
-          borderRadius:moderateVerticalScale(25),
+          borderRadius:RFValue(25),
           justifyContent:"center",
           alignItems:"center",
           margin: (30),
         },
         textButtons:{
-          fontSize: moderateScale(20),
+          fontSize: RFValue(20),
           fontWeight:"900",
           color: "white",
         },
         textSingle1:{
-          fontSize:moderateScale(17),
+          fontSize:RFValue(17),
           fontWeight:"700",
           textDecorationLine:"underline",
           color:"#000000",

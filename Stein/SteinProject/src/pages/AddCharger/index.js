@@ -20,6 +20,7 @@ import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore, storage} from '../../config/configFirebase';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera} from 'react-native-image-picker';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -503,7 +504,7 @@ const AddCharger = ({navigation}) => {
       }}>
       <View>
         <ScrollView>
-          <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
+          <Text style={{fontSize: RFValue(16)}}>Logradouro/Endereço:</Text>
           <TextInput
             placeholder="CEP"
             placeholderTextColor={validCep ? 'red' : '#000'}
@@ -520,7 +521,7 @@ const AddCharger = ({navigation}) => {
           />
 
           <View>
-            <Text style={{color: '#f00', fontWeight: '900'}}>
+            <Text style={styles.verifTipoLogra}>
               *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
             </Text>
           </View>
@@ -639,8 +640,11 @@ const AddCharger = ({navigation}) => {
                 setPagamento(!pagamento);
               }}
               value={pagamento}
+              style={styles.switch}
             />
-            <Text>Pagamento Necessário</Text>
+            <Text
+            style={styles.pagamento}
+            >Pagamento Necessário</Text>
           </View>
           {/*          <TextInput
             placeholder="Preço(Opcional)"
@@ -654,7 +658,7 @@ const AddCharger = ({navigation}) => {
                 disabled={horario24h}
                 style={[
                   styles.textInput,
-                  {width: '40%', fontSize: 16, color: validHorarios},
+                  {width: '40%', color: validHorarios},
                 ]}
                 placeholder="Horário inicial"
                 placeholderTextColor={validHorarios}
@@ -672,12 +676,12 @@ const AddCharger = ({navigation}) => {
                 keyboardType="number-pad"
                 value={horario1}
               />
-              <Text>Até</Text>
+              <Text style={styles.horarioTXT}>Até</Text>
               <TextInput
                 placeholderTextColor={validHorarios}
                 style={[
                   styles.textInput,
-                  {width: '40%', fontSize: 16, color: validHorarios},
+                  {width: '40%', color: validHorarios},
                 ]}
                 placeholder="Horário final"
                 onChangeText={async texto => {
@@ -704,8 +708,11 @@ const AddCharger = ({navigation}) => {
                 setHorario24h(!horario24h);
               }}
               value={horario24h}
+              style={styles.switch}
             />
-            <Text>Aberto 24/7</Text>
+            <Text
+            style={styles.horarioTXT}
+            >Aberto 24/7</Text>
           </View>
           <TouchableOpacity
             onPress={() => selectImage()}
@@ -715,7 +722,7 @@ const AddCharger = ({navigation}) => {
             </Text>
           </TouchableOpacity>
           {mensagemErro ? (
-            <Text style={{color: 'red'}}>{mensagemErro}</Text>
+            <Text style={{color: 'red', ...styles.horarioTXT}}>{mensagemErro}</Text>
           ) : null}
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity

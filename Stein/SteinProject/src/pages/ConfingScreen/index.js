@@ -19,7 +19,7 @@ const ConfigScreen = ({navigation}) => {
                     <View style={styles.rowText}>
                         <View>
                             <Text style={styles.textContent}>Pesquisar por voz</Text>
-                            <Text>Padrão - Português (Brasil)</Text>
+                            <Text style={styles.subtitle}>Padrão - Português (Brasil)</Text>
                         </View>
                         <TouchableOpacity>
                             <Image

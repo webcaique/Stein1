@@ -1,5 +1,6 @@
 import React,{Component} from "react";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
+import { RFValue } from "react-native-responsive-fontsize";
 
 export default class Search extends Component {
   state = {
@@ -40,22 +41,22 @@ export default class Search extends Component {
         container:{
           height: "auto",
           width: "100%",
-          maxWidth:800,
+          maxWidth:RFValue(800),
           paddingHorizontal: 16,
           position: 'absolute',
-          top:80,
+          top:RFValue(80),
           elevation:5,
       },
       textInputContainer:{
       },
       textInput:{
-        fontSize:18,
+        fontSize:RFValue(18),
       },
       listView:{
           elevation:5,
       },
       description:{
-        fontSize:18,
+        fontSize:RFValue(18),
 
       },
 

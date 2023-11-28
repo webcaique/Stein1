@@ -13,6 +13,7 @@ import {
 import styles from './style';
 import {firestore, auth} from '../../config/configFirebase';
 import Table from './table';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -61,8 +62,6 @@ const PersonalContentScreen = () => {
       });
     });
   }, []);
-
-  console.log(numeroResidencia);
 
 
   const [verifData, setVerifData] = useState(false);
@@ -153,19 +152,20 @@ const PersonalContentScreen = () => {
               setVerifData(false);
             }}>
             <KeyboardAvoidingView style={styles.modalView}>
-              <KeyboardAvoidingView style={{width: '100%'}}>
+              <KeyboardAvoidingView style={{width: 'auto'}}>
                 <Text style={styles.textoCampo}>{nomeCampo}</Text>
               </KeyboardAvoidingView>
               <KeyboardAvoidingView
                 style={
                   nomeCampo.toUpperCase() == 'CARREGADORES'
-                    ? {width: '100%'}
+                    ? {width: 'auto'}
                     : nomeCampo.toUpperCase() == 'CEP'
-                    ? [styles.textInput, {width: '75%'}]
-                    : styles.textInput
+                    ? [styles.textInput, {width: RFValue(200)}]
+                    : [styles.textInput]
                 }>
                 {nomeCampo.toUpperCase() != 'CARREGADORES' ? (
                   <TextInput
+                  style={{fontSize:RFValue(15)}}
                     autoFocus
                     keyboardType={
                       nomeCampo.toUpperCase() == 'CEP'
@@ -179,7 +179,7 @@ const PersonalContentScreen = () => {
                       setDado(
                         nomeCampo.toUpperCase() == 'EMAIL'
                           ? text.toLowerCase()
-                          : text,
+                          : text
                       );
                     }}
                     value={dado}
@@ -203,9 +203,11 @@ const PersonalContentScreen = () => {
                 {nomeCampo.toUpperCase() == 'CEP' ? (
                   <TextInput
                     style={{
-                      width: '30%',
+                      width: RFValue(50),
                       borderLeftColor: '#000',
                       borderLeftWidth: 1,
+                      paddingLeft:10,
+                      fontSize:RFValue(15)
                     }}
                     onChangeText={setNumero}
                     value={numero}
@@ -217,17 +219,20 @@ const PersonalContentScreen = () => {
                   onPress={() => {
                     update();
                   }}>
+                  {nomeCampo.toUpperCase() != 'CARREGADORES'?
                   <Image
-                    source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=3c7facb9-59cc-4c3b-b61c-7aafdf70a59f',
-                    }}
-                    width={25}
-                    height={25}
-                    resizeMode="contain"
-                    style={{
-                      transform: [{rotate: '45deg'}],
-                    }}
-                  />
+                  source={{
+                    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=3c7facb9-59cc-4c3b-b61c-7aafdf70a59f',
+                  }}
+                  width={25}
+                  height={25}
+                  resizeMode="contain"
+                  style={{
+                    transform: [{rotate: '45deg'}],
+                  }}
+                />
+                : null
+              }
                 </TouchableOpacity>
               </KeyboardAvoidingView>
             </KeyboardAvoidingView>

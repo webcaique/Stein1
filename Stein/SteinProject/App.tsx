@@ -48,6 +48,52 @@ const App = () => {
   }
 
   useEffect(() => {
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+    .then(result => {
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log('Permissão não disponível no dispositivo');
+          break;
+        case RESULTS.DENIED:
+          console.log('Permissão de localização negada');
+          break;
+        case RESULTS.GRANTED:
+          Geolocation.getCurrentPosition(
+            verif => {
+              console.log(verif);
+            },
+            error => {
+              console.log(error)
+              Alert.alert(
+                'Localização desligada',
+                'Deseja ativar a localização?',
+                [
+                  {
+                    text: 'Ativar',
+                    onPress: () => AndroidOpenSettings.locationSourceSettings(),
+                  },
+                  {
+                    text: 'Desativar',
+                    onPress: () => BackHandler.exitApp(),
+                    style: 'cancel', // Define este botão como o botão de cancelar (pode variar o nome)
+                  },
+                ],
+                {cancelable: true}, // Define se o Alert pode ser cancelado tocando fora dele
+              );
+            },{
+              timeout:100000,
+              maximumAge:1000,
+            }
+          );
+          break;
+        case RESULTS.BLOCKED:
+          console.log('Permissão de localização bloqueada');
+          break;
+      }
+    })
+    .catch(error => {
+      console.log('Erro ao verificar a permissão de localização', error);
+    });
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     console.log(auth.currentUser)
     return subscriber; // unsubscribe on unmount
@@ -63,50 +109,6 @@ const App = () => {
     loading = true;
   }
 
-
-  check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-    .then(result => {
-      switch (result) {
-        case RESULTS.UNAVAILABLE:
-          console.log('Permissão não disponível no dispositivo');
-          break;
-        case RESULTS.DENIED:
-          console.log('Permissão de localização negada');
-          break;
-        case RESULTS.GRANTED:
-          Geolocation.getCurrentPosition(
-            verif => {
-              console.log('TE PEGUEI HOMEM');
-            },
-            error => {
-              Alert.alert(
-                'Localização desligada',
-                'Deseja ativar a localização?',
-                [
-                  {
-                    text: 'Ativar',
-                    onPress: () => AndroidOpenSettings.locationSourceSettings(),
-                  },
-                  {
-                    text: 'Desativar',
-                    onPress: () => BackHandler.exitApp(),
-                    style: 'cancel', // Define este botão como o botão de cancelar (pode variar o nome)
-                  },
-                ],
-                {cancelable: false}, // Define se o Alert pode ser cancelado tocando fora dele
-              );
-            },
-          );
-          break;
-        case RESULTS.BLOCKED:
-          console.log('Permissão de localização bloqueada');
-          break;
-      }
-    })
-    .catch(error => {
-      console.log('Erro ao verificar a permissão de localização', error);
-    });
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={loading? "InitScreen": "Stein"}>
@@ -115,13 +117,17 @@ const App = () => {
           component={InitScreen}
           options={{
             title: 'STEIN',
-            headerTransparent: true,
+            //headerTransparent: true,
             headerTitleAlign: 'center',
             headerTitleStyle: {
               fontSize: scale(34),
               fontWeight: '600',
               color: '#000000',
             },
+            headerStyle:{
+              backgroundColor:"#fff",
+            },
+            headerShadowVisible:false,
           }}
         />
         <Stack.Screen
@@ -150,6 +156,10 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            headerStyle:{
+              backgroundColor:"#fff",
+            },
+            headerShadowVisible:false,
           }}
         />
         <Stack.Screen

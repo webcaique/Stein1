@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   ImageBackground,
+  KeyboardAvoidingView
 } from 'react-native';
 import estilos from './style';
 import {moderateScale} from 'react-native-size-matters';
@@ -74,7 +75,7 @@ export default function Stein({navigation}) {
   //Dado para o destino
   const [distancia, setDistancia] = useState('');
   const [duracao, setDuracao] = useState('');
-  const [search, setSeach] = useState('');
+  const [search, setSearch] = useState('');
   const [searchLoading, setSearchLoading] = useState('');
   const [rotation, setRotation] = useState(90);
   const [modal, setModal] = useState(false);
@@ -226,7 +227,10 @@ export default function Stein({navigation}) {
     return <Text>Carregando</Text>;
   } else {
     return (
-      <View style={estilos.superior}>
+      <KeyboardAvoidingView
+      style={{width:"100%", height:"100%", flex:1}}
+      >
+        <View style={estilos.superior}>
         <View style={{width: '100%'}}>
           <Modal
             transparent={true}
@@ -663,7 +667,7 @@ export default function Stein({navigation}) {
                 });
                 setMenorDuracao(locMenorDuracao);
                 setVerificacaoDestination(!verificacaoDestination);
-                setSeach(false);
+                setSearch(false);
               }
             }}>
             <Image
@@ -712,7 +716,7 @@ export default function Stein({navigation}) {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setSeach(true);
+              setSearch(!search);
               setLocMenorDuracao(null);
               setMenorDuracao('');
               setDurac(null);
@@ -739,6 +743,7 @@ export default function Stein({navigation}) {
           ''
         )}
       </View>
+      </KeyboardAvoidingView>
     );
   }
 }

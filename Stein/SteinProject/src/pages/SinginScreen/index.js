@@ -401,9 +401,6 @@ const SinginScreen = ({navigation}) => {
               source={{
                 uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
               }}
-              width={25}
-              height={25}
-              resizeMode="contain"
               style={[
                 styles.imgSaidaTermoDeUso,
                 {
@@ -487,7 +484,7 @@ const SinginScreen = ({navigation}) => {
               <TextInput //campo para escrever seu apelido no aplicativo
                 placeholder="Nome"
                 placeholderTextColor={'#000000'}
-                style={styles.textInput1}
+                style={{...styles.textInputAll, marginTop:0}}
                 keyboardType="default"
                 returnKeyLabel="default"
                 autoCapitalize="sentences"
@@ -563,7 +560,7 @@ const SinginScreen = ({navigation}) => {
                 />
               </View>
               <View style={{marginVertical: 10}}>
-                <Text style={{color: '#f00', fontWeight: '900'}}>
+                <Text style={{...styles.tipoLogradouroVerif}}>
                   *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
                 </Text>
               </View>
@@ -574,13 +571,7 @@ const SinginScreen = ({navigation}) => {
               />
               <View
                 style={{
-                  width: '100%',
-                  marginTop: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  flexDirection: 'row',
-                  height: 50,
+                  ...styles.checkboxStyle
                 }}>
                 <CheckBox
                   value={toggleCheckBox}
@@ -590,7 +581,7 @@ const SinginScreen = ({navigation}) => {
                   onPress={() => {
                     setTermos(!termos);
                   }}>
-                  <Text>
+                  <Text style={styles.txtTermos}>
                     Você concorda com os{' '}
                     <Text style={styles.termosDeUso}>
                       Termos de Uso e Condição
@@ -757,15 +748,16 @@ const SinginScreen = ({navigation}) => {
                         marginLeft: 10,
                         flexDirection: 'row',
                       }}>
-                      <Text>Antigo Padrão</Text>
+                      <Text style={styles.txtPlaca}>Antigo Padrão</Text>
                       <Switch
                         onValueChange={() => {
                           setTipoPlaca(!tipoPlaca);
                           setPlaca('');
                         }}
                         value={tipoPlaca}
+                        style={styles.switch}
                       />
-                      <Text>Novo Padrão</Text>
+                      <Text style={styles.txtPlaca}>Novo Padrão</Text>
                     </View>
                     <View>
                       <View style={styles.row}>
@@ -862,8 +854,8 @@ const SinginScreen = ({navigation}) => {
                             />
                           </>
                         ) : (
-                          <>
-                            <View style={{width: '30%'}}>
+                          <View style={styles.uf}>
+                            <View style={{width: '30%', marginHorizontal:10}}>
                               <SelectList
                                 onUfChange={handleUfChange}
                                 validar={selectedUf}
@@ -879,7 +871,7 @@ const SinginScreen = ({navigation}) => {
                               value={uf}
                               placeholderTextColor={validUf}
                             />
-                          </>
+                          </View>
                         )}
                       </View>
                     </View>

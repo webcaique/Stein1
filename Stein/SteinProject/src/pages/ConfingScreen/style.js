@@ -1,4 +1,5 @@
 import React from "react";
+import { RFValue } from "react-native-responsive-fontsize";
 import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
 
 
@@ -33,9 +34,6 @@ const styles = ScaledSheet.create({
         justifyContent:"space-between",
         width:"98%",
     },
-    input:{
-        marginLeft:"60%"
-    },
     line:{
         backgroundColor:"#000000",
         height:2,
@@ -43,18 +41,25 @@ const styles = ScaledSheet.create({
         marginVertical:5,
     },
     textTitle:{
-        fontSize:moderateScale(30),
+        fontSize:RFValue(30),
     },
     textContent:{
-        fontSize:moderateScale(16),
+        fontSize:RFValue(16),
         fontWeight:"600",
         marginVertical:5,
     },
     icons:{
-        width:20,
-        height:20,
+        width:RFValue(20),
+        height:RFValue(20),
         resizeMode:"contain",
-    }
+    },
+    subtitle:{
+        fontSize:RFValue(10)
+    },
+    input:{
+        position:"absolute",
+        right:0,
+    },
 })
 
 export default styles;
