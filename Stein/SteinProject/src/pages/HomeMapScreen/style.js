@@ -236,6 +236,27 @@ const estilos=ScaledSheet.create({
       fontSize:RFValue(15),
       maxWidth: RFValue(250)
     },
+
+    time:{
+      position:"absolute",
+      width:"100%",
+      height:"100%",
+      flex:1,
+      alignItems:"center",
+      justifyContent:"center",
+      padding:20,
+    },
+    timeText:{
+      paddingHorizontal:20,
+      paddingVertical:10,
+      fontSize: RFValue(18),
+      backgroundColor:"#FFF",
+      fontWeight:"900",
+      textAlign:"center",
+      borderRadius:10,
+    },
+
+
     })
 
 export default estilos;

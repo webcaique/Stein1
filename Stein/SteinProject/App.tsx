@@ -45,6 +45,7 @@ const App = () => {
   function onAuthStateChanged(user){
     setUser(user);
     if (initializing) setInitializing(false);
+
   }
 
   useEffect(() => {
@@ -60,7 +61,6 @@ const App = () => {
         case RESULTS.GRANTED:
           Geolocation.getCurrentPosition(
             verif => {
-              console.log(verif);
             },
             error => {
               console.log(error)
@@ -95,7 +95,6 @@ const App = () => {
       console.log('Erro ao verificar a permissão de localização', error);
     });
     const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    console.log(auth.currentUser)
     return subscriber; // unsubscribe on unmount
   }, []);
   
@@ -103,10 +102,10 @@ const App = () => {
 
   if (initializing) return null;
 
-  if(user){
-    loading = false;
-  } else {
+  if(!user){
     loading = true;
+  } else if(user.emailVerified){
+    loading = false;
   }
 
   return (

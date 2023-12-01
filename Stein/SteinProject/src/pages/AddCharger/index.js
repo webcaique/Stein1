@@ -60,7 +60,7 @@ const AddCharger = ({navigation}) => {
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
   const [img, setImg] = useState();
-  const [imgPath, setImgPath] = useState();
+  const [imgPath, setImgPath] = useState("semImage");
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
 
   //Campos inválidos
@@ -186,8 +186,8 @@ const AddCharger = ({navigation}) => {
 
             // aqui será incrementado um único valor, para criar um novo ID
             countCarregadores++;
-
-            await storage
+            if(img){
+              await storage
               .ref(
                 `Pontos/${cepInput}-${numero}/Ponto-${cepInput}-${numero}${img[1]}`,
               )
@@ -195,10 +195,11 @@ const AddCharger = ({navigation}) => {
               .then(data => {
                 setImgPath(data.metadata.fullPath);
               })
-              .catch(error => console.log(error));
+              .catch(error => console.log("AQUI:".error));
+            }
 
             //Adiciona os dados dentro do banco de dados
-            tabelaCarregadores
+            await tabelaCarregadores
               .doc(`${countCarregadores}`)
               .set({
                 IDLogradouro: `${countLogra}`,
@@ -218,7 +219,7 @@ const AddCharger = ({navigation}) => {
           throw new Error('Endereço não encontrado.');
         }
       } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro11:', error);
       }
     };
 
@@ -276,7 +277,7 @@ const AddCharger = ({navigation}) => {
             }
           })
           .catch(error => {
-            console.error('Erro na solicitação:', error);
+            console.error('Erro na solicitação1111:', error);
           });
 
         // Função para extrair a rua do resultado da API
@@ -315,7 +316,7 @@ const AddCharger = ({navigation}) => {
       setValidNumero(false);
       setValidBairro(false);
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro444:', error);
     }
   };
 
@@ -476,7 +477,7 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro888:', error);
     }
   };
 
@@ -706,6 +707,7 @@ const AddCharger = ({navigation}) => {
                 setHorario1(!horario24h ? 'true' : false);
                 setHorario2(!horario24h ? 'true' : false);
                 setHorario24h(!horario24h);
+                setMensagemErro()
               }}
               value={horario24h}
               style={styles.switch}

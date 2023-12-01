@@ -70,13 +70,17 @@ const SinginScreen = ({navigation}) => {
   };
 
   const register = async (teste) => {
-    auth
+    const currentuser = await auth
       .createUserWithEmailAndPassword(email, password)
       .then(async (userCredential) => {
         let user = userCredential.user;
-        let emailVerific = auth.currentUser;
-        add(user.uid, teste);
-        
+
+        await user.sendEmailVerification().then(
+          ()=>{
+            add(user.uid, teste);
+          }
+        );
+
       })
       .catch(error => {
         add(0, false);
@@ -94,6 +98,7 @@ const SinginScreen = ({navigation}) => {
         console.error(errorMessage);
         console.log(errorCode);
       });
+
   };
 
   //Cadastrar o carro//

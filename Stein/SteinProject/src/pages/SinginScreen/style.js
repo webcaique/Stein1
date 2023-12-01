@@ -207,6 +207,7 @@ const styles = ScaledSheet.create({
   textoTermo: {
     marginTop: 20,
     textAlign: 'justify',
+    fontSize: RFValue(15)
   },
   verifEmail: {
     fontSize: RFValue(60),

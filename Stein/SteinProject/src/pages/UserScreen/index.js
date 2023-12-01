@@ -5,12 +5,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  Alert
 } from 'react-native';
 import styles from './style';
 import {auth, firestore, storage} from '../../config/configFirebase';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchImageLibrary} from 'react-native-image-picker';
+import Table from "./table";
 
 const UserScreen = ({navigation}) => {
   const path = require('path');
@@ -21,7 +25,11 @@ const UserScreen = ({navigation}) => {
   const [prog, setProg] = useState();
   const [imgFundo, setImgFundo] = useState();
   const [imgPerfil, setImgPerfil] = useState();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false)
+  const [carregador, setCarregador] = useState([]);
+
+
 
   const tabelaUsuario = firestore.collection('usuario');
   const tabelaCarro = firestore.collection("carro");
@@ -107,7 +115,9 @@ const UserScreen = ({navigation}) => {
 
   useEffect(() => {
     getUserData();
+    console.log(carroData)
   }, []);
+
 
 
   return (
@@ -154,7 +164,40 @@ const UserScreen = ({navigation}) => {
               />
             </TouchableOpacity>
             <Text style={styles.userName}>{nomeUser}</Text>
-            <View style={styles.userPowerSupplyUnit}>
+            <Modal visible={modal} transparent>
+                <Pressable
+                onPress={()=>{setModal(false)}}
+                style={styles.modal}
+                >
+                  <View style={{backgroundColor:"#fff"}}>
+                    <Table
+                    getInfo={(select, nome) => {
+                      setCarregador(select);
+                      Alert.alert("CARREGADOR SELECIONADO", `Tem certeza que quer mudar para o carregador ${nome}`, [
+                        {
+                          text:"Sim",
+                          onPress: ()=>{
+                            tabelaCarro.doc(`${carroData.id}`).update({
+                              IDTipoCarregador: select,
+                            });
+                            setModal(false);
+                          },
+                        },
+                        {
+                          text:"Não",
+                          onPress: ()=>{},
+                          style:"cancel"
+                        }
+                      ]);
+                    }}
+                    info={carregador}
+                    />
+                  </View>
+                </Pressable>
+            </Modal>
+            <TouchableOpacity style={styles.userPowerSupplyUnit}
+            onPress={()=>{setModal(true)}}
+            >
               <Image
                 style={styles.powerSupplyUnit}
                 source={
@@ -168,7 +211,7 @@ const UserScreen = ({navigation}) => {
                   }                  
                 }
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.lineList}>
             <View style={styles.lineLisText}>
