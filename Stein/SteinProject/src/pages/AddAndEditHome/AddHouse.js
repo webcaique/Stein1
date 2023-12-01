@@ -156,6 +156,7 @@ export default function AddHome({navigation}) {
           try {
             //Variável para colocar o endereço
             const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+            console.log(address)
       
             //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
             const response = await fetch(
@@ -168,11 +169,16 @@ export default function AddHome({navigation}) {
             if (!response.ok) {
               throw new Error('Erro ao buscar coordenadas.');
             }
+            
       
             const data = await response.json(); // Transformará os dados em formato JSON
       
+            console.log();
+            console.log(data)
+
             //Verifica se o resultado está com algum dado
             if (data.results && data.results.length > 0) {
+              console.log("cheguei aqui")
               const location = data.results[0].geometry.location;
       
               // adionará os dados ao banco de dados
@@ -199,7 +205,7 @@ export default function AddHome({navigation}) {
               throw new Error('Endereço não encontrado.');
             }
           } catch (error) {
-            console.error('Erro:', error);
+            console.error('Erro: 123', error);
           }
         };
 
@@ -257,7 +263,7 @@ export default function AddHome({navigation}) {
         console.error('Texto não contém espaço.');
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro: 321', error);
     }
   };
 
@@ -311,7 +317,9 @@ export default function AddHome({navigation}) {
       if (cepInput.length === 8 && !validcaoLogradouro) {
         await handleGeocode();
       }
-      await semCep();
+      if(cepInput.length <8){
+        await semCep();
+      }
 
       // O restante do código que depende dos resultados de handleGeocode e semCep
       // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
@@ -373,7 +381,7 @@ export default function AddHome({navigation}) {
         return () => clearTimeout(timer);
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro: 444', error);
     }
   };
 
