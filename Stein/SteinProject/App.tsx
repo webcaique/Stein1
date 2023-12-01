@@ -394,7 +394,7 @@ const App = () => {
           component={TradePassword}
           options={{
             title: 'Mudar Senhas',
-            headerTransparent: true,
+            headerTransparent: false,
             headerTitleAlign: 'left',
             headerTitleStyle: {
               fontSize: 34,
