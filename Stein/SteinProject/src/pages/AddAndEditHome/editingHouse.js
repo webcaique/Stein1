@@ -355,6 +355,7 @@ export default function AddHome() {
         //Caso algum campo estja inválido, eles mudaram de cor e será exibido uma lista dos campos sem dados ou inválidos.
         const validacao = async () => {
           let camposInvalidos = [];
+          //Será feito a verificação dos campos, e os inválidos serão colocados na lista "camposInvalidos"
           if (name == '') {
             setValidName(true);
             camposInvalidos.push('Nome');
@@ -613,7 +614,7 @@ export default function AddHome() {
               // Campo para pegar o estado
             >
               <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf}
+              <SelectList onUfChange={(dado)=>{handleUfChange(dado)}} validar={selectedUf}
               onBlur={() => {
                 semCep();
               }}
