@@ -148,6 +148,11 @@ const estilos=ScaledSheet.create({
       height:moderateVerticalScale(50),
       resizeMode:"contain",
     },
+    Strahd:{
+      flex:1,
+      display:'flex',
+      height:"100%",
+    },
     nomesCarregadores:{
       fontSize:8,
       maxWidth:50,
@@ -184,7 +189,7 @@ const estilos=ScaledSheet.create({
     },
     estrela:{
     height:moderateScale(100),
-    width: moderateVerticalScale(372),
+    width: '100%',
     backgroundColor: '#584086',
     color: 'white'
     
@@ -194,7 +199,7 @@ const estilos=ScaledSheet.create({
       flexDirection:'row',
     justifyContent:'center',
     maxHeight:moderateScale(120),
-    width: moderateScale(350)
+    width: '100%'
     },
     iconsSpecs:{
       borderWidth:2,
@@ -221,7 +226,9 @@ const estilos=ScaledSheet.create({
     
     
     },
-    
+    responsividade:{
+   height:'100%',
+    },
     iconsSpecs:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
@@ -231,7 +238,7 @@ const estilos=ScaledSheet.create({
     iconsSpecs1:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      height:verticalScale(57),
+      height: '25%',
       flexDirection:'row',
       alignItems:'center',
     
