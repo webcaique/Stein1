@@ -58,7 +58,9 @@ const [keyboardTipo, setKeyboardTipo] = useState('default');
 const [errorEmail, setErrorEmail] = useState("");
 const [errorPassaword, setErrorPassword] = useState("");
 const [letraMaiuscula, setLetraMaiuscula] = useState();
-const [termos, setTermos] = useState(false);
+const [validNumero, setValidNumero] = useState("#000");
+const [numero, setNumero] = useState("");
+const [termos, setTermos] = useState("");
 
 const handleUfChange = uf => {
     setSelectedUf(uf);
@@ -504,19 +506,15 @@ const cepFunction = async () => {
 
 
       <View
+        style={styles.conteiner}
         //Container principal
-        
         >
-        <KeyboardAvoidingView
-        
-        >
+        <KeyboardAvoidingView>
           <Pressable // Deixa a página clicável para desativar o teclado do usuário
-            onPress={Keyboard.dismiss}
-            
-            >
+            onPress={Keyboard.dismiss}>
             <View
                 style={styles.conteiner}
-                //Container para retirar bugs do Pressable
+              //Container para retirar bugs do Pressable
             >
               <TextInput //campo para escrever seu apelido no aplicativo
                 placeholder="Nome"
@@ -574,13 +572,54 @@ const cepFunction = async () => {
                 keyboardType="numeric"
                 onBlur={() => {
                     cepFunction();
-                }}
-                maxLength={cep == "CEP INVÁLIDO!"?13:8}
-            />
+                  }}
+                  maxLength={cep == "CEP INVÁLIDO!"?13:8}
+
+                />
 
 
-
-            {email === '' ||
+            
+                <TextInput
+                  style={[styles.textInputAll, {color: validCep, width: '25%'}]}
+                  placeholderTextColor={validNumero}
+                  placeholder="Número"
+                  onChangeText={setNumero}
+                  keyboardType="numeric"
+                  value={numero}
+                />
+              </View>
+              <View style={{marginVertical: 10}}>
+                <Text style={{...styles.tipoLogradouroVerif}}>
+                  *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
+                </Text>
+              </View>
+              <TabelaLogradouro
+                onTipoLograChange={getTipoLogradouro}
+                validar={tipoLogradouro}
+                branco={true}
+              />
+              <View
+                style={{
+                  ...styles.checkboxStyle
+                }}>
+                <CheckBox
+                  value={toggleCheckBox}
+                  onValueChange={newValue => setToggleCheckBox(newValue)}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setTermos(!termos);
+                  }}>
+                  <Text style={styles.txtTermos}>
+                    Você concorda com os{' '}
+                    <Text style={styles.termosDeUso}>
+                      Termos de Uso e Condição
+                    </Text>
+                    .
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {email === '' ||
             password === '' ||
             confirmPassword === '' ||
             nome === '' ||
@@ -595,7 +634,8 @@ const cepFunction = async () => {
             verificarLetrasMaiusculas() == false ||
             verificarLetrasMinusculas() == false ||
             verificarNumeros() == false ||
-            verificarCaracteresEspeciais() == false ? (
+            verificarCaracteresEspeciais() == false ||
+            numero == ""? (
                 <TouchableOpacity
                     style={styles.buttons}
                     disabled={true}
@@ -670,22 +710,22 @@ const cepFunction = async () => {
                 : verificarLetrasMaiusculas() == false && password.length >= 8
                 ? 
                 <View style={styles.error}>
-                <Text style={styles.errorText}>a sua senha deve conter uma letra maiúscula</Text>
+                <Text style={styles.errorText}>A sua senha deve conter uma letra maiúscula</Text>
                 </View>
                 : verificarLetrasMinusculas() == false && password.length >= 8 && verificarLetrasMaiusculas() == true
                 ? 
                 <View style={styles.error}>
-                <Text style={styles.errorText}>a sua senha deve conter uma letra minúscula</Text>
+                <Text style={styles.errorText}>A sua senha deve conter uma letra minúscula</Text>
                 </View>
                 : verificarNumeros() == false && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
                 ? 
                 <View style={styles.error}>
-                <Text style={styles.errorText}>a sua senha deve conter um número</Text>
+                <Text style={styles.errorText}>A sua senha deve conter um número</Text>
                 </View>
                 : verificarCaracteresEspeciais() == false && verificarNumeros() == true && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
                 ? 
                 <View style={styles.error}>
-                <Text style={styles.errorText}>a sua senha deve conter um caractere especial</Text>
+                <Text style={styles.errorText}>A sua senha deve conter um caractere especial</Text>
                 </View>
                 : (
                     <View />
@@ -714,8 +754,6 @@ const cepFunction = async () => {
                 </Text>
                 </TouchableOpacity>
             </View>
-            </View>
-
 
 
 
