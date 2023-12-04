@@ -13,10 +13,11 @@ const styles = ScaledSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
     width: '100%',
-    height: '100%',
+    height: "100%",
     alignItems: 'center',
     padding: RFValue(10),
-    paddingTop: 40,
+    paddingTop: RFValue(80),
+    paddingBottom:RFValue(73),
     justifyContent: 'center',
   },
   textInputAll: {
