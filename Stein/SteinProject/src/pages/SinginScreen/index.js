@@ -58,6 +58,7 @@ const [keyboardTipo, setKeyboardTipo] = useState('default');
 const [errorEmail, setErrorEmail] = useState("");
 const [errorPassaword, setErrorPassword] = useState("");
 const [letraMaiuscula, setLetraMaiuscula] = useState();
+const [termos, setTermos] = useState(false);
 
 const handleUfChange = uf => {
     setSelectedUf(uf);
@@ -131,8 +132,9 @@ const register = () => {
 
         console.error(errorMessage);
         console.log(errorCode);
-    });
-};
+      });
+
+  };
 
     //Cadastrar o carro//
 
@@ -418,21 +420,108 @@ const cepFunction = async () => {
 
     return (
     <ScrollView>
-        <View
-        style={styles.conteiner}
+
+
+
+      <Modal visible={termos}>
+        <Pressable
+          style={styles.containerTermoDeUso}
+          onPress={() => {
+            setTermos(!termos);
+          }}>
+          <ScrollView>
+            <Image
+              source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
+              }}
+              style={[
+                styles.imgSaidaTermoDeUso,
+                {
+                  transform: [{rotate: '45deg'}],
+                },
+              ]}
+            />
+            <View style={styles.termosContainerTexto}>
+              <Text style={styles.termosTitle}>TERMOS DE USO E CONDIÇÃO</Text>
+              <Text style={styles.textoTermo}>
+                Produzimos este aplicativo com o objetivo de expandir nossos
+                produtos e melhorar as qualidades de nossos serviços, assim,
+                proporcionando aos nossos clientes facilidades em suas compras
+              </Text>
+              <Text style={styles.textoTermo}>
+                A Stein não se responsabiliza por eventuais informações inexatas
+                ou imprecisas sobre seus serviços, bem como omissões do conteúdo
+                do seu site ou falha de equipamento
+              </Text>
+              <Text style={styles.textoTermo}>
+                O usuário tem total conhecimento e nada a se opor de que alguns
+                serviços inseridos no catalogo ou na própria página do site
+                poderão estar disponíveis em qualquer uma de nossas sedes ou
+                sediados. As cores apresentadas em nossos sites prezam pela
+                integridade e semelhança com o serviço, todavia, poderão sofrer
+                variações e não serem exatas, uma vez que dependem do monitor e
+                tecnologia utilizada por cada usuário, não podendo então a Stein
+                ser responsabilizada no caso de inexatidão de cores.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Em nenhum momento o aplicativo e seus colaboradores poderão ser
+                responsabilizados por quaisquer danos, perdas, despesas, falhas
+                de desempenho, interrupção, defeito, vírus ou falhas no sistema
+                do aplicativo.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Ao acessar esse aplicativo ou fornecer seus dados pessoais, o
+                usuário automaticamente declara conhecer e aceitar os Termos e
+                Condições de uso de Política de privacidade. Será de total
+                responsabilidade do usuário a garantir a exatidão dos seus dados
+                pessoais fornecidos, ficando certo que o usuário isenta a Stein
+                de quaisquer transtornos quanto a inexatidão de informações,
+                podendo ainda a mesma, suspender ou cancelar a conta de
+                cadastrado do usuário e recusar toda e qualquer utilização.
+              </Text>
+              <Text style={styles.textoTermo}>
+                Somos obrigados a transmitir seus dados a terceiros caso isto
+                seja necessário para cumprir regulamentações legais (por exemplo
+                da lei federal de proteção de dados).
+              </Text>
+              <Text style={styles.textoTermo}>
+                As informações sobre os preços e disponibilidades de serviços
+                estão sujeitos a alterações.{' '}
+              </Text>
+            </View>
+          </ScrollView>
+        </Pressable>
+      </Modal>
+
+
+
+
+
+
+
+
+
+
+
+      <View
         //Container principal
+        
         >
-        <KeyboardAvoidingView>
+        <KeyboardAvoidingView
+        
+        >
           <Pressable // Deixa a página clicável para desativar o teclado do usuário
-            onPress={Keyboard.dismiss}>
+            onPress={Keyboard.dismiss}
+            
+            >
             <View
                 style={styles.conteiner}
-              //Container para retirar bugs do Pressable
+                //Container para retirar bugs do Pressable
             >
               <TextInput //campo para escrever seu apelido no aplicativo
                 placeholder="Nome"
                 placeholderTextColor={'#000000'}
-                style={styles.textInput1}
+                style={{...styles.textInputAll, marginTop:0}}
                 keyboardType="default"
                 returnKeyLabel="default"
                 autoCapitalize="sentences"
@@ -675,16 +764,17 @@ const cepFunction = async () => {
                         justifyContent: 'center',
                         marginLeft: 10,
                         flexDirection: 'row',
-                    }}>
-                    <Text>Antigo Padrão</Text>
-                    <Switch
+                      }}>
+                      <Text style={styles.txtPlaca}>Antigo Padrão</Text>
+                      <Switch
                         onValueChange={() => {
                             setTipoPlaca(!tipoPlaca);
                             setPlaca('');
                         }}
                         value={tipoPlaca}
-                    />
-                    <Text>Novo Padrão</Text>
+                        style={styles.switch}
+                      />
+                      <Text style={styles.txtPlaca}>Novo Padrão</Text>
                     </View>
                     <View>
                     <View style={styles.row}>
@@ -781,9 +871,9 @@ const cepFunction = async () => {
                             />
                         </>
                         ) : (
-                        <>
-                            <View style={{width: '30%'}}>
-                                <SelectList
+                          <View style={styles.uf}>
+                            <View style={{width: '30%', marginHorizontal:10}}>
+                              <SelectList
                                 onUfChange={handleUfChange}
                                 validar={selectedUf}
                             />
@@ -798,7 +888,7 @@ const cepFunction = async () => {
                                 value={uf}
                                 placeholderTextColor={validUf}
                             />
-                        </>
+                          </View>
                         )}
                     </View>
                     </View>
@@ -848,7 +938,10 @@ const cepFunction = async () => {
                             carregador &&
                             cep
                         ) {
-                            register();
+                          const test = verificacaoDados();
+                          if (test) {
+                            register(test);
+                          }
                         } else {
                             let lista = [];
                             setValidAno(ano ? '#000' : '#f00');

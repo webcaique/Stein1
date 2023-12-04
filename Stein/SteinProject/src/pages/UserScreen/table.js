@@ -5,8 +5,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 const numRows = 5;
 const numColumns = 3;
 
-const Table = ({getInfo}) => {
-  //Nomes dos carregadores
+const Table = ({getInfo, info}) => {
     const nomeCarregadores = [
         "Wall",
             "Nema 14-50",
@@ -25,10 +24,8 @@ const Table = ({getInfo}) => {
             "Tesla (Fast)",
       ];
 
-  // guardará o carregador selecionado
   const [selectedCarr, setSelectedCarr] = useState(null);
 
-  // Será criado uma tabela com os carregadores
   const createTable = () => {
     const table = [];
 
@@ -37,15 +34,17 @@ const Table = ({getInfo}) => {
       for (let j = 0; j < numColumns; j++) {
         const carregadorIndex = i * numColumns + j + 1;
         let isSelected = selectedCarr === carregadorIndex;
+        if(info){
+            isSelected = info == carregadorIndex;
+        }
 
         row.push(
           <TouchableOpacity
             key={carregadorIndex}
             style={[styles.Carr, isSelected && styles.selectedCarr]}
             onPress={() => {
-              //madará os dados para página principal
                 handleCarrPress(carregadorIndex)
-                getInfo(carregadorIndex)
+                getInfo(carregadorIndex, nomeCarregadores[carregadorIndex-1])
             }}
           >
             <Image

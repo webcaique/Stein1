@@ -1,3 +1,4 @@
+import { RFValue } from "react-native-responsive-fontsize";
 import { ScaledSheet, scale, moderateScale, verticalScale, moderateVerticalScale, moderateHorizontalScale } from "react-native-size-matters";
 
 const styles = ScaledSheet.create({
@@ -10,7 +11,7 @@ const styles = ScaledSheet.create({
     },
 
     row1:{
-        width:scale(300),
+        width:RFValue(300),
         display:"flex",
         alignItems:"center",
         justifyContent:"center",
@@ -18,9 +19,10 @@ const styles = ScaledSheet.create({
         
     },
     textTitle:{
-        fontSize:scale(16),
+        fontSize:RFValue(16),
         alignItems:"center",
         justifyContent:"center",
+        color:"#000"
     },
     row2:{
         width:"100%",
@@ -36,12 +38,16 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        fontSize:RFValue(15),
+        color:"#000"
+
 
     },
     textIsInput:{
-        fontSize:scale(16),
+        fontSize:RFValue(16),
         fontWeight:"700",
+        color:"#000"
     },
     column1:{
         width:"100%",
@@ -51,11 +57,12 @@ const styles = ScaledSheet.create({
         flexDirection:"row",
         alignItems:"center",
         justifyContent:"space-between",
+        width:"100%"
     },
     btnCarregadores:{
         marginTop:20,
-        width:200,
-        height:moderateVerticalScale(50),
+        width:"50%",
+        height:RFValue(50),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#fff",
@@ -69,7 +76,9 @@ const styles = ScaledSheet.create({
         marginVertical:10,
         borderRadius:10,
         width:"100%",
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        fontSize:RFValue(15),
+        color:"#000"
 
     },
     textInputNumber:{
@@ -77,8 +86,11 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:scale(100),
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        fontSize:RFValue(15),
+        color:"#000",
+        width:"100%",
+
     },
 
     row4:{
@@ -92,7 +104,7 @@ const styles = ScaledSheet.create({
         justifyContent:"space-between"
     },
     column3:{
-        width:scale(125),
+        width:"40%",
     },
 
     textInputCep:{
@@ -100,7 +112,10 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        width:"100%",
+        fontSize:RFValue(15),
+        color:"#000"
 
     },
     textInputBairro:{
@@ -108,14 +123,18 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        width:scale(200),
-        height:moderateVerticalScale(50),
+        width:RFValue(200),
+        height:RFValue(50),
+        fontSize:RFValue(15),
+        color:"#000"
 
     },
     row6:{
         width:"100%",
         flexDirection:"row",
         justifyContent:"space-between",
+        width:"100%"
+
         
     },
     textInputMunicipio:{
@@ -123,17 +142,23 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        width:"100%",
+        fontSize:RFValue(15),
+        color:"#000"
         
 
     },
     textIsInputEstado:{
-        fontSize:scale(16),
+        fontSize:RFValue(16),
         fontWeight:"700",
+        color:"#000",
+        fontSize:RFValue(15),
+        color:"#000"
     },
     column5:{
         width:scale(125),
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
 
         
     },
@@ -142,39 +167,44 @@ const styles = ScaledSheet.create({
         backgroundColor:"#fff",
         marginVertical:10,
         borderRadius:10,
-        height:moderateVerticalScale(50),
+        height:RFValue(50),
+        fontSize:RFValue(15),
+        color:"#000"
 
         
     },
     editionButton:{
-        width:moderateScale(200),
-        height:moderateVerticalScale(75),
+        width:RFValue(200),
+        height:RFValue(75),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#8429AE",
         borderRadius:15,
         borderWidth:2,
+        marginTop:10,
+
     },
     textButton:{
-        fontSize:moderateVerticalScale(25),
+        fontSize:RFValue(25),
         fontWeight:"900",
         color:"#ffffff",
-        
+
     },
     column6:{
-        width:moderateScale(200),
+        width:RFValue(200),
     },
     logradouro:{
         width:"100%",
         flexDirection:"column",
         justifyContent:"space-between",
         alignItems:"center",
+
     },
     row7:{
         width:"100%",
     },
     modal: {
-        width: 300,
+        width: RFValue(300),
         height: "auto",
         backgroundColor: 'white',
         padding:10,

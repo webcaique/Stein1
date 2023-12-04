@@ -1,216 +1,301 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  Alert
+} from 'react-native';
 import styles from './style';
-import {auth, firestore} from '../../config/configFirebase';
-import DocumentPicker from 'react-native-document-picker';
-import {check, request, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import { utils } from '@react-native-firebase/app';
-import storage from '@react-native-firebase/storage';
+import {auth, firestore, storage} from '../../config/configFirebase';
+import {request, PERMISSIONS} from 'react-native-permissions';
+import {launchImageLibrary} from 'react-native-image-picker';
+import Table from "./table";
 
 const UserScreen = ({navigation}) => {
+
+  //Biblioteca para pegar o caminho do arquivo do usuário
+  const path = require('path');
+
+  //Variável que serão usados no sistema
   const userId = auth.currentUser.uid;
+  const [userData, setUserData] = useState();
+  const [carroData, setCarroData] = useState();
   const [nomeUser, setNomeUser] = useState('');
   const [prog, setProg] = useState();
+  const [imgFundo, setImgFundo] = useState();
+  const [imgPerfil, setImgPerfil] = useState();
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(false)
+  const [carregador, setCarregador] = useState([]);
 
-  const tabelaUsuario = firestore.collection('usuario');
 
-  const uploadFileToFirebaseStorage = async (file) => {
-    // Verifique se a permissão já foi concedida
-    const permissionStatus = await check(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-  
-    if (permissionStatus === RESULTS.GRANTED) {
-      // A permissão já foi concedida, faça o upload do arquivo
-      console.log(file[0].uri);
-      const upload = storage().ref(`/UserDir/${nomeUser}`).putFile(file[0].uri);
-      upload
-      .on(
-        "state_changed",
-        (snaphot)=>{
-          const prog = Math.round(
-            ((snaphot.bytesTransferred / snaphot.totalBytes) * 100),
-            
-          )
-          setProg(prog)
-        }, (error)=>{
-          console.error(error)
-        },
-        ()=>{
-          console.log("AQUI");
-          storage().ref("UserDir")
-          .child(file[0].name)
-          .getDownloadURL()
-          .then((url)=>{
-            console.log(url);
-          })
-        }
-      )
-      
-      console.log('Arquivo enviado com sucesso para o Firebase Storage.');
-    } else {
-      // A permissão ainda não foi concedida, solicite-a ao usuário
-      const permissionRequest = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-      if (permissionRequest === RESULTS.GRANTED) {
-        // Permissão concedida, faça o upload do arquivo
-      const upload = storage().ref(`UserDir/${nomeUser}`).putFile(file[0].uri);
-        console.log('Arquivo enviado com sucesso para o Firebase Storage.');
-      } else {
-        console.log('Permissão negada pelo usuário.');
-      }
-    }
-  };
 
-  const selectAndCopyFile = async () => {
-    try {
-      const permissionStatus = await check(
-        PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      );
-      if (permissionStatus === RESULTS.GRANTED) {
-        const result = await DocumentPicker.pick({
-          type: [DocumentPicker.types.images],
-        });
+  const tabelaUsuario = firestore.collection('usuario'); // Puxa a tabela do usuário
+  const tabelaCarro = firestore.collection("carro"); // Puxa a tabelo do Carro
 
-        if (result) {
-          uploadFileToFirebaseStorage(result);
-        } else {
-          console.log(result);
-        }
-      } else {
-        const permissionRequest = await request(
-          PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-        );
-        if (permissionRequest === RESULTS.GRANTED) {
-          // Agora você pode chamar selectAndCopyFile() novamente.
-        } else {
-          console.log('Permissão negada pelo usuário.');
-        }
-      }
-    } catch (err) {
-      console.error('Erro ao selecionar ou copiar o arquivo:', err);
-    }
-  };
-
-  const getUserData = () => {
+  const getUserData = async () => {
+    //Variávis que pegaram os dados do usuário
     let usuario;
-    tabelaUsuario.onSnapshot(datas => {
+    let carro;
+
+    //Varre os dados da tabela
+    tabelaUsuario.onSnapshot(async datas => {
       datas._docs.forEach(dados => {
         if (userId == dados._ref._documentPath._parts[1]) {
           usuario = {id: dados._ref._documentPath._parts[1], ...dados._data};
         }
       });
 
-      setNomeUser(usuario);
+      setUserData(usuario);
+      setNomeUser(usuario.nomeUsuario);
 
+      // Pega a imagem de do banco de dados do fundo
       if (usuario.imagemFundo) {
-        console.log('IMAGEM FUNDO');
+        const imagemFundo = await storage
+          .ref(`${usuario.imagemFundo}`)
+          .getDownloadURL();
+        setImgFundo(imagemFundo);
       }
 
+      // Pega a imagem de do banco de dados do perfil do usuário
       if (usuario.imagemPerfil) {
-        console.log('IMAGEM PERFIL');
+        const imagemPerfil = await storage
+          .ref(`${usuario.imagemPerfil}`)
+          .getDownloadURL();
+        setImgPerfil(imagemPerfil);
       }
     });
+
+
+    // Varre os dados da tabela do Carro
+    tabelaCarro.onSnapshot(async (data) => {
+      await data._docs.forEach(async (dados) => {
+        if (userId == dados._data.IDUsuario) {
+          carro = await {id: dados._ref._documentPath._parts[1], ...dados._data};
+          setCarroData(carro);
+        }
+      });
+    });
+    setLoading(false);
+  };
+
+  //Função para pegar o caminho da imagem
+  const selectImage = async tipo => {
+    // Para verificar se o usuário permite acessar os arquivos
+    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+    // Caso permite ele vai mandar a imagem para o banco de dados
+    if (status === 'granted') {
+
+      //Puxa o caminho da imagem selecionada
+      const imagem = await launchImageLibrary();
+      setLoading(true);
+      if(!imagem.didCancel){
+        const extencao = path.extname(imagem.assets[0].originalPath);
+
+        //Mandará a imagem para o BUKET do firebase
+      await storage
+        .ref(`UserDir/${userId}/${tipo}${extencao}`)
+        .putFile(imagem.assets[0].originalPath)
+        .then(data => {
+          if (tipo == 'fundo') {
+            tabelaUsuario.doc(userId).update({
+              imagemFundo: data.metadata.fullPath,
+            });
+          } else {
+            tabelaUsuario.doc(userId).update({
+              imagemPerfil: data.metadata.fullPath,
+            });
+          }
+
+          getUserData();
+        })
+        .catch(error => console.log(error));
+      } else {
+        setLoading(false);
+      }
+      setLoading(false);
+    } else {
+      console.log('Permissão de escrita no armazenamento externo negada');
+      setLoading(false);
+
+    }
   };
 
   useEffect(() => {
     getUserData();
   }, []);
 
+
+
   return (
     <View style={styles.mainContainer}>
-      <TouchableOpacity
-        style={styles.userImageBgBackgroudn}
-        onPress={() => selectAndCopyFile()}>
-        <Image
-          style={styles.userImageBg}
-          source={require('../../../assets/UserAsset/TestUser/BgImage.png')}
-        />
-      </TouchableOpacity>
-      <View style={styles.userImageBackGround}>
-        <TouchableOpacity style={styles.circule}>
-          <Image
-            style={styles.useruserImage}
-            source={require('../../../assets/UserAsset/TestUser/userImage.png')}
-          />
-        </TouchableOpacity>
-        <Text style={styles.userName}>Nome do usuário</Text>
-        <View style={styles.userPowerSupplyUnit}>
-          <Image
-            style={styles.powerSupplyUnit}
-            source={require('../../../assets/VetoresPNG/carregador1.png')}
-          />
-          <Image
-            style={styles.powerSupplyUnit}
-            source={require('../../../assets/VetoresPNG/carregador2.png')}
-          />
+      {loading ? (
+        <View style={styles.rodinhaCarregamento} >
+          <ActivityIndicator
+         size="large" color="#0000ff"
+         />
         </View>
-      </View>
-      <View style={styles.lineList}>
-        <View style={styles.lineLisText}>
-          <TouchableOpacity>
-            <Text style={styles.recente}>Recente</Text>
+      ) : (
+        <View style={styles.mainContainer}>
+          <TouchableOpacity
+            style={styles.userImageBgBackgroudn}
+            onPress={async () => {
+              selectImage('fundo');
+            }}>
+            <Image
+              style={styles.userImageBg}
+              source={
+                !imgFundo
+                  ? require('../../../assets/UserAsset/TestUser/BgImage.png')
+                  : {
+                      uri: imgFundo,
+                    }
+              }
+            />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Text style={styles.locaisSalvos}>Locais salvos</Text>
-          </TouchableOpacity>
+          <View style={styles.userImageBackGround}>
+            <TouchableOpacity
+              style={styles.circule}
+              onPress={async () => {
+                selectImage('perfil');
+              }}>
+              <Image
+                style={styles.useruserImage}
+                source={
+                  !imgPerfil
+                    ? require('../../../assets/UserAsset/TestUser/userImage.png')
+                    : {
+                        uri: imgPerfil,
+                      }
+                }
+              />
+            </TouchableOpacity>
+            <Text style={styles.userName}>{nomeUser}</Text>
+            <Modal visible={modal} transparent>
+                <Pressable
+                onPress={()=>{setModal(false)}}
+                style={styles.modal}
+                >
+                  <View style={{backgroundColor:"#fff"}}>
+                    <Table
+                    getInfo={(select, nome) => {
+                      setCarregador(select);
+                      Alert.alert("CARREGADOR SELECIONADO", `Tem certeza que quer mudar para o carregador ${nome}`, [
+                        {
+                          text:"Sim",
+                          onPress: ()=>{
+                            tabelaCarro.doc(`${carroData.id}`).update({
+                              IDTipoCarregador: select,
+                            });
+                            setModal(false);
+                          },
+                        },
+                        {
+                          text:"Não",
+                          onPress: ()=>{},
+                          style:"cancel"
+                        }
+                      ]);
+                    }}
+                    info={carregador}
+                    />
+                  </View>
+                </Pressable>
+            </Modal>
+            <TouchableOpacity style={styles.userPowerSupplyUnit}
+            onPress={()=>{setModal(true)}}
+            >
+              <Image
+                style={styles.powerSupplyUnit}
+                source={
+                  carroData?
+                  {
+                    uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${carroData.IDTipoCarregador}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`
+                  }
+                  :
+                  {
+                    uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador1.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`
+                  }                  
+                }
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.lineList}>
+            <View style={styles.lineLisText}>
+              <TouchableOpacity>
+                <Text style={styles.recente}>Recente</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.locaisSalvos}>Locais salvos</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              <View style={styles.listText}>
+                <View style={styles.textFromList1}>
+                  <Text style={styles.texts}>Carregador Br2w</Text>
+                  <Text style={styles.texts}>
+                    Rua Lady Esteves da Conceição, 680 - Vale Encantado, Macaé -
+                    RJ, 27933-420, Brasil.
+                  </Text>
+                </View>
+                <View style={styles.textFromList2}>
+                  <TouchableOpacity style={styles.button}>
+                    <Image
+                      style={styles.iconArrowToRight}
+                      source={require('../../../assets/Icons/seta-direita.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.lines} />
+
+              <View style={styles.listText}>
+                <View style={styles.textFromList1}>
+                  <Text style={styles.texts}>Botafogo Shopping</Text>
+                  <Text style={styles.texts}>
+                    Praia de Botafogo, 400 - Botafogo, Rio de Janeiro - RJ, CEP
+                    22250-040, Brasil.
+                  </Text>
+                </View>
+                <View style={styles.textFromList2}>
+                  <TouchableOpacity style={styles.button}>
+                    <Image
+                      style={styles.iconArrowToRight}
+                      source={require('../../../assets/Icons/seta-direita.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.lines} />
+
+              <View style={styles.listText}>
+                <View style={styles.textFromList1}>
+                  <Text style={styles.texts}>Barra Business Center</Text>
+                  <Text style={styles.texts}>
+                    Av. das Américas 3301,Barra da Tijuca, Rio de Janeiro - RJ,
+                    Cep 22631-003
+                  </Text>
+                </View>
+                <View style={styles.textFromList2}>
+                  <TouchableOpacity style={styles.button}>
+                    <Image
+                      style={styles.iconArrowToRight}
+                      source={require('../../../assets/Icons/seta-direita.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.lines} />
+            </ScrollView>
+          </View>
         </View>
-        <ScrollView>
-          <View style={styles.listText}>
-            <View style={styles.textFromList1}>
-              <Text style={styles.texts}>Carregador Br2w</Text>
-              <Text style={styles.texts}>
-                Rua Lady Esteves da Conceição, 680 - Vale Encantado, Macaé - RJ,
-                27933-420, Brasil.
-              </Text>
-            </View>
-            <View style={styles.textFromList2}>
-              <TouchableOpacity style={styles.button}>
-                <Image
-                  style={styles.iconArrowToRight}
-                  source={require('../../../assets/Icons/seta-direita.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.lines} />
-
-          <View style={styles.listText}>
-            <View style={styles.textFromList1}>
-              <Text style={styles.texts}>Botafogo Shopping</Text>
-              <Text style={styles.texts}>
-                Praia de Botafogo, 400 - Botafogo, Rio de Janeiro - RJ, CEP
-                22250-040, Brasil.
-              </Text>
-            </View>
-            <View style={styles.textFromList2}>
-              <TouchableOpacity style={styles.button}>
-                <Image
-                  style={styles.iconArrowToRight}
-                  source={require('../../../assets/Icons/seta-direita.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.lines} />
-
-          <View style={styles.listText}>
-            <View style={styles.textFromList1}>
-              <Text style={styles.texts}>Barra Business Center</Text>
-              <Text style={styles.texts}>
-                Av. das Américas 3301,Barra da Tijuca, Rio de Janeiro - RJ, Cep
-                22631-003
-              </Text>
-            </View>
-            <View style={styles.textFromList2}>
-              <TouchableOpacity style={styles.button}>
-                <Image
-                  style={styles.iconArrowToRight}
-                  source={require('../../../assets/Icons/seta-direita.png')}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.lines} />
-        </ScrollView>
-      </View>
+      )}
     </View>
   );
 };

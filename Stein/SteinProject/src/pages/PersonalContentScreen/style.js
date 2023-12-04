@@ -1,3 +1,4 @@
+import { RFValue } from 'react-native-responsive-fontsize';
 import {
   ScaledSheet,
   scale,
@@ -14,11 +15,13 @@ const styles = ScaledSheet.create({
     flex:1,
   },
   textTitlePage:{
-    fontSize:16,
+    fontSize:RFValue(16),
     fontWeight:"700",
+    marginVertical:10,
+    marginBottom:20,
   },
   textTitleTable:{
-    fontSize:25,
+    fontSize:RFValue(25),
     fontWeight:"900",
   },
   table:{
@@ -34,7 +37,7 @@ const styles = ScaledSheet.create({
     flexDirection:"row",
     justifyContent:"space-between",
     alignItems:"center",
-    height:60,
+    height:RFValue(60),
     paddingHorizontal:5,
   },
   dinamicView:{
@@ -44,15 +47,15 @@ const styles = ScaledSheet.create({
     width:"60%"
   },
   textFix:{
-    fontSize:16,
+    fontSize:RFValue(16),
   },
   textDinamic:{
-    fontSize:10,
+    fontSize:RFValue(10),
     textAlign:"center",
   },
   imgs:{
-    width:25,
-    height:25,
+    width:RFValue(25),
+    height:RFValue(25),
     resizeMode:"contain",
     marginLeft:5,
   },
@@ -67,6 +70,11 @@ const styles = ScaledSheet.create({
     alignItems:"center",
     padding:10,
     borderRadius:10,
+    elevation:5,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   modal:{
     width:"100%",
@@ -75,11 +83,12 @@ const styles = ScaledSheet.create({
     justifyContent:"center",
     alignItems:"center",
     padding:20,
+    fontSize:RFValue(15)
   },
   textInput:{
     borderWidth:1,
     width:"100%",
-    height:50,
+    height:RFValue(50),
     borderRadius:10,
     flexDirection:"row",
     justifyContent:"space-between",
@@ -90,6 +99,7 @@ const styles = ScaledSheet.create({
   },
   textoCampo:{
     fontWeight:"900",
+    fontSize:RFValue(15)
   },
 });
 

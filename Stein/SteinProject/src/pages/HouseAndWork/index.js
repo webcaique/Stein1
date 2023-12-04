@@ -64,7 +64,6 @@ const EditingHouse = () => {
         return () => unsubscribe();
       } catch (error) {
         console.log('Erro ao buscar documentos: ', error);
-        console.log('NESSE DOCUMENTO!');
       }
     };
 

@@ -11,6 +11,7 @@ export default function selectList({validar, onUfChange }) {
         onUfChange(itemValue); // Chama a função de retorno com o valor selecionado que será enviardo para outra página
     };
 
+
     return (
         <View style={styles.list}>
             <Picker

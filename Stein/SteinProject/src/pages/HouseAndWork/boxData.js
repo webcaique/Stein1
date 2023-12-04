@@ -34,7 +34,6 @@ export default function (props) {
     snapshot.forEach(dado => {
       listDeletar.push(dado.id);
     });
-    console.log(listDeletar);
 
     // deletará os dados da tabela local
     deletar

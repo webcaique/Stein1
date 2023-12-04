@@ -3,6 +3,8 @@ import {View, Text, ScrollView, Image, TouchableOpacity} from "react-native";
 import styles from "./style"
 import { auth } from "../../config/configFirebase";
 
+// PLANOS FUTUROS //
+
 const ChangeAccount = ({navigation}) => {
     return(
         <View style={styles.mainContainer}>

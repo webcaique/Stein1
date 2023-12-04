@@ -14,34 +14,35 @@ import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
-import { auth } from '../../config/configFirebase';
+import {auth} from '../../config/configFirebase';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 export default function AddHome({navigation}) {
-  const tabelaLogra = firestore.collection('logradouro'); // Pega a tabela Logradouro do Firabase
-  const tabelaLocal = firestore.collection('local');
+  const tabelaLogra = firestore.collection('logradouro'); // Puxa a tabela Logradouro do Firabase
+  const tabelaLocal = firestore.collection('local'); // Puxa a tabela Local do Firebase
 
   // Criação das varíaveis com estado variáveis para colocar os dados do formulário
-  const [carregadores, setCarregadores] = useState([]);
+  const [carregadores, setCarregadores] = useState([]); // Guardará os dados relacionados aos carregadores selecionados
 
   // Variável para a aparição da tabelas dos carregadores
   const [ligarTabelaCarregadores, setligarTabelaCarregadores] = useState(false);
   //
-  const [name, setName] = useState('');
-  const [logra, setLogra] = useState('');
-  const [numero, setNumero] = useState('');
-  const [complemento, setComplemento] = useState('');
-  const [cepInput, setCep] = useState('');
-  const [bairro, setBairro] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [selectedUf, setSelectedUf] = useState('');
-  const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
+  const [name, setName] = useState(''); // Guardará os dados relacionados ao nome do local
+  const [logra, setLogra] = useState(''); // Guardará os dados relacionados ao logradouro do local
+  const [numero, setNumero] = useState(''); // Guardará os dados relacionados ao número do local
+  const [complemento, setComplemento] = useState(''); // Guardará os dados relacionados ao complemento do local
+  const [cepInput, setCep] = useState(''); // Guardará os dados relacionados ao CEP do local
+  const [bairro, setBairro] = useState(''); // Guardará os dados relacionados ao bairro do local
+  const [cidade, setCidade] = useState(''); // Guardará os dados relacionados à cidade do local
+  const [selectedUf, setSelectedUf] = useState(''); // Guardará os dados relacionados à UF selecionado do local
+  const [selectedTipoLogra, setSelectedTipoLogra] = useState(''); // Guardará os dados relacionados ao tipo do logradouro selecionado do local
 
-  //Campos inválidos
+  //Campos inválidos: os nomes dos campos inválidos serão colocados dentro do array para mostrar para o usuário caso dê algum erro
   const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
 
-  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido, receberam valores que validarão se eles possuem dados e se os dados dos campos são válidos
+  //Quando forem TRUE, os campos mudarão sua cor, mostrando que o campo está inválido
   const [validLogra, setValidLogra] = useState();
   const [validNumero, setValidNumero] = useState();
   const [validCep, setValidCep] = useState();
@@ -50,8 +51,6 @@ export default function AddHome({navigation}) {
   const [validName, setValidName] = useState();
   const [validSelectCarregadores, setValidSelectCarregadores] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
-
-  
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -70,6 +69,7 @@ export default function AddHome({navigation}) {
 
   // Função para adicionar dados no banco de dados
   const addDataLogradouro = async () => {
+    //Verifica se os campos estão inválidos e vazios
     if (
       name != undefined &&
       logra != undefined &&
@@ -128,14 +128,14 @@ export default function AddHome({navigation}) {
       countLocal++;
 
       //organiza a array de carregadores em ordem crescente
-      carregadores.sort((a,b)=> a-b)
+      carregadores.sort((a, b) => a - b);
       // aqui serão colocados os dados coletados no formulário
       let testeLocal = {
         IDLogradouro: `${countLogra}`,
         IDTipoCarregador: carregadores,
         nomeLocal: `${name}`,
         tipoLocal: `Casa`,
-        IDUsuario:auth.currentUser.uid,
+        IDUsuario: auth.currentUser.uid,
       };
 
       // adionará os dados ao banco de dados
@@ -148,62 +148,65 @@ export default function AddHome({navigation}) {
         .catch(error => {
           console.log(error);
         });
-        
 
-        const validarGeo = async () => {
-          try {
-            const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
-      
-            const response = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-                address,
-              )}&key=${apiKey}`,
-            );
-      
-            if (!response.ok) {
-              throw new Error('Erro ao buscar coordenadas.');
-            }
-      
-            const data = await response.json();
-      
-      
-            if (data.results && data.results.length > 0) {
-              const location = data.results[0].geometry.location;
-      
-              // adionará os dados ao banco de dados
-              tabelaLogra
-                .doc(`${countLogra}`)
-                .set({
-                  CEP: `${cepInput}`,
-                  UF: `${selectedUf}`,
-                  bairro: `${bairro}`,
-                  cidade: `${cidade}`,
-                  complemento: `${complemento}`,
-                  geolocalizacao: {
-                    latitude: location.lat,
-                    longitude: location.lng,
-                  },
-                  logradouro: `${logra}`,
-                  numero: `${numero}`,
-                  tipoLogradouro: `${selectedTipoLogra}`,
-                })
-                .then(() => {
-                  console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
-                });
-            } else {
-              throw new Error('Endereço não encontrado.');
-            }
-          } catch (error) {
-            console.error('Erro:', error);
+      //Código abaixo pegará a longitude e a latitude do local cadastrado
+      const validarGeo = async () => {
+        try {
+          //Variável para colocar o endereço
+          const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+
+          //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+              address,
+            )}&key=${apiKey}`,
+          );
+
+          //Caso a resposta der algum erro.
+          if (!response.ok) {
+            throw new Error('Erro ao buscar coordenadas.');
           }
-        };
-        validarGeo()
-    }
 
-    
+          const data = await response.json(); // Transformará os dados em formato JSON
+
+          //Verifica se o resultado está com algum dado
+          if (data.results && data.results.length > 0) {
+            const location = data.results[0].geometry.location;
+
+            // adionará os dados ao banco de dados
+            tabelaLogra
+              .doc(`${countLogra}`)
+              .set({
+                CEP: `${cepInput}`,
+                UF: `${selectedUf}`,
+                bairro: `${bairro}`,
+                cidade: `${cidade}`,
+                complemento: `${complemento}`,
+                geolocalizacao: {
+                  latitude: location.lat,
+                  longitude: location.lng,
+                },
+                logradouro: `${logra}`,
+                numero: `${numero}`,
+                tipoLogradouro: `${selectedTipoLogra}`,
+              })
+              .then(() => {
+                console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
+              });
+          } else {
+            throw new Error('Endereço não encontrado.');
+          }
+        } catch (error) {
+          console.error('Erro: 123', error);
+        }
+      };
+
+      validarGeo();
+    }
   };
 
   useEffect(() => {
+    //Comando para ser executado para apagar os avisos de campos inválidos quando o tempo acabar
     const timer = setTimeout(() => {
       setListaCamposInvalidos([]);
     }, 5000);
@@ -211,16 +214,18 @@ export default function AddHome({navigation}) {
     return () => clearTimeout(timer);
   }, []);
 
+  // VERIFICARÁ SE O CEP É VÁLIDO //
   const handleGeocode = async () => {
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      // Solicitação do serviço do ViaCep, para mostrar se o CEP é inválido e se ele existe
       const response = await fetch(
         `https://viacep.com.br/ws/${cepInput}/json/`,
       );
 
-      if (!response.ok) {
-        setCep('CEP INVÁLIDO!');
-        setValidCep(true);
+      //Caso o CEP seja inválido e caso ele não exista, será avisado ao usuário
+      if (!response.ok || response.erro) {
+        setCep('CEP INVÁLIDO!'); // dados para mostrar o campo inválido
+        setValidCep(true); // Usado para verificação
         const timer = setTimeout(() => {
           setCep('');
         }, 3000);
@@ -228,13 +233,16 @@ export default function AddHome({navigation}) {
         return () => clearTimeout(timer);
       }
 
+      //Os dados serão convertidos em JSON
       const data = await response.json();
+      // SERÁ COLOCADO OS DADOS NOS CAMPOS
       setBairro(data.bairro);
       setCidade(data.localidade);
       setSelectedUf(data.uf);
 
-      const partes = data.logradouro.split(' ');
+      const partes = data.logradouro.split(' '); // SERÁ USADO PARA SEPARAR O TIPO DO LOGRADOURO DO LOGRADOURO EM SI
 
+      // Será colocado os dados nos devidos lugares.
       if (partes.length >= 2) {
         const tipo = partes[0];
         const logras = partes.slice(1).join(' ');
@@ -245,21 +253,26 @@ export default function AddHome({navigation}) {
         console.error('Texto não contém espaço.');
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro: 321', error);
     }
   };
 
+  // CASO NÃO TENHA DIGITADO O CEP, ELE PROCURARÁ O CEP COM O ENDEREÇO DIGITADO PELO USUÁRIO //
   const semCep = async () => {
     try {
+      // Apenas executará se os campos possuirem os dados necessário
       if (logra != '' && bairro != '' && cidade != '' && numero != '') {
+        //Será colocado o endereço que será usado para a pesquisa na API
         const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
+        //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address,
           )}&key=${apiKey}`,
         );
 
+        //Caso não haja o endereço, mandará a mensagem de erro.
         if (!response.ok) {
           setValidBairro(true);
           setValidCidade(true);
@@ -267,32 +280,41 @@ export default function AddHome({navigation}) {
           setValidNumero(true);
           throw new Error('Erro ao buscar coordenadas.');
         }
-        
-        const data = await response.json();
 
-        var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0]
-        var tipoUf = data.results[0].address_components[4].short_name
-        setSelectedUf(tipoUf)
+        const data = await response.json(); // Os dados formatados em JSON
+
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0]; //Pega o Tipo de Logradouro
+        var tipoUf = data.results[0].address_components[4].short_name; // Puxa a UF
+        setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
 
         var cepNormal = data.results[0].address_components[6].long_name.replace(
           '-',
           '',
-        );
+        ); // Formatará o CEP par ser Exibido para o usuário
         setCep(cepNormal);
         setValidacaoLogradouro(true);
       }
     } catch (error) {
-      throw new Error('NÃO ENCONTRADO O ENDEREÇO: '+error);
+      setValidLogra(true);
+      setValidCidade(true);
+      setValidNumero(true);
+      setValidCep(true);
+      setValidBairro(true);
+      throw new Error('NÃO ENCONTRADO O ENDEREÇO: ' + error);
     }
   };
 
+  //Apenas execultara o código acima, fazendo verificações se o CEp está correto
   const handlePress = async () => {
     try {
       if (cepInput.length === 8 && !validcaoLogradouro) {
         await handleGeocode();
       }
-      await semCep();
+      if (cepInput.length < 8) {
+        await semCep();
+      }
 
       // O restante do código que depende dos resultados de handleGeocode e semCep
       // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
@@ -306,9 +328,10 @@ export default function AddHome({navigation}) {
         cidade != '' &&
         carregadores != []
       ) {
-        addDataLogradouro();
-        navigation.navigate('HouseAndWork');
+        addDataLogradouro(); // Chama a função para adicionar os dados no banco de dados
+        navigation.navigate('HouseAndWork'); // Navegará para a próxima página
       } else {
+        //Caso algum campo estja inválido, eles mudaram de cor e será exibido uma lista dos campos sem dados ou inválidos.
         const validacao = async () => {
           let camposInvalidos = [];
           if (name == '') {
@@ -353,11 +376,12 @@ export default function AddHome({navigation}) {
         return () => clearTimeout(timer);
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro: 444', error);
     }
   };
 
   useEffect(() => {
+    //Reiniciara a lista
     const timer = setTimeout(() => {
       setListaCamposInvalidos([]);
     }, 5000);
@@ -407,100 +431,6 @@ export default function AddHome({navigation}) {
             />
           </View>
 
-          <View style={styles.row3}>
-            <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
-              Logradouro:
-            </Text>
-            <View
-              style={styles.column1}
-              // Campo para pegar o logradouro
-            >
-              <View style={styles.logradouro}>
-                <TipoLogradouro
-                  onTipoLograChange={handleTipoLograChange}
-                  validar={selectedTipoLogra}
-                />
-                <TextInput
-                  style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
-                  onChangeText={setLogra}
-                  value={logra}
-                  onBlur={() => {
-                    semCep();
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.row7}>
-            <View
-              style={styles.column2}
-              // Campo para pegar o número
-            >
-              <View>
-                <Text
-                  style={[
-                    styles.textIsInput,
-                    ,
-                    {color: validNumero ? 'red' : ''},
-                  ]}>
-                  Número:
-                </Text>
-                <TextInput
-                  style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
-                  onChangeText={setNumero}
-                  value={numero}
-                  keyboardType="number-pad"
-                  onBlur={() => {
-                    semCep();
-                  }}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.btnCarregadores}
-                onPress={() => {
-                  setligarTabelaCarregadores(!ligarTabelaCarregadores);
-                }}>
-                <Text
-                  style={[
-                    styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
-                  ]}>
-                  Carregadores
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{width: '100%', alignItems: 'center'}}>
-              {ligarTabelaCarregadores ? (
-                <TabelaCarregadores
-                carr={carregadores}
-                  onSelectCarregadores={toggleCarregadorSelection}
-                  notFiltro={true}
-                />
-              ) : (
-                <View />
-              )}
-            </View>
-          </View>
-
-          <View
-            style={styles.row4}
-            // Campo para pegar o complemento
-          >
-            <Text style={styles.textIsInput}>Complemento:</Text>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={setComplemento}
-              value={complemento}
-              onBlur={() => {
-                semCep();
-              }}
-            />
-          </View>
-
           <View style={styles.row5}>
             <View
               style={
@@ -542,6 +472,100 @@ export default function AddHome({navigation}) {
                 }}
               />
             </View>
+          </View>
+
+          <View style={styles.row3}>
+            <Text
+              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              Logradouro:
+            </Text>
+            <View
+              style={styles.column1}
+              // Campo para pegar o logradouro
+            >
+              <View style={styles.logradouro}>
+                <TipoLogradouro
+                  onTipoLograChange={handleTipoLograChange}
+                  validar={selectedTipoLogra}
+                />
+                <TextInput
+                  style={styles.textInputLogradouro}
+                  placeholderTextColor={validLogra ? 'red' : ''}
+                  onChangeText={setLogra}
+                  value={logra}
+                  onBlur={() => {
+                    semCep();
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.row7}>
+            <View
+              style={styles.column2}
+              // Campo para pegar o número
+            >
+              <View style={{width: '40%'}}>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    ,
+                    {color: validNumero ? 'red' : ''},
+                  ]}>
+                  Número:
+                </Text>
+                <TextInput
+                  style={styles.textInputNumber}
+                  placeholderTextColor={validNumero ? 'red' : ''}
+                  onChangeText={setNumero}
+                  value={numero}
+                  keyboardType="number-pad"
+                  onBlur={() => {
+                    semCep();
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.btnCarregadores}
+                onPress={() => {
+                  setligarTabelaCarregadores(!ligarTabelaCarregadores);
+                }}>
+                <Text
+                  style={[
+                    styles.textIsInput,
+                    {color: validSelectCarregadores ? 'red' : ''},
+                  ]}>
+                  Carregadores
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{width: '100%', alignItems: 'center'}}>
+              {ligarTabelaCarregadores ? (
+                <TabelaCarregadores
+                  carr={carregadores}
+                  onSelectCarregadores={toggleCarregadorSelection}
+                  notFiltro={true}
+                />
+              ) : (
+                <View />
+              )}
+            </View>
+          </View>
+
+          <View
+            style={styles.row4}
+            // Campo para pegar o complemento
+          >
+            <Text style={styles.textIsInput}>Complemento:</Text>
+            <TextInput
+              style={styles.textInput}
+              onChangeText={setComplemento}
+              value={complemento}
+              onBlur={() => {
+                semCep();
+              }}
+            />
           </View>
 
           <View style={styles.row6}>

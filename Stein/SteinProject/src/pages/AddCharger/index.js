@@ -20,6 +20,7 @@ import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore, storage} from '../../config/configFirebase';
 import {request, PERMISSIONS} from 'react-native-permissions';
 import {launchCamera} from 'react-native-image-picker';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -36,6 +37,8 @@ const AddCharger = ({navigation}) => {
     // Expressão regular para validar o formato esperado
     const regex = /^([01]\d|2[0-3])h([0-5]\d)$/;
 
+    //Caso o teste de certo, ele vai apagar as mensagens de erros;
+    //Ao contrário, ele mostrará a mensagem de erro
     if (regex.test(texto)) {
       setMensagemErro('');
       setValidHorarios('#000');
@@ -59,13 +62,13 @@ const AddCharger = ({navigation}) => {
   const [selectedUf, setSelectedUf] = useState('');
   const [selectedTipoLogra, setSelectedTipoLogra] = useState('');
   const [img, setImg] = useState();
-  const [imgPath, setImgPath] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
 
   //Campos inválidos
   const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
 
-  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido, receberam valores que validarão se eles possuem dados e se os dados dos campos são válidos
+  //Quando forem TRUE, os campos mudarão sua cor, mostrando que o campo está inválido
   const [validLogra, setValidLogra] = useState(false);
   const [validNumero, setValidNumero] = useState(false);
   const [validCep, setValidCep] = useState(false);
@@ -78,14 +81,18 @@ const AddCharger = ({navigation}) => {
   // Variável para aparição da tabelas dos carregadores
   const [carregadores, setCarregadores] = useState(false);
 
+  // Eles colorá os dados dos Pickers no campos repctivos
+  //Carregadores selecionados
   const toggleCarregadorSelection = carr => {
     setSelectCarregadores(carr);
   };
 
+  //UF
   const handleUfChange = uf => {
     setSelectedUf(uf);
   };
 
+  //Tipo de Logradouro
   const handleTipoLograChange = tipoLogra => {
     setSelectedTipoLogra(tipoLogra);
   };
@@ -117,28 +124,29 @@ const AddCharger = ({navigation}) => {
     // aqui será incrementado um único valor, para criar um novo ID
     countLogra++;
 
+    //Código abaixo pegará a longitude e a latitude do local cadastrado
     const validarGeo = async () => {
       try {
+        //Variável para colocar o endereço
         const address = `${selectedTipoLogra} ${logra}, ${numero} - ${bairro}, ${cidade} - ${selectedUf}, ${cepInput}`;
 
-        console.log(address);
-
+        //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address,
           )}&key=${apiKey}&components=country:BR&accuracy=high`,
         );
 
+        //Caso a resposta der algum erro.
         if (!response.ok) {
           throw new Error('Erro ao buscar coordenadas.');
         }
 
-        const data = await response.json();
+        const data = await response.json(); // Transformará os dados em formato JSON
 
+        //Verifica se o resultado está com algum dado
         if (data.results && data.results.length > 0) {
           const location = data.results[0].geometry.location;
-          console.log('LATITUDE: ' + location.lat);
-          console.log('LONGITUDE: ' + location.lng);
 
           // adionará os dados ao banco de dados
           tabelaLogra
@@ -186,18 +194,22 @@ const AddCharger = ({navigation}) => {
             // aqui será incrementado um único valor, para criar um novo ID
             countCarregadores++;
 
-            await storage
+            let texto = "semImage";
+            //Aqui adicionará a imagem no BUCKET do Firebase
+            if(img != undefined){
+              texto = `Pontos/${cepInput}-${numero}/Ponto-${cepInput}-${numero}${img[1]}`
+              await storage
               .ref(
                 `Pontos/${cepInput}-${numero}/Ponto-${cepInput}-${numero}${img[1]}`,
               )
               .putFile(img[0])
-              .then(data => {
-                setImgPath(data.metadata.fullPath);
-              })
-              .catch(error => console.log(error));
+              .catch(error => console.log("AQUI:".error));
+            }
+
+
 
             //Adiciona os dados dentro do banco de dados
-            tabelaCarregadores
+            await tabelaCarregadores
               .doc(`${countCarregadores}`)
               .set({
                 IDLogradouro: `${countLogra}`,
@@ -207,7 +219,7 @@ const AddCharger = ({navigation}) => {
                 horarioAberto: !horario24h
                   ? `${horario1} - ${horario2}`
                   : '24/7',
-                imagem: imgPath,
+                imagem: texto,
               })
               .then(() => {
                 console.log('ADICIONADO!');
@@ -217,7 +229,7 @@ const AddCharger = ({navigation}) => {
           throw new Error('Endereço não encontrado.');
         }
       } catch (error) {
-        console.error('Erro:', error);
+        console.error('Erro11:', error);
       }
     };
 
@@ -232,16 +244,19 @@ const AddCharger = ({navigation}) => {
     return () => clearTimeout(timer);
   }, []);
 
+  // VERIFICARÁ SE O CEP É VÁLIDO //
   const handleGeocode = async () => {
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      // Solicitação do serviço do ViaCep, para mostrar se o CEP é inválido e se ele existe
       const response = await fetch(
         `https://viacep.com.br/ws/${cepInput}/json/`,
       );
 
+      //Caso o CEP seja inválido e caso ele não exista, será avisado ao usuário
       if (!response.ok) {
-        setCep('CEP INVÁLIDO!');
-        setValidCep(true);
+        setCep('CEP INVÁLIDO!'); // dados para mostrar o campo inválido
+        setValidCep(true); // Usado para verificação
+        //Reinicirá a mensagem de erro
         const timer = setTimeout(() => {
           setCep('');
         }, 3000);
@@ -249,6 +264,7 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
 
+      //Os dados serão convertidos em JSON
       const data = await response.json();
 
       if (data.erro) {
@@ -275,7 +291,7 @@ const AddCharger = ({navigation}) => {
             }
           })
           .catch(error => {
-            console.error('Erro na solicitação:', error);
+            console.error('Erro na solicitação1111:', error);
           });
 
         // Função para extrair a rua do resultado da API
@@ -292,13 +308,15 @@ const AddCharger = ({navigation}) => {
           return null;
         }
       } else {
+        // SERÁ COLOCADO OS DADOS NOS CAMPOS
         setBairro(data.bairro);
         setCidade(data.localidade);
         setSelectedUf(data.uf);
 
-        const partes = data.logradouro.split(' ');
+        const partes = data.logradouro.split(' '); // SERÁ USADO PARA SEPARAR O TIPO DO LOGRADOURO DO LOGRADOURO EM SI
 
         if (partes.length >= 2) {
+          // Será colocado os dados nos devidos lugares.
           const tipo = partes[0];
           const logras = partes.slice(1).join(' ');
 
@@ -314,12 +332,14 @@ const AddCharger = ({navigation}) => {
       setValidNumero(false);
       setValidBairro(false);
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro444:', error);
     }
   };
 
+  // CASO NÃO TENHA DIGITADO O CEP, ELE PROCURARÁ O CEP COM O ENDEREÇO DIGITADO PELO USUÁRIO //
   const semCep = async () => {
     try {
+      // Apenas executará se os campos possuirem os dados necessário
       if (
         logra != '' &&
         bairro != '' &&
@@ -327,14 +347,17 @@ const AddCharger = ({navigation}) => {
         numero != '' &&
         cepInput.length != 8
       ) {
+        //Será colocado o endereço que será usado para a pesquisa na API
         const address = `${selectedTipoLogra} ${logra}, ${numero} - ${bairro}, ${cidade} - ${selectedUf}`;
 
+        //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address,
           )}&key=${apiKey}`,
         );
 
+        //Caso não haja o endereço, mandará a mensagem de erro.
         if (!response.ok) {
           setValidBairro(true);
           setValidCidade(true);
@@ -343,18 +366,18 @@ const AddCharger = ({navigation}) => {
           throw new Error('Erro ao buscar coordenadas.');
         }
 
-        const data = await response.json();
+        const data = await response.json(); // Os dados formatados em JSON
 
         var tipoLogra =
-          data.results[0].address_components[1].long_name.split(' ')[0];
-        var tipoUf = data.results[0].address_components[4].short_name;
+          data.results[0].address_components[1].long_name.split(' ')[0]; //Pega o Tipo de Logradouro
+        var tipoUf = data.results[0].address_components[4].short_name; // Puxa a UF
         setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
 
         var cepNormal = data.results[0].address_components[6].long_name.replace(
           '-',
           '',
-        );
+        );// Formatará o CEP par ser Exibido para o usuário
         setCep(cepNormal);
         setValidacaoLogradouro(true);
         setValidCidade(false);
@@ -366,6 +389,7 @@ const AddCharger = ({navigation}) => {
         setValidBairro(false);
       }
     } catch (error) {
+      //Caso encontre algum erro, ele mandará a mensagem de erro
       const validacao = async () => {
         let camposInvalidos = [];
         setValidCidade(true);
@@ -415,11 +439,12 @@ const AddCharger = ({navigation}) => {
         horario2 != ''
       ) {
         if (cepInput.length == 8 && !validcaoLogradouro) {
-          handleGeocode();
+          handleGeocode(); //Ele testerá para ver se o cep não foi modificado
         }
-        addCharger();
-        navigation.navigate('Stein');
+        addCharger(); // Chama a função para adicionar os dados no banco de dados
+        navigation.navigate('Stein'); // Navegará para a próxima página
       } else {
+        //Caso algum campo estja inválido, eles mudaram de cor e será exibido uma lista dos campos sem dados ou inválidos.
         const validacao = async () => {
           let camposInvalidos = [];
 
@@ -475,17 +500,18 @@ const AddCharger = ({navigation}) => {
         return () => clearTimeout(timer);
       }
     } catch (error) {
-      console.error('Erro:', error);
+      console.error('Erro888:', error);
     }
   };
 
+  //Função para o usuário selecionar uma imagem para o Ponto
   const selectImage = async () => {
     const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
 
     if (status === 'granted') {
       const imagem = await launchCamera();
-      const extencao = path.extname(imagem.assets[0].originalPath);
-      setImg([imagem.assets[0].originalPath, extencao]);
+      const extencao = await path.extname(imagem.assets[0].originalPath);
+      await setImg([imagem.assets[0].originalPath, extencao]);
     } else {
       console.log('Permissão de escrita no armazenamento externo negada');
     }
@@ -503,7 +529,7 @@ const AddCharger = ({navigation}) => {
       }}>
       <View>
         <ScrollView>
-          <Text style={{fontSize: 16}}>Logradouro/Endereço:</Text>
+          <Text style={{fontSize: RFValue(16)}}>Logradouro/Endereço:</Text>
           <TextInput
             placeholder="CEP"
             placeholderTextColor={validCep ? 'red' : '#000'}
@@ -520,7 +546,7 @@ const AddCharger = ({navigation}) => {
           />
 
           <View>
-            <Text style={{color: '#f00', fontWeight: '900'}}>
+            <Text style={styles.verifTipoLogra}>
               *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
             </Text>
           </View>
@@ -639,8 +665,11 @@ const AddCharger = ({navigation}) => {
                 setPagamento(!pagamento);
               }}
               value={pagamento}
+              style={styles.switch}
             />
-            <Text>Pagamento Necessário</Text>
+            <Text
+            style={styles.pagamento}
+            >Pagamento Necessário</Text>
           </View>
           {/*          <TextInput
             placeholder="Preço(Opcional)"
@@ -654,7 +683,7 @@ const AddCharger = ({navigation}) => {
                 disabled={horario24h}
                 style={[
                   styles.textInput,
-                  {width: '40%', fontSize: 16, color: validHorarios},
+                  {width: '40%', color: validHorarios},
                 ]}
                 placeholder="Horário inicial"
                 placeholderTextColor={validHorarios}
@@ -672,12 +701,12 @@ const AddCharger = ({navigation}) => {
                 keyboardType="number-pad"
                 value={horario1}
               />
-              <Text>Até</Text>
+              <Text style={styles.horarioTXT}>Até</Text>
               <TextInput
                 placeholderTextColor={validHorarios}
                 style={[
                   styles.textInput,
-                  {width: '40%', fontSize: 16, color: validHorarios},
+                  {width: '40%', color: validHorarios},
                 ]}
                 placeholder="Horário final"
                 onChangeText={async texto => {
@@ -702,10 +731,14 @@ const AddCharger = ({navigation}) => {
                 setHorario1(!horario24h ? 'true' : false);
                 setHorario2(!horario24h ? 'true' : false);
                 setHorario24h(!horario24h);
+                setMensagemErro()
               }}
               value={horario24h}
+              style={styles.switch}
             />
-            <Text>Aberto 24/7</Text>
+            <Text
+            style={styles.horarioTXT}
+            >Aberto 24/7</Text>
           </View>
           <TouchableOpacity
             onPress={() => selectImage()}
@@ -715,7 +748,7 @@ const AddCharger = ({navigation}) => {
             </Text>
           </TouchableOpacity>
           {mensagemErro ? (
-            <Text style={{color: 'red'}}>{mensagemErro}</Text>
+            <Text style={{color: 'red', ...styles.horarioTXT}}>{mensagemErro}</Text>
           ) : null}
           <View style={{width: '100%', flex: 1, alignItems: 'center'}}>
             <TouchableOpacity

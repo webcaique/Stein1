@@ -6,11 +6,13 @@ import Directions from './direction';
 import {getPixelRatio} from './editDirection';
 
 export default class Map extends Component {
+  //Aqui sao criados os estados
   state = {
     destination: null,
     markers: null,
   };
 
+  //Os dados da pesquisa são recolhidos
   handleLocationSelected = (data, {geometry}) => {
     const {
       location: {lat: latitude, lng: longitude},
@@ -23,8 +25,11 @@ export default class Map extends Component {
       },
     });
   };
+
+  //Quando o usuário utiliza o filtro, será separado quais pontos tem o carregador
   filtrar = (filtro) => {
     let newMarkers = [];
+    //Será pega os dados da tabela de novo, só os que seguem o padrão selecionado no filtro
     this.props.tabelaCarregador.forEach(data => {
       this.props.tabelaLogradouro.forEach(datas => {
         if ((data.IDLogradouro == datas.id)) {
@@ -44,6 +49,8 @@ export default class Map extends Component {
         }
       });
     });
+
+    //Retonará os pontos com o tipo do carregador selecionado
     return(
       newMarkers.map((coordenada, index) => {
         return(
@@ -60,6 +67,7 @@ export default class Map extends Component {
     )
   };
   render() {
+    //Será pego os dados enviados da página do index.js
     const {
       userMapRegion,
       chargerMarkes,
@@ -73,14 +81,12 @@ export default class Map extends Component {
 
     let destino;
 
+    //Caso seja ativado o comando para procurar pontos pertos, ele coloca os dados no destino
     if(dest){
       destino = dest;
-
-    } else {
+    } else { //Aqui quando o comando não foi ativado
       destino = destination;
-    }
-
-    
+    }    
     return (
       <View style={{flex: 1}}>
         <MapView

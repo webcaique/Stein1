@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   Modal,
+  Keyboard
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -52,7 +53,8 @@ export default function AddHome() {
   //Campos inválidos
   const [listaCamposInvalidos, setListaCamposInvalidos] = useState([]);
 
-  // Variávies de estados para indicar campo obrigatório vazio ou inválido
+  // Variávies de estados para indicar campo obrigatório vazio ou inválido, receberam valores que validarão se eles possuem dados e se os dados dos campos são válidos
+  //Quando forem TRUE, os campos mudarão sua cor, mostrando que o campo está inválido
   const [validLogra, setValidLogra] = useState();
   const [validNumero, setValidNumero] = useState();
   const [validCep, setValidCep] = useState();
@@ -85,55 +87,55 @@ export default function AddHome() {
       //vai tentar pegar os dados da tabela local
       try {
         const snapashotLocal = await tabelaLocal.get();
+        // a array será usado para locar os dados do Firabase
+        const listLocal = []
 
         const snapshotLogra = await tabelaLogra.get();
-        let listaLg = [];
+        const listLogra = []
 
-        snapshotLogra.forEach(dados => {
-          listaLg.push({id: dados.id, ...dados.data()});
+        // será colocado os dados na lista
+        snapashotLocal.forEach((dados)=>{
+          listLocal.push({id: dados.id, ...dados.data()})
         });
 
-        let lg;
+        //Faz uma verradura dos dados e coloca eles no array listLogra
+        snapshotLogra.forEach((dados)=>{          
+          listLogra.push({id: dados.id, ...dados.data()});
+        });
 
-        listaLg.forEach(datas => {
-          if (datas.IDUsuario == auth.currentUser.uid) {
-            if (datas.id == idFromOtherScreen) {
-              lg = datas;
-            }
-            let listaLc = [];
+        //Por ser uma edição ele pega apenas o campo que querem modificar
+        let listaLocal;
+        let listaLogra;
 
-            snapashotLocal.forEach(dados => {
-              listaLc.push({id: dados.id, ...dados.data()});
-            });
+        listLocal.forEach((dados)=>{
+          //Caso o ID do usuário da tabela local ser igual o ID do usuário cadastrar
+          if(dados.IDUsuario == auth.currentUser.uid){
+            listLogra.forEach((datas)=>{
+              //Caso o ID do logradouro da tabela local for igual ao ID do logradouro que se quer editar
+              if(dados.IDLogradouro == idFromOtherScreen){
 
-            let end;
-
-            listaLc.forEach(datas => {
-              if (datas.IDLogradouro == idFromOtherScreen) {
-                end = datas;
+                if(dados.IDLogradouro == datas.id){
+                  setIdLocal(dados);
+                  listaLocal = dados;
+                  listaLogra = datas;
+                }
               }
             });
-            setIdLocal(end);
-
-            setLograEdit(lg);
-
-            console.log('END');
-            console.log(end);
-            console.log('Logra');
-            console.log(lg);
-
-            setBairro(lg.bairro);
-            setCarregadores(end.IDTipoCarregador);
-            setCep(lg.CEP);
-            setCidade(lg.cidade);
-            setComplemento(lg.complemento);
-            setLogra(lg.logradouro);
-            setSelectedUf(lg.UF);
-            setNumero(lg.numero);
-            setSelectedTipoLogra(lg.tipoLogradouro);
-            setName(end.nomeLocal);
           }
-        });
+        }); 
+
+        //Colocará os dados nos campos já, para o usuário apenas selecionar o quer editar
+        setName(listaLocal.nomeLocal);
+        setBairro(listaLogra.bairro);
+        setCep(listaLogra.CEP);
+        setSelectedUf(listaLogra.UF);
+        setLogra(listaLogra.logradouro);
+        setSelectedTipoLogra(listaLogra.tipoLogradouro);
+        setCidade(listaLogra.cidade);
+        setNumero(listaLogra.numero);
+        setCarregadores(listaLocal.IDTipoCarregador);
+        setComplemento(listaLogra.complemento);
+
 
         setLoading(false);
       } catch (error) {
@@ -145,22 +147,27 @@ export default function AddHome() {
     return () => clearTimeout(timer);
   }, []);
 
+  //Código abaixo pegará a longitude e a latitude do local cadastrado
   const validarGeo = async () => {
     try {
+      //Variável para colocar o endereço
       const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
+      //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
           address,
         )}&key=${apiKey}`,
       );
 
+      //Caso a resposta der algum erro.
       if (!response.ok) {
         throw new Error('Erro ao buscar coordenadas.');
       }
 
-      const data = await response.json();
+      const data = await response.json();// Transformará os dados em formato JSON
 
+      //Verifica se o resultado está com algum dado
       if (data.results && data.results.length > 0) {
         const location = data.results[0].geometry.location;
 
@@ -230,14 +237,16 @@ export default function AddHome() {
     }
   };
 
+  // VERIFICARÁ SE O CEP É VÁLIDO //
   const handleGeocode = async () => {
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      // Solicitação do serviço do ViaCep, para mostrar se o CEP é inválido e se ele existe
       const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
+      //Caso o CEP seja inválido e caso ele não exista, será avisado ao usuário
       if (!response.ok) {
-        setCep('CEP INVÁLIDO!');
-        setValidCep(true);
+        setCep('CEP INVÁLIDO!');// dados para mostrar o campo inválido
+        setValidCep(true);// Usado para verificação
         const timer = setTimeout(() => {
           setCep('');
         }, 3000);
@@ -245,14 +254,16 @@ export default function AddHome() {
         return () => clearTimeout(timer);
       }
 
+      //Os dados serão convertidos em JSON
       const data = await response.json();
+      // SERÁ COLOCADO OS DADOS NOS CAMPOS
       setBairro(data.bairro);
       setCidade(data.localidade);
       setSelectedUf(data.uf);
-      console.log(data);
 
-      const partes = data.logradouro.split(' ');
+      const partes = data.logradouro.split(' ');// SERÁ USADO PARA SEPARAR O TIPO DO LOGRADOURO DO LOGRADOURO EM SI
 
+      // Será colocado os dados nos devidos lugares.
       if (partes.length >= 2) {
         const tipo = partes[0];
         const logras = partes.slice(1).join(' ');
@@ -267,17 +278,23 @@ export default function AddHome() {
     }
   };
 
+  // CASO NÃO TENHA DIGITADO O CEP, ELE PROCURARÁ O CEP COM O ENDEREÇO DIGITADO PELO USUÁRIO //
   const semCep = async () => {
     try {
+      // Apenas executará se os campos possuirem os dados necessário
       if (logra != '' && bairro != '' && cidade != '' && numero != '') {
+
+        //Será colocado o endereço que será usado para a pesquisa na API
         const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
+        //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
             address,
           )}&key=${apiKey}`,
         );
 
+        //Caso não haja o endereço, mandará a mensagem de erro.
         if (!response.ok) {
           setValidBairro(true);
           setValidCidade(true);
@@ -286,20 +303,18 @@ export default function AddHome() {
           throw new Error('Erro ao buscar coordenadas.');
         }
 
-        const data = await response.json();
+        const data = await response.json();// Os dados formatados em JSON
 
-        console.log(data.results[0].address_components[4].short_name);
         var tipoLogra =
-          data.results[0].address_components[1].long_name.split(' ')[0];
-        var tipoUf = data.results[0].address_components[4].short_name;
+          data.results[0].address_components[1].long_name.split(' ')[0];//Pega o Tipo de Logradouro
+        var tipoUf = data.results[0].address_components[4].short_name;// Puxa a UF
         setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
 
         var cepNormal = data.results[0].address_components[6].long_name.replace(
           '-',
           '',
-        );
-        console.log(cepNormal);
+        );// Formatará o CEP par ser Exibido para o usuário
         setCep(cepNormal);
       }
     } catch (error) {
@@ -307,6 +322,7 @@ export default function AddHome() {
     }
   };
 
+  //Apenas execultara o código acima, fazendo verificações se o CEp está correto
   const handlePress = async () => {
     try {
       if (cep.length === 8) {
@@ -315,8 +331,8 @@ export default function AddHome() {
       await semCep();
 
       // O restante do código que depende dos resultados de handleGeocode e semCep
-      // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
-      // E, em seguida, chamar addCharger() se todas as verificações passarem.
+      // Aqui você pode adicionar as verificações necessárias antes de chamar update()
+      // E, em seguida, chamar update() se todas as verificações passarem.
       if (
         name != '' &&
         logra != '' &&
@@ -326,9 +342,10 @@ export default function AddHome() {
         cidade != '' &&
         carregadores != []
       ) {
-        update();
-        navigation.navigate('HouseAndWork');
+        update();// Chama a função para adicionar os dados no banco de dados
+        navigation.navigate('HouseAndWork');// Navegará para a próxima página
       } else {
+        //Caso algum campo estja inválido, eles mudaram de cor e será exibido uma lista dos campos sem dados ou inválidos.
         const validacao = async () => {
           let camposInvalidos = [];
           if (name == '') {
@@ -352,7 +369,6 @@ export default function AddHome() {
             setValidNumero(true);
             camposInvalidos.push('Número');
           }
-          console.log('Teste');
           if (carregadores == []) {
             setValidSelectCarregadores(true);
             camposInvalidos.push('Nenhum carregador selecionado');
@@ -379,6 +395,7 @@ export default function AddHome() {
   };
 
   useEffect(() => {
+    //Reiniciara a lista
     const timer = setTimeout(() => {
       setListaCamposInvalidos([]);
     }, 5000);
@@ -395,7 +412,6 @@ export default function AddHome() {
           style={styles.container}
           onPress={() => {
             semCep();
-            console.log(cidade);
             Keyboard.dismiss();
             if (cep.length == 8) {
               handleGeocode();
@@ -417,7 +433,7 @@ export default function AddHome() {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : '#000'}]}
               // Campo para pegar o apelido
             >
               Nome da empresa:
@@ -429,9 +445,49 @@ export default function AddHome() {
             />
           </View>
 
+          <View style={styles.row5}>
+            <View
+              style={
+                styles.column3
+                // Campo para pegar o CEP
+              }>
+              <Text
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
+                CEP:
+              </Text>
+              <TextInput
+                style={styles.textInputCep}
+                onChangeText={setCep}
+                value={cep}
+                keyboardType="number-pad"
+                placeholderTextColor={validCep ? 'red' : '#000'}
+                onBlur={() => {
+                  if (cep.length == 8) {
+                    handleGeocode();
+                  }
+                }}
+              />
+            </View>
+            <View
+              style={styles.column4}
+              // Campo para pegar o bairro
+            >
+              <Text
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
+                Bairro:
+              </Text>
+              <TextInput
+                style={styles.textInputBairro}
+                onChangeText={setBairro}
+                value={bairro}
+                placeholderTextColor={validBairro ? 'red' : '#000'}
+              />
+            </View>
+          </View>
+
           <View style={styles.row3}>
             <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
               Logradouro:
             </Text>
             <View
@@ -445,11 +501,36 @@ export default function AddHome() {
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
+                  placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
                 />
               </View>
+            </View>
+          </View>
+
+          <View style={styles.row6}>
+            <View
+              style={styles.column6}
+              // Campo para pegar o município
+            >
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
+                Município:
+              </Text>
+              <TextInput
+                style={styles.textInputMunicipio}
+                onChangeText={setCidade}
+                value={cidade}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
+              />
+            </View>
+            <View
+              style={styles.column5}
+              // Campo para pegar o estado
+            >
+              <Text style={styles.textIsInputEstado}>Estado:</Text>
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
             </View>
           </View>
 
@@ -458,18 +539,18 @@ export default function AddHome() {
               style={styles.column2}
               // Campo para pegar o número
             >
-              <View>
+              <View style={{width:"40%"}}>
                 <Text
                   style={[
                     styles.textIsInput,
                     ,
-                    {color: validNumero ? 'red' : ''},
+                    {color: validNumero ? 'red' : '#000'},
                   ]}>
                   Número:
                 </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
+                  placeholderTextColor={validNumero ? 'red' : '#000'}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -483,7 +564,7 @@ export default function AddHome() {
                 <Text
                   style={[
                     styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
+                    {color: validSelectCarregadores ? 'red' : '#000'},
                   ]}>
                   Carregadores
                 </Text>
@@ -514,70 +595,6 @@ export default function AddHome() {
             />
           </View>
 
-          <View style={styles.row5}>
-            <View
-              style={
-                styles.column3
-                // Campo para pegar o CEP
-              }>
-              <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
-                CEP:
-              </Text>
-              <TextInput
-                style={styles.textInputCep}
-                onChangeText={setCep}
-                value={cep}
-                keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
-                onBlur={() => {
-                  if (cep.length == 8) {
-                    handleGeocode();
-                  }
-                }}
-              />
-            </View>
-            <View
-              style={styles.column4}
-              // Campo para pegar o bairro
-            >
-              <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
-                Bairro:
-              </Text>
-              <TextInput
-                style={styles.textInputBairro}
-                onChangeText={setBairro}
-                value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
-              />
-            </View>
-          </View>
-
-          <View style={styles.row6}>
-            <View
-              style={styles.column6}
-              // Campo para pegar o município
-            >
-              <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
-                Município:
-              </Text>
-              <TextInput
-                style={styles.textInputMunicipio}
-                onChangeText={setCidade}
-                value={cidade}
-                placeholderTextColor={validCidade ? 'red' : ''}
-              />
-            </View>
-            <View
-              style={styles.column5}
-              // Campo para pegar o estado
-            >
-              <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
-            </View>
-          </View>
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={handlePress}
@@ -630,7 +647,6 @@ export default function AddHome() {
   if (loading) {
     return <Text>Carregando...</Text>;
   } else {
-    console.log(listaCamposInvalidos);
     return res;
   }
 }

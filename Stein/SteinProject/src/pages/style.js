@@ -1,16 +1,17 @@
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+import { RFValue } from "react-native-responsive-fontsize";
 
 
 const estilos=ScaledSheet.create({
     imgs:{
-      width: moderateVerticalScale(50),
-      height:moderateVerticalScale(50),
+      width: RFValue(50),
+      height:RFValue(50),
       resizeMode:"contain",
     },
     nomesCarregadores:{
-      fontSize:moderateVerticalScale(8),
-      maxWidth:moderateVerticalScale(50),
-      maxHeight:moderateVerticalScale(20),
+      fontSize:RFValue(8),
+      maxWidth:RFValue(50),
+      maxHeight:RFValue(20),
       textAlign:"center",
       
 
@@ -26,7 +27,7 @@ const estilos=ScaledSheet.create({
       padding:10,
       alignItems:"center",
       justifyContent:"center",
-      maxHeight: moderateVerticalScale(70),
+      maxHeight: RFValue(70),
       
     },
     bgPreto:{
@@ -36,12 +37,12 @@ const estilos=ScaledSheet.create({
       backgroundColor:"white",
     },
     tituloFiltros:{
-      fontSize: 16,
+      fontSize: RFValue(16),
       fontWeight: "600",
     },
     textParaFiltos:{
       marginBottom:10,
-      fontSize:14,
+      fontSize:RFValue(14),
     },
 
 

@@ -46,26 +46,11 @@ const App = () => {
   function onAuthStateChanged(user){
     setUser(user);
     if (initializing) setInitializing(false);
+
   }
 
   useEffect(() => {
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
-    console.log(auth.currentUser)
-    return subscriber; // unsubscribe on unmount
-  }, []);
-  
-  var loading = true;
-
-  if (initializing) return null;
-
-  if(user){
-    loading = false;
-  } else {
-    loading = true;
-  }
-
-
-  check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
     .then(result => {
       switch (result) {
         case RESULTS.UNAVAILABLE:
@@ -77,9 +62,9 @@ const App = () => {
         case RESULTS.GRANTED:
           Geolocation.getCurrentPosition(
             verif => {
-              console.log('TE PEGUEI HOMEM');
             },
             error => {
+              console.log(error)
               Alert.alert(
                 'Localização desligada',
                 'Deseja ativar a localização?',
@@ -94,9 +79,12 @@ const App = () => {
                     style: 'cancel', // Define este botão como o botão de cancelar (pode variar o nome)
                   },
                 ],
-                {cancelable: false}, // Define se o Alert pode ser cancelado tocando fora dele
+                {cancelable: true}, // Define se o Alert pode ser cancelado tocando fora dele
               );
-            },
+            },{
+              timeout:100000,
+              maximumAge:1000,
+            }
           );
           break;
         case RESULTS.BLOCKED:
@@ -107,6 +95,19 @@ const App = () => {
     .catch(error => {
       console.log('Erro ao verificar a permissão de localização', error);
     });
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+  
+  var loading = true;
+
+  if (initializing) return null;
+
+  if(!user){
+    loading = true;
+  } else if(user.emailVerified){
+    loading = false;
+  }
 
   return (
     <NavigationContainer>
@@ -116,13 +117,20 @@ const App = () => {
           component={InitScreen}
           options={{
             title: 'STEIN',
-            headerTransparent: true,
+            gestureEnabled: false,
+            headerLeft: ()=>null,
+            //headerTransparent: true,
             headerTitleAlign: 'center',
             headerTitleStyle: {
               fontSize: scale(34),
               fontWeight: '600',
               color: '#000000',
+              
             },
+            headerStyle:{
+              backgroundColor:"#fff",
+            },
+            headerShadowVisible:false,
           }}
         />
         <Stack.Screen
@@ -151,6 +159,10 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            headerStyle:{
+              backgroundColor:"#fff",
+            },
+            headerShadowVisible:false,
           }}
         />
         <Stack.Screen
@@ -159,6 +171,8 @@ const App = () => {
           options={{
             headerBackTitleVisible: false,
             headerShown: false,
+            gestureEnabled: false,
+            headerLeft: ()=>null
           }}
         />
         <Stack.Screen
@@ -173,6 +187,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />
@@ -188,6 +204,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />
@@ -203,6 +221,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />

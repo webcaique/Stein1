@@ -44,6 +44,16 @@ export default function LoginScreen({navigation}) {
     
   };
 
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      // authUser será null se o usuário não estiver autenticado
+      // ou será um objeto contendo informações sobre o usuário autenticado
+    });
+
+    // Essa função de retorno será chamada quando o componente for desmontado
+    return () => unsubscribe();
+  }, []);
+
   return (
     <KeyboardAvoidingView>
       <View

@@ -1,4 +1,10 @@
 import { StyleSheet } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+
+const texto = {
+    fontSize:RFValue(16),
+    color:"#000",
+}
 
 const styles = StyleSheet.create({
     mainContainer:{
@@ -30,10 +36,10 @@ const styles = StyleSheet.create({
 
     },
     circule:{
-        width:250,
-        height:250,
+        width:RFValue(250),
+        height:RFValue(250),
         backgroundColor:"#470A51",
-        borderRadius:250/2,
+        borderRadius:RFValue(250/2),
         alignItems:"center",
         alignContent:"center",
         justifyContent:"center",
@@ -41,15 +47,15 @@ const styles = StyleSheet.create({
 
     },
     useruserImage:{
-        width:220,
-        height:220,
+        width:RFValue(220),
+        height:RFValue(220),
         resizeMode:"contain",
-        borderRadius:110,
+        borderRadius:RFValue(220/2),
         overflow:"hidden",
         
     },
     userName:{
-        fontSize:16,
+        fontSize:RFValue(16),
         fontWeight:"bold",
     },
     userPowerSupplyUnit:{
@@ -61,7 +67,7 @@ const styles = StyleSheet.create({
         justifyContent:"center"    
     },
     powerSupplyUnit:{
-        width:50,
+        width:RFValue(50),
         resizeMode:"contain",
 
         height:"auto",
@@ -69,9 +75,10 @@ const styles = StyleSheet.create({
     },
     lineList:{
         width:"100%",
-        height:"30%",
         resizeMode:"contain",
-        marginTop:"60%",
+        position:"absolute",
+        bottom:0,
+        padding:10
         
 
 
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     },
     texts:{
         textAlign:"left",
-        fontSize:12,
+        fontSize:RFValue(12),
     },
     textFromList2:{
         width:"50%",
@@ -106,28 +113,27 @@ const styles = StyleSheet.create({
         justifyContent:"center",
     },
     iconArrowToRight:{
-      height:25,
-      width:25,
+      height:RFValue(25),
+      width:RFValue(25),
       resizeMode:"contain"
     },
     lines:{
         width:"100%",
-        height:2,
+        height:1,
         backgroundColor:"#000000",
-        marginTop:10,
     },
     locaisSalvos:{
-        fontSize:20,
+        fontSize:RFValue(20),
         fontWeight:"900",
     },
     recente:{
-        fontSize:20,
+        fontSize:RFValue(20),
         fontWeight:"900",
         color:"purple",
         textDecorationLine:"underline",
     },
     button:{
-        width:75,
+        width:RFValue(75),
         alignItems:"center",
     },
     rodinhaCarregamento:{
@@ -136,7 +142,47 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:"center",
         justifyContent:"center",
+    },
+    modal:{
+        width:"100%",
+        height:"100%",
+        justifyContent:"center",
+        alignItems:"center"
+    },
+
+    // Atualiazção
+    linha:{
+        flexDirection:"row",
+        width:"100%",
+        justifyContent:"space-evenly",
+        paddingVertical:10,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+    },
+    titleAutomovel:{
+        fontSize:RFValue(20),
+        fontWeight:"900",
+        textDecorationLine:"underline",
+        color:"purple",
+    },
+    desc:{
+        ...texto,
+        fontSize:RFValue(18),
+    },
+    titles:{
+        fontSize:RFValue(18),
+        fontWeight:"700",
+        color:"purple"
+
+    },
+    coluna:{
+        alignItems:"center",
+    },
+    txt:{
+        ...texto,
+        fontSize:RFValue(15),
     }
+
 })
 
 export default styles;

@@ -13,10 +13,12 @@ import {
 import styles from './style';
 import {firestore, auth} from '../../config/configFirebase';
 import Table from './table';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
-const PersonalContentScreen = ({navigation}) => {
+const PersonalContentScreen = () => {
+  // Variáveis para guardas os dados para ser exibido pelos usuários
   const [carregador, setCarregador] = useState([]);
   const [nomeUser, setNomeUser] = useState('');
   const [emailUser, setEmailUser] = useState('');
@@ -30,18 +32,33 @@ const PersonalContentScreen = ({navigation}) => {
 
   const [errorEmail, setErrorEmail] = useState('');
 
-  const tabelaUsuario = firestore.collection('usuario');
-  const tabelaCarro = firestore.collection('carro');
+  const tabelaUsuario = firestore.collection('usuario'); //Puxar a tabela do usuário
+  const tabelaCarro = firestore.collection('carro'); //Puxar a tabela do carro do usuário
 
   useEffect(() => {
+    //Puxa as informações do banco de dados do usuário
     tabelaUsuario.onSnapshot(info => {
+      // Varre as informações do usuário
       info._docs.forEach(inf => {
+        // As informações dos ID serão comparadas
         const userId = inf._ref._documentPath._parts[1];
+
+        //Caso sejam iguais, continuam
         if (userId == auth.currentUser.uid) {
+
+          //Puxa as informações do banco de dados do carro
           tabelaCarro.onSnapshot(dados => {
+
+            // Varre as informações do carro
             dados._docs.forEach(datas => {
+
+              // As informações dos ID serão comparadas
               const carroIdUsuario = datas._data.IDUsuario;
+
+              //Caso sejam iguais, continuam
               if (carroIdUsuario == userId) {
+
+                //Serão colocados os dados nas devidas variáveis
                 setCarro(datas._ref._documentPath._parts[1]);
                 setNomeUser(inf._data.nomeUsuario);
                 setEmailUser(inf._data.email);
@@ -53,6 +70,8 @@ const PersonalContentScreen = ({navigation}) => {
                     ? datas._data.IDTipoCarregador
                     : [datas._data.IDTipoCarregador],
                 );
+
+                //Pegará as informações da localização da caso do usuário
                 handleGeocode(inf._data.CEP, inf._data.numeroResidencia);
               }
             });
@@ -62,14 +81,14 @@ const PersonalContentScreen = ({navigation}) => {
     });
   }, []);
 
-  console.log(numeroResidencia);
 
-
+  //Variaveis para ver se vão dá erro quando atualiizado
   const [verifData, setVerifData] = useState(false);
   const [nomeCampo, setNomeCampo] = useState('');
   const [dado, setDado] = useState('');
 
   const changeData = dado => {
+    //Será colocados os dados digitados
     let palavra1 = `${dado}`.charAt(0);
     let palavra2 = `${dado}`.substring(1);
     palavra1 = palavra1.toUpperCase();
@@ -81,13 +100,14 @@ const PersonalContentScreen = ({navigation}) => {
   };
 
   const update = () => {
-    if (nomeCampo.toUpperCase() == 'CEP') {
+    // Aqui será atualizados os dados
+    if (nomeCampo.toUpperCase() == 'CEP') {//Atualiza o endereço
       handleGeocode(dado);
       tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
         CEP: dado,
         numeroResidencia: numero,
       });
-    } else if (nomeCampo.toUpperCase() == 'EMAIL') {
+    } else if (nomeCampo.toUpperCase() == 'EMAIL') {//Atualizar o email
       user
         .updateEmail(`${dado}`)
         .then(() => {
@@ -100,7 +120,7 @@ const PersonalContentScreen = ({navigation}) => {
             cancelable: true,
           });
         });
-    } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') {
+    } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') { // Atualizar o nome do usuário
       tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
         nomeUsuario: dado,
       });
@@ -109,12 +129,14 @@ const PersonalContentScreen = ({navigation}) => {
   };
 
   const handleGeocode = async (cep, num) => {
+
+    //Pega a tabela do usário referente ao usuário cadastrado
     tabelaUsuario.doc(`${auth.currentUser.uid}`);
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      // Solicitação do endereço pela API do ViaCep
       let response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
-      const data = await response.json();
+      const data = await response.json(); // pega os dados e transformam em JSON
 
       if (data.erro) {
         Alert.alert(
@@ -153,19 +175,20 @@ const PersonalContentScreen = ({navigation}) => {
               setVerifData(false);
             }}>
             <KeyboardAvoidingView style={styles.modalView}>
-              <KeyboardAvoidingView style={{width: '100%'}}>
+              <KeyboardAvoidingView style={{width: 'auto'}}>
                 <Text style={styles.textoCampo}>{nomeCampo}</Text>
               </KeyboardAvoidingView>
               <KeyboardAvoidingView
                 style={
                   nomeCampo.toUpperCase() == 'CARREGADORES'
-                    ? {width: '100%'}
+                    ? {width: 'auto'}
                     : nomeCampo.toUpperCase() == 'CEP'
-                    ? [styles.textInput, {width: '75%'}]
-                    : styles.textInput
+                    ? [styles.textInput, {width: RFValue(200)}]
+                    : [styles.textInput]
                 }>
                 {nomeCampo.toUpperCase() != 'CARREGADORES' ? (
                   <TextInput
+                  style={{fontSize:RFValue(15)}}
                     autoFocus
                     keyboardType={
                       nomeCampo.toUpperCase() == 'CEP'
@@ -179,7 +202,7 @@ const PersonalContentScreen = ({navigation}) => {
                       setDado(
                         nomeCampo.toUpperCase() == 'EMAIL'
                           ? text.toLowerCase()
-                          : text,
+                          : text
                       );
                     }}
                     value={dado}
@@ -203,9 +226,11 @@ const PersonalContentScreen = ({navigation}) => {
                 {nomeCampo.toUpperCase() == 'CEP' ? (
                   <TextInput
                     style={{
-                      width: '30%',
+                      width: RFValue(50),
                       borderLeftColor: '#000',
                       borderLeftWidth: 1,
+                      paddingLeft:10,
+                      fontSize:RFValue(15)
                     }}
                     onChangeText={setNumero}
                     value={numero}
@@ -217,17 +242,20 @@ const PersonalContentScreen = ({navigation}) => {
                   onPress={() => {
                     update();
                   }}>
+                  {nomeCampo.toUpperCase() != 'CARREGADORES'?
                   <Image
-                    source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=3c7facb9-59cc-4c3b-b61c-7aafdf70a59f',
-                    }}
-                    width={25}
-                    height={25}
-                    resizeMode="contain"
-                    style={{
-                      transform: [{rotate: '45deg'}],
-                    }}
-                  />
+                  source={{
+                    uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fenviar.png?alt=media&token=3c7facb9-59cc-4c3b-b61c-7aafdf70a59f',
+                  }}
+                  width={25}
+                  height={25}
+                  resizeMode="contain"
+                  style={{
+                    transform: [{rotate: '45deg'}],
+                  }}
+                />
+                : null
+              }
                 </TouchableOpacity>
               </KeyboardAvoidingView>
             </KeyboardAvoidingView>
