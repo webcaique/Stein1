@@ -18,6 +18,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const PersonalContentScreen = () => {
+  // Variáveis para guardas os dados para ser exibido pelos usuários
   const [carregador, setCarregador] = useState([]);
   const [nomeUser, setNomeUser] = useState('');
   const [emailUser, setEmailUser] = useState('');
@@ -31,18 +32,33 @@ const PersonalContentScreen = () => {
 
   const [errorEmail, setErrorEmail] = useState('');
 
-  const tabelaUsuario = firestore.collection('usuario');
-  const tabelaCarro = firestore.collection('carro');
+  const tabelaUsuario = firestore.collection('usuario'); //Puxar a tabela do usuário
+  const tabelaCarro = firestore.collection('carro'); //Puxar a tabela do carro do usuário
 
   useEffect(() => {
+    //Puxa as informações do banco de dados do usuário
     tabelaUsuario.onSnapshot(info => {
+      // Varre as informações do usuário
       info._docs.forEach(inf => {
+        // As informações dos ID serão comparadas
         const userId = inf._ref._documentPath._parts[1];
+
+        //Caso sejam iguais, continuam
         if (userId == auth.currentUser.uid) {
+
+          //Puxa as informações do banco de dados do carro
           tabelaCarro.onSnapshot(dados => {
+
+            // Varre as informações do carro
             dados._docs.forEach(datas => {
+
+              // As informações dos ID serão comparadas
               const carroIdUsuario = datas._data.IDUsuario;
+
+              //Caso sejam iguais, continuam
               if (carroIdUsuario == userId) {
+
+                //Serão colocados os dados nas devidas variáveis
                 setCarro(datas._ref._documentPath._parts[1]);
                 setNomeUser(inf._data.nomeUsuario);
                 setEmailUser(inf._data.email);
@@ -54,6 +70,8 @@ const PersonalContentScreen = () => {
                     ? datas._data.IDTipoCarregador
                     : [datas._data.IDTipoCarregador],
                 );
+
+                //Pegará as informações da localização da caso do usuário
                 handleGeocode(inf._data.CEP, inf._data.numeroResidencia);
               }
             });
@@ -64,11 +82,13 @@ const PersonalContentScreen = () => {
   }, []);
 
 
+  //Variaveis para ver se vão dá erro quando atualiizado
   const [verifData, setVerifData] = useState(false);
   const [nomeCampo, setNomeCampo] = useState('');
   const [dado, setDado] = useState('');
 
   const changeData = dado => {
+    //Será colocados os dados digitados
     let palavra1 = `${dado}`.charAt(0);
     let palavra2 = `${dado}`.substring(1);
     palavra1 = palavra1.toUpperCase();
@@ -80,13 +100,14 @@ const PersonalContentScreen = () => {
   };
 
   const update = () => {
-    if (nomeCampo.toUpperCase() == 'CEP') {
+    // Aqui será atualizados os dados
+    if (nomeCampo.toUpperCase() == 'CEP') {//Atualiza o endereço
       handleGeocode(dado);
       tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
         CEP: dado,
         numeroResidencia: numero,
       });
-    } else if (nomeCampo.toUpperCase() == 'EMAIL') {
+    } else if (nomeCampo.toUpperCase() == 'EMAIL') {//Atualizar o email
       user
         .updateEmail(`${dado}`)
         .then(() => {
@@ -99,7 +120,7 @@ const PersonalContentScreen = () => {
             cancelable: true,
           });
         });
-    } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') {
+    } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') { // Atualizar o nome do usuário
       tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
         nomeUsuario: dado,
       });
@@ -108,12 +129,14 @@ const PersonalContentScreen = () => {
   };
 
   const handleGeocode = async (cep, num) => {
+
+    //Pega a tabela do usário referente ao usuário cadastrado
     tabelaUsuario.doc(`${auth.currentUser.uid}`);
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+      // Solicitação do endereço pela API do ViaCep
       let response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
-      const data = await response.json();
+      const data = await response.json(); // pega os dados e transformam em JSON
 
       if (data.erro) {
         Alert.alert(

@@ -4,6 +4,7 @@ import styles from './style';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 const FaqScreen = () => {
+  // Variáveis para ativação dos textos
   const [texto1, setTexto1] = useState(false);
   const [texto2, setTexto2] = useState(false);
   const [texto3, setTexto3] = useState(false);

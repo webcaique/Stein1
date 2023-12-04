@@ -927,7 +927,6 @@ const SinginScreen = ({navigation}) => {
                           cep
                         ) {
                           const test = verificacaoDados();
-                          console.log(test);
                           if (test) {
                             register(test);
                           }

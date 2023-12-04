@@ -4,6 +4,7 @@ import estilos from './style';
 
 export default function Rota({distancia, duracao}) {
   useEffect(() => {
+    //Fica calculando quanto tempo demora para chegar no local pesquisado
     setInterval(() => {
       let hours = new Date().getHours();
       hours < 10 && (hours = `0${hours}`);

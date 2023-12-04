@@ -5,14 +5,7 @@ import Share from 'react-native-share';
 
 // FUnção futura para compertilhar o link para baixar aplicativo
 const ShareToAFriendScreen = () => {
-  // const onShare = async () => {
-  //   const result = await Share.share({
-  //     title: 'Quer conhecer Stein, o melhor app de rotas para ponto de recargas de carros?',
-  //     message:
-  //       'https://drive.google.com/drive/folders/1d9q7HU5Mom5nKRSV4vfP6WNVq8gSLxGo?usp=drive_link',
-  //   });
-  // };
-
+  // O comando abaixo deixará compartilhar o link do projeto para alguém
   const handleShare = async () => {
     try {
       const imageUri = 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FlogoStein.png?alt=media&token=e84c9536-ff29-4e40-865c-56e3af072121'; // Substitua pelo caminho real da sua imagem

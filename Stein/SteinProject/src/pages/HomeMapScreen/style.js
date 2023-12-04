@@ -255,6 +255,17 @@ const estilos=ScaledSheet.create({
       textAlign:"center",
       borderRadius:10,
     },
+    markerCarregadores:{
+      position:"absolute",
+      right:"25%",
+      marginTop:10,
+      marginRight:10,
+    },
+    iconPontoCarregador:{
+      width:50,
+      height:50,
+      resizeMode:"contain",
+    }
 
 
     })

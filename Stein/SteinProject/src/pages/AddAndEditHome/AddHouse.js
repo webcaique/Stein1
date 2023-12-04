@@ -14,7 +14,7 @@ import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore} from '../../config/configFirebase';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
-import { auth } from '../../config/configFirebase';
+import {auth} from '../../config/configFirebase';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
@@ -51,8 +51,6 @@ export default function AddHome({navigation}) {
   const [validName, setValidName] = useState();
   const [validSelectCarregadores, setValidSelectCarregadores] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
-
-  
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -130,14 +128,14 @@ export default function AddHome({navigation}) {
       countLocal++;
 
       //organiza a array de carregadores em ordem crescente
-      carregadores.sort((a,b)=> a-b)
+      carregadores.sort((a, b) => a - b);
       // aqui serão colocados os dados coletados no formulário
       let testeLocal = {
         IDLogradouro: `${countLogra}`,
         IDTipoCarregador: carregadores,
         nomeLocal: `${name}`,
         tipoLocal: `Casa`,
-        IDUsuario:auth.currentUser.uid,
+        IDUsuario: auth.currentUser.uid,
       };
 
       // adionará os dados ao banco de dados
@@ -150,69 +148,61 @@ export default function AddHome({navigation}) {
         .catch(error => {
           console.log(error);
         });
-        
-        //Código abaixo pegará a longitude e a latitude do local cadastrado
-        const validarGeo = async () => {
-          try {
-            //Variável para colocar o endereço
-            const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
-            console.log(address)
-      
-            //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
-            const response = await fetch(
-              `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-                address,
-              )}&key=${apiKey}`,
-            );
-      
-            //Caso a resposta der algum erro.
-            if (!response.ok) {
-              throw new Error('Erro ao buscar coordenadas.');
-            }
-            
-      
-            const data = await response.json(); // Transformará os dados em formato JSON
-      
-            console.log();
-            console.log(data)
 
-            //Verifica se o resultado está com algum dado
-            if (data.results && data.results.length > 0) {
-              console.log("cheguei aqui")
-              const location = data.results[0].geometry.location;
-      
-              // adionará os dados ao banco de dados
-              tabelaLogra
-                .doc(`${countLogra}`)
-                .set({
-                  CEP: `${cepInput}`,
-                  UF: `${selectedUf}`,
-                  bairro: `${bairro}`,
-                  cidade: `${cidade}`,
-                  complemento: `${complemento}`,
-                  geolocalizacao: {
-                    latitude: location.lat,
-                    longitude: location.lng,
-                  },
-                  logradouro: `${logra}`,
-                  numero: `${numero}`,
-                  tipoLogradouro: `${selectedTipoLogra}`,
-                })
-                .then(() => {
-                  console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
-                });
-            } else {
-              throw new Error('Endereço não encontrado.');
-            }
-          } catch (error) {
-            console.error('Erro: 123', error);
+      //Código abaixo pegará a longitude e a latitude do local cadastrado
+      const validarGeo = async () => {
+        try {
+          //Variável para colocar o endereço
+          const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
+
+          //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
+          const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+              address,
+            )}&key=${apiKey}`,
+          );
+
+          //Caso a resposta der algum erro.
+          if (!response.ok) {
+            throw new Error('Erro ao buscar coordenadas.');
           }
-        };
 
-        validarGeo()
+          const data = await response.json(); // Transformará os dados em formato JSON
+
+          //Verifica se o resultado está com algum dado
+          if (data.results && data.results.length > 0) {
+            const location = data.results[0].geometry.location;
+
+            // adionará os dados ao banco de dados
+            tabelaLogra
+              .doc(`${countLogra}`)
+              .set({
+                CEP: `${cepInput}`,
+                UF: `${selectedUf}`,
+                bairro: `${bairro}`,
+                cidade: `${cidade}`,
+                complemento: `${complemento}`,
+                geolocalizacao: {
+                  latitude: location.lat,
+                  longitude: location.lng,
+                },
+                logradouro: `${logra}`,
+                numero: `${numero}`,
+                tipoLogradouro: `${selectedTipoLogra}`,
+              })
+              .then(() => {
+                console.log('ADICIONADO!'); // caso ocorra algum erro, mostrará para o DEV;
+              });
+          } else {
+            throw new Error('Endereço não encontrado.');
+          }
+        } catch (error) {
+          console.error('Erro: 123', error);
+        }
+      };
+
+      validarGeo();
     }
-
-    
   };
 
   useEffect(() => {
@@ -272,7 +262,6 @@ export default function AddHome({navigation}) {
     try {
       // Apenas executará se os campos possuirem os dados necessário
       if (logra != '' && bairro != '' && cidade != '' && numero != '') {
-
         //Será colocado o endereço que será usado para a pesquisa na API
         const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
@@ -291,10 +280,11 @@ export default function AddHome({navigation}) {
           setValidNumero(true);
           throw new Error('Erro ao buscar coordenadas.');
         }
-        
+
         const data = await response.json(); // Os dados formatados em JSON
 
-        var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0];//Pega o Tipo de Logradouro
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0]; //Pega o Tipo de Logradouro
         var tipoUf = data.results[0].address_components[4].short_name; // Puxa a UF
         setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
@@ -307,7 +297,12 @@ export default function AddHome({navigation}) {
         setValidacaoLogradouro(true);
       }
     } catch (error) {
-      throw new Error('NÃO ENCONTRADO O ENDEREÇO: '+error);
+      setValidLogra(true);
+      setValidCidade(true);
+      setValidNumero(true);
+      setValidCep(true);
+      setValidBairro(true);
+      throw new Error('NÃO ENCONTRADO O ENDEREÇO: ' + error);
     }
   };
 
@@ -317,7 +312,7 @@ export default function AddHome({navigation}) {
       if (cepInput.length === 8 && !validcaoLogradouro) {
         await handleGeocode();
       }
-      if(cepInput.length <8){
+      if (cepInput.length < 8) {
         await semCep();
       }
 
@@ -436,7 +431,6 @@ export default function AddHome({navigation}) {
             />
           </View>
 
-
           <View style={styles.row5}>
             <View
               style={
@@ -480,9 +474,6 @@ export default function AddHome({navigation}) {
             </View>
           </View>
 
-
-
-
           <View style={styles.row3}>
             <Text
               style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
@@ -509,14 +500,13 @@ export default function AddHome({navigation}) {
               </View>
             </View>
           </View>
-          
 
           <View style={styles.row7}>
             <View
               style={styles.column2}
               // Campo para pegar o número
             >
-              <View style={{width:"40%"}}>
+              <View style={{width: '40%'}}>
                 <Text
                   style={[
                     styles.textIsInput,
@@ -553,7 +543,7 @@ export default function AddHome({navigation}) {
             <View style={{width: '100%', alignItems: 'center'}}>
               {ligarTabelaCarregadores ? (
                 <TabelaCarregadores
-                carr={carregadores}
+                  carr={carregadores}
                   onSelectCarregadores={toggleCarregadorSelection}
                   notFiltro={true}
                 />
@@ -577,7 +567,6 @@ export default function AddHome({navigation}) {
               }}
             />
           </View>
-
 
           <View style={styles.row6}>
             <View

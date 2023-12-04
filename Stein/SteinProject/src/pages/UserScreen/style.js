@@ -1,6 +1,11 @@
 import { StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
+const texto = {
+    fontSize:RFValue(16),
+    color:"#000",
+}
+
 const styles = StyleSheet.create({
     mainContainer:{
         flex:1,
@@ -70,10 +75,10 @@ const styles = StyleSheet.create({
     },
     lineList:{
         width:"100%",
-        height:"30%",
         resizeMode:"contain",
         position:"absolute",
         bottom:0,
+        padding:10
         
 
 
@@ -114,9 +119,8 @@ const styles = StyleSheet.create({
     },
     lines:{
         width:"100%",
-        height:2,
+        height:1,
         backgroundColor:"#000000",
-        marginTop:10,
     },
     locaisSalvos:{
         fontSize:RFValue(20),
@@ -144,7 +148,41 @@ const styles = StyleSheet.create({
         height:"100%",
         justifyContent:"center",
         alignItems:"center"
+    },
+
+    // Atualiazção
+    linha:{
+        flexDirection:"row",
+        width:"100%",
+        justifyContent:"space-evenly",
+        paddingVertical:10,
+        borderLeftWidth:1,
+        borderRightWidth:1,
+    },
+    titleAutomovel:{
+        fontSize:RFValue(20),
+        fontWeight:"900",
+        textDecorationLine:"underline",
+        color:"purple",
+    },
+    desc:{
+        ...texto,
+        fontSize:RFValue(18),
+    },
+    titles:{
+        fontSize:RFValue(18),
+        fontWeight:"700",
+        color:"purple"
+
+    },
+    coluna:{
+        alignItems:"center",
+    },
+    txt:{
+        ...texto,
+        fontSize:RFValue(15),
     }
+
 })
 
 export default styles;

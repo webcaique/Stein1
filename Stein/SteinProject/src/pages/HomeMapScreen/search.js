@@ -3,11 +3,14 @@ import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete"
 import { RFValue } from "react-native-responsive-fontsize";
 
 export default class Search extends Component {
+  //Para ativar e desativar a barra de pesquisa
   state = {
     searchFocused: false,
   }
   render(){
+    //As variaveis para ativar a barra de pesquisa, e puxar os dados do ponto pesquisado pelo usuário
     const {onLocationSelected, searchVal, resetSearch} = this.props;
+    //Puxa o estado criado
     const {searchFocused} = this.state;
     return(
       <GooglePlacesAutocomplete

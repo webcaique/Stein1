@@ -19,7 +19,6 @@ import {auth} from '../../config/configFirebase';
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 export default function AddHome() {
-  
   // Futuras atualizações do app para usuabilidade de facilidar a edição do cadastro, para colocar os dados nos campos e apenas editar o que quer
   const [loading, setLoading] = useState(true);
 
@@ -63,7 +62,6 @@ export default function AddHome() {
   const [validName, setValidName] = useState();
   const [validSelectCarregadores, setValidSelectCarregadores] = useState();
   const [validcaoLogradouro, setValidacaoLogradouro] = useState(false);
-
 
   const handleUfChange = uf => {
     // pegará do selectList o campo selecionado dos estados
@@ -120,7 +118,6 @@ export default function AddHome() {
               listaLogra.forEach(dados => {
                 if (datas.IDUsuario == auth.currentUser.uid) {
                   if (dados.id == idFromOtherScreen) {
-                    console.log(dados.id)
                     setLograEdit(dados);
                     setBairro(dados.bairro);
                     setCep(dados.CEP);
@@ -179,25 +176,25 @@ export default function AddHome() {
         try {
           //Variável para colocar o endereço
           const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
-    
+
           //Ele pegar os dados através da API do Google Maps, com o "encodeURIComponent" sendo usado para formatar o endereço para ser um link válido, alé ter a chave da API
           const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
               address,
             )}&key=${apiKey}`,
           );
-    
+
           //Caso a resposta der algum erro.
           if (!response.ok) {
             throw new Error('Erro ao buscar coordenadas.');
           }
-    
+
           const data = await response.json(); // Transformará os dados em formato JSON
-    
+
           //Verifica se o resultado está com algum dado
           if (data.results && data.results.length > 0) {
             const location = data.results[0].geometry.location;
-    
+
             // os dados serão atualizados na tabela Logradouro
             tabelaLogra
               .doc(`${idLocal.IDLogradouro}`)
@@ -226,7 +223,7 @@ export default function AddHome() {
         }
       };
 
-      validarGeo()
+      validarGeo();
 
       // organiza a array em ordem crescente
       carregadores.sort((a, b) => a - b);
@@ -246,9 +243,7 @@ export default function AddHome() {
   const handleGeocode = async () => {
     try {
       // Solicitação do serviço do ViaCep, para mostrar se o CEP é inválido e se ele existe
-      const response = await fetch(
-        `https://viacep.com.br/ws/${cep}/json/`,
-      );
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
       //Caso o CEP seja inválido e caso ele não exista, será avisado ao usuário
       if (!response.ok || response.erro) {
@@ -290,7 +285,6 @@ export default function AddHome() {
     try {
       // Apenas executará se os campos possuirem os dados necessário
       if (logra != '' && bairro != '' && cidade != '' && numero != '') {
-
         //Será colocado o endereço que será usado para a pesquisa na API
         const address = `${selectedTipoLogra} ${logra}, ${numero} , ${bairro}, ${cidade}, ${selectedUf}`;
 
@@ -309,10 +303,11 @@ export default function AddHome() {
           setValidNumero(true);
           throw new Error('Erro ao buscar coordenadas.');
         }
-        
+
         const data = await response.json(); // Os dados formatados em JSON
 
-        var tipoLogra = data.results[0].address_components[1].long_name.split(" ")[0];//Pega o Tipo de Logradouro
+        var tipoLogra =
+          data.results[0].address_components[1].long_name.split(' ')[0]; //Pega o Tipo de Logradouro
         var tipoUf = data.results[0].address_components[4].short_name; // Puxa a UF
         setSelectedUf(tipoUf);
         setSelectedTipoLogra(tipoLogra);
@@ -325,7 +320,7 @@ export default function AddHome() {
         setValidacaoLogradouro(true);
       }
     } catch (error) {
-      throw new Error('NÃO ENCONTRADO O ENDEREÇO: '+error);
+      throw new Error('NÃO ENCONTRADO O ENDEREÇO: ' + error);
     }
   };
 
@@ -338,8 +333,8 @@ export default function AddHome() {
       await semCep();
 
       // O restante do código que depende dos resultados de handleGeocode e semCep
-      // Aqui você pode adicionar as verificações necessárias antes de chamar addCharger()
-      // E, em seguida, chamar addCharger() se todas as verificações passarem.
+      // Aqui você pode adicionar as verificações necessárias antes de chamar update()
+      // E, em seguida, chamar update() se todas as verificações passarem.
       if (
         name != '' &&
         logra != '' &&
@@ -614,10 +609,14 @@ export default function AddHome() {
               // Campo para pegar o estado
             >
               <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={(dado)=>{handleUfChange(dado)}} validar={selectedUf}
-              onBlur={() => {
-                semCep();
-              }}
+              <SelectList
+                onUfChange={dado => {
+                  handleUfChange(dado);
+                }}
+                validar={selectedUf}
+                onBlur={() => {
+                  semCep();
+                }}
               />
             </View>
           </View>

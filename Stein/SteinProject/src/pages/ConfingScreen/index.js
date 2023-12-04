@@ -16,6 +16,7 @@ import Mailer from 'react-native-mail';
 const ConfigScreen = ({navigation}) => {
   const [modal, setModal] = useState(false);
 
+  //Função para mandar o email de feedback
     const sendEmail = () => {
       Mailer.mail(
         {
@@ -26,9 +27,9 @@ const ConfigScreen = ({navigation}) => {
           body: '',
           isHTML: true,
           attachment: {
-            path: '',  // Caminho do arquivo a ser anexado (opcional)
-            type: '',  // Mime Type do arquivo (opcional)
-            name: '',  // Nome do arquivo anexado (opcional)
+            path: '',
+            type: '',
+            name: '',
           },
         },
         (error, event) => {

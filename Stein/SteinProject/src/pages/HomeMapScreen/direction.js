@@ -1,6 +1,8 @@
 import React from "react";
 import MapViewDirections from "react-native-maps-directions";
 
+//Aqui que a pesquisa será realizada
+
 const Directions = ({destination, origin, onReady, desti})=>{
     return(
         <MapViewDirections

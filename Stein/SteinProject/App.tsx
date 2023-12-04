@@ -116,12 +116,15 @@ const App = () => {
           component={InitScreen}
           options={{
             title: 'STEIN',
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             //headerTransparent: true,
             headerTitleAlign: 'center',
             headerTitleStyle: {
               fontSize: scale(34),
               fontWeight: '600',
               color: '#000000',
+              
             },
             headerStyle:{
               backgroundColor:"#fff",
@@ -167,6 +170,8 @@ const App = () => {
           options={{
             headerBackTitleVisible: false,
             headerShown: false,
+            gestureEnabled: false,
+            headerLeft: ()=>null
           }}
         />
         <Stack.Screen
@@ -181,6 +186,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />
@@ -196,6 +203,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />
@@ -211,6 +220,8 @@ const App = () => {
               fontWeight: '900',
               color: '#563595',
             },
+            gestureEnabled: false,
+            headerLeft: ()=>null,
             headerBackVisible: false,
           }}
         />
