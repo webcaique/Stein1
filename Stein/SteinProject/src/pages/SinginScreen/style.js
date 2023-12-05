@@ -16,8 +16,7 @@ const styles = ScaledSheet.create({
     height: "100%",
     alignItems: 'center',
     padding: RFValue(10),
-    paddingTop: RFValue(80),
-    paddingBottom:RFValue(73),
+    paddingTop: RFValue(40),
     justifyContent: 'center',
   },
   textInputAll: {
@@ -33,13 +32,14 @@ const styles = ScaledSheet.create({
     color: '#000',
   },
   buttons: {
-    marginTop: 40,
+    marginTop: 10,
     width: RFValue(265),
     height: RFValue(60),
     backgroundColor: 'purple',
     borderRadius: RFValue(25),
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf:"center"
   },
   textButtons: {
     fontSize: RFValue(20),
@@ -175,6 +175,7 @@ const styles = ScaledSheet.create({
   },
   errorText: {
     color: 'red',
+    alignSelf:"center"
   },
   termosDeUso: {
     color: '#00a',
@@ -273,6 +274,7 @@ const styles = ScaledSheet.create({
     color: '#f00',
     fontWeight: '900',
     fontSize:RFValue(14),
+    marginTop:20
   },
   switch:{
     transform: [{ scaleX: RFValue(1) }, { scaleY: RFValue(1) }],

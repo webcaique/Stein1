@@ -88,7 +88,7 @@ export default function LoginScreen({navigation}) {
                 placeholderTextColor={'#000000'}
                 returnKeyLabel="Senha"
                 autoCapitalize="none"
-                secureTextEntry={true}
+                secureTextEntry={!toggleCheckBox}
                 password={true}
                 autoCorrect={false}
                 textContentType={'password'}
@@ -97,14 +97,13 @@ export default function LoginScreen({navigation}) {
               />
               <View style={styles.checkBox}>
                 <CheckBox //Para salvar a senha na memério do dispositivo e colocá-la no campo sem que o usuário digite
-                  disabled={false}
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
                   tintColors={{true: '#000000'}}
                   style={{padding: 10}}
                   //Os textos abaixos compõem a CheckBox
                 />
-                <Text style={styles.textCheckbox}> Salve a senha</Text>
+                <Text style={styles.textCheckbox}>Mostrar senha</Text>
               </View>
               <View style={styles.linhas}>
                 <View
