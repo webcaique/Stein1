@@ -16,19 +16,50 @@ import {moderateScale} from 'react-native-size-matters';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
 import {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import {firestore} from '../../config/configFirebase';
+import {firestore, storage} from '../../config/configFirebase';
 import {auth} from '../../config/configFirebase';
 import Map from './maps';
 import Rota from './calcualrRota';
 import {Rating} from 'react-native-ratings';
 import {verticalScale} from 'react-native-size-matters';
+import {launchCamera} from 'react-native-image-picker';
+import { request, PERMISSIONS } from 'react-native-permissions';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
-  //USUÁRIO
+  const path = require("path");
+  //Selecionar imagem
+  const [dados, setDados] = useState();
+  const [idCarregador, setIdCarregador] = useState();
+  const selectImage = async () => {
+    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+    if (status === 'granted') {
+      const imagem = await launchCamera();
+      const extencao = await path.extname(imagem.assets[0].originalPath);
+      let texto;
+      if(imagem){
+        texto = `Pontos/${dados.cep}-${dados.numero}/Ponto-${dados.cep}-${dados.numero}${extencao}`,
+        await storage
+        .ref(
+          `Pontos/${dados.cep}-${dados.numero}/Ponto-${dados.cep}-${dados.numero}${extencao}`,
+        )
+        .putFile(imagem.assets[0].originalPath)
+        .then(()=>{
+          tabelaCarregadores.doc(`${idCarregador+1}`).update({
+            imagem: texto,
+          })
+        })
+        .catch(error => console.log("AQUI:".error));
+      }
+    } else {
+      console.log('Permissão de escrita no armazenamento externo negada');
+    }
+  };
+
 
   // Set an initializing state whilst Firebase connects
   const [user, setUser] = useState();
@@ -166,7 +197,7 @@ export default function Stein({navigation}) {
                     });
                   }
                 });
-
+                console.log(listCarr);
                 setTabelaCarregador(listCarr);
                 setTabelaLogradouro(listaLogra);
               });
@@ -584,7 +615,9 @@ export default function Stein({navigation}) {
                 <Text style={estilos.textIcon}>Favorito</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={estilos.iconsSpecs}>
+              <TouchableOpacity style={estilos.iconsSpecs}
+              onPressIn={selectImage}
+              >
                 <Image
                   //Galeria
                   style={estilos.icon}
@@ -706,6 +739,17 @@ export default function Stein({navigation}) {
                     setVisivel(true);
                     setEnd(endereco[index]);
                     setCidade(markers[index].nome);
+                    const enviarDado = ()=>{
+                      tabelaLogradouro.forEach(inf =>{
+                        if(inf.geolocalizacao.latitude == markers[index].latitude){
+                          if(inf.geolocalizacao.longitude == markers[index].longitude){
+                            setDados(inf);
+                          }
+                        }
+                      })
+                    }
+                    enviarDado();
+                    setIdCarregador(index);
                   }}
                 />
               );
