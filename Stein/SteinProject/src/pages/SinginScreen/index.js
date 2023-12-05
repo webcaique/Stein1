@@ -1,17 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
-  TouchableOpacity,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
-  Modal,
-  Image,
-  FlatList,
-  Switch,
+View,
+Text,
+Pressable,
+TextInput,
+TouchableOpacity,
+Keyboard,
+KeyboardAvoidingView,
+ScrollView,
+Modal,
+Image,
+FlatList,
+Switch,
+Alert,
+Button,
+
 } from 'react-native';
 import styles from './style';
 import SelectList from '../selectList';
@@ -23,63 +26,98 @@ import CheckBox from '@react-native-community/checkbox';
 import TabelaLogradouro from '../tipoLogradouro';
 
 const cores = {
-  Branco: 'White',
-  Preto: 'Black',
-  Vermelho: 'Red',
-  Azul: 'Blue',
-  Verde: 'Green',
-  Amarelo: 'Yellow',
-  Laranja: 'Orange',
-  Roxo: 'Purple',
-  Rosa: 'Pink',
-  Marrom: 'Brown',
-  Cinza: 'Gray',
-  Prata: 'Silver',
-  Dourado: 'Gold',
+Branco: 'White',
+Preto: 'Black',
+Vermelho: 'Red',
+Azul: 'Blue',
+Verde: 'Green',
+Amarelo: 'Yellow',
+Laranja: 'Orange',
+Roxo: 'Purple',
+Rosa: 'Pink',
+Marrom: 'Brown',
+Cinza: 'Gray',
+Prata: 'Silver',
+Dourado: 'Gold',
 };
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const SinginScreen = ({navigation}) => {
-  const [modal, setModal] = useState(false);
-  const [termos, setTermos] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [tipoLogradouro, setTipoLogradouro] = useState('');
-  
+const [modal, setModal] = useState(false);
+const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [confirmPassword, setConfirmPassword] = useState('');
+const [nome, setNome] = useState('');
+const [errorRegister, setErrorRegister] = useState('');
+const [validNome, setValidNome] = useState();
+const [selectedUf, setSelectedUf] = useState();
+const [tipoPlaca, setTipoPlaca] = useState(true);
+const [cep, setCep] = useState('');
+const [keyboardTipo, setKeyboardTipo] = useState('default');
+const [errorEmail, setErrorEmail] = useState("");
+const [errorPassaword, setErrorPassword] = useState("");
+const [letraMaiuscula, setLetraMaiuscula] = useState();
 
-
-  const getTipoLogradouro = texto => {
-    setTipoLogradouro(texto);
-  };
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nome, setNome] = useState('');
-  const [errorRegister, setErrorRegister] = useState('');
-  const [validNome, setValidNome] = useState();
-  const [selectedUf, setSelectedUf] = useState();
-  const [tipoPlaca, setTipoPlaca] = useState(true);
-  const [cep, setCep] = useState('');
-  const [keyboardTipo, setKeyboardTipo] = useState('default');
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorPassaword, setErrorPassword] = useState('');
-
-  const handleUfChange = uf => {
+const handleUfChange = uf => {
     setSelectedUf(uf);
+};
+
+const verificarCaracteresEspeciais = () => {
+    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+    return regex.test(password);
   };
 
-  const register = async (teste) => {
+  const handleVerificarCaracteresEspeciais = () => {
+    const contemEspeciais = verificarCaracteresEspeciais();
+    console.log(`Texto ${contemEspeciais ? 'contém' : 'não contém'} caracteres especiais.`);
+  };
+
+const verificarNumeros = () => {
+    const regex = /\d/;
+    return regex.test(password);
+  };
+
+  const handleVerificarNumeros = () => {
+    const contemNumeros = verificarNumeros();
+    console.log(contemNumeros);
+  };
+
+const verificarLetrasMaiusculas = () => {
+    for (let i = 0; i < password.length; i++) {
+      if (password[i] === password[i].toUpperCase() && password[i] !== password[i].toLowerCase()) {
+        // Se o caractere atual for uma letra maiúscula
+        return true;
+      }
+    }
+
+    // Se nenhum caractere maiúsculo for encontrado
+    return false
+  };
+
+  const verificarLetrasMinusculas = () => {
+    for (let i = 0; i < password.length; i++) {
+      if (password[i] === password[i].toLowerCase() && password[i] !== password[i].toUpperCase()) {
+        // Se o caractere atual for uma letra minúscula
+        return true;
+      }
+    }
+
+    // Se nenhum caractere minúsculo for encontrado
+    return false;
+  };
+
+const register = () => {
     auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(async (userCredential) => {
+    .createUserWithEmailAndPassword(email, password)
+    .then(userCredential => {
+        console.log("AQUI");
         let user = userCredential.user;
-        let emailVerific = auth.currentUser;
-        add(user.uid, teste);
-        
-      })
-      .catch(error => {
-        add(0, false);
+        setErrorEmail("");
+        add(user.uid, true);
+    })
+    .catch(error => {
+        add(0,false)
         setModal(false);
         setErrorRegister(true);
         let errorCode = error.code;
@@ -93,395 +131,302 @@ const SinginScreen = ({navigation}) => {
 
         console.error(errorMessage);
         console.log(errorCode);
-      });
-  };
+    });
+};
 
-  //Cadastrar o carro//
+    //Cadastrar o carro//
 
-  const [rotation, setRotation] = useState(90);
-  const [table, setTable] = useState(false);
-  const [carregador, setCarregador] = useState(false);
-  const [placa, setPlaca] = useState(false);
-  const [desc, setDesc] = useState(false);
-  const [cor, setCor] = useState(false);
-  const [modelo, setModelo] = useState(false);
-  const [uf, setUf] = useState(false);
-  const [ano, setAno] = useState(false);
-  const [numero, setNumero] = useState(false);
+const [rotation, setRotation] = useState(90);
+const [table, setTable] = useState(false);
+const [carregador, setCarregador] = useState(false);
+const [placa, setPlaca] = useState(false);
+const [desc, setDesc] = useState(false);
+const [cor, setCor] = useState(false);
+const [modelo, setModelo] = useState(false);
+const [uf, setUf] = useState(false);
+const [ano, setAno] = useState(false);
 
-  //validacao
-  const [validCarregador, setValidCarregador] = useState('#000');
-  const [validPlaca, setValidPlaca] = useState('#000');
-  const [validDesc, setValidDesc] = useState('#000');
-  const [validCor, setValidCor] = useState('#000');
-  const [validModelo, setValidModelo] = useState('#000');
-  const [validAno, setValidAno] = useState('#000');
-  const [validUf, setValidUf] = useState('#000');
-  const [validLista, setValidLista] = useState([]);
-  const [validCep, setValidCep] = useState('#000');
-  const [validNumero, setValidNumero] = useState('#000');
+    //validacao
+const [validCarregador, setValidCarregador] = useState('#000');
+const [validPlaca, setValidPlaca] = useState('#000');
+const [validDesc, setValidDesc] = useState('#000');
+const [validCor, setValidCor] = useState('#000');
+const [validModelo, setValidModelo] = useState('#000');
+const [validAno, setValidAno] = useState('#000');
+const [validUf, setValidUf] = useState('#000');
+const [validLista, setValidLista] = useState([]);
+const [validCep, setValidCep] = useState('#000');
 
-  const tabelaCarro = firestore.collection('carro');
-  const tabelaUsuario = firestore.collection('usuario');
+const tabelaCarro = firestore.collection('carro');
+const tabelaUsuario = firestore.collection('usuario');
 
-  const verifNome = async () => {
+    const verifNome = async () => {
     const listaUsuario = [];
 
     const snapshot = await tabelaUsuario.get();
     snapshot.forEach(dados => {
-      listaUsuario.push({id: dados.id, ...dados.data()});
+    listaUsuario.push({id: dados.id, ...dados.data()});
     });
 
     for (const datas of listaUsuario) {
-      if (datas.nomeUsuario == nome) {
+    if (datas.nomeUsuario == nome) {
         setValidNome(true);
-        return true;
-      } else {
+        break;
+    } else {
         setValidNome(false);
-        return false;
-      }
     }
-  };
+    }
+};
 
-  const cepFunction = async () => {
+const cepFunction = async () => {
     try {
-      // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
-      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
+    const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
-      if (!response.ok) {
+    if (!response.ok) {
         setCep('CEP INVÁLIDO!');
         setValidCep('#f00');
         const timer = setTimeout(() => {
-          setCep('');
-          setValidCep('#000');
+            setCep('');
+            setValidCep('#000');
         }, 3000);
 
         return () => clearTimeout(timer);
-      }
-    } catch (error) {
-      console.error('Erro:', error);
     }
-  };
+    } catch (error) {
+        console.error('Erro:', error);
+    }
+    };
 
-  const verificacaoDados = () => {
-    const listaErros = [];
+    const add = async (ID, verif) => {
+    if(verif){
+        const listaErros = [];
     const listValid = [];
 
     function isColorValid(color) {
-      let ingColor = cores[color];
-      // Verifique se a cor é um nome de cor CSS válido
-      if (colorName[ingColor.toLowerCase()]) {
+        let ingColor = cores[color];
+        // Verifique se a cor é um nome de cor CSS válido
+    if (colorName[ingColor.toLowerCase()]) {
         return true;
-      }
+    }
     }
 
     let regex = /^[A-Za-z]+/;
     if (isColorValid(cor)) {
-      listaErros.push(true);
+        listaErros.push(true);
     } else {
-      listaErros.push(false);
-      setValidCor('#f00');
-      setValidLista(['Cor']);
-      setCor('');
+        listaErros.push(false);
+        setValidCor('#f00');
+        setValidLista(['Cor']);
+        setCor('');
     }
     if (tipoPlaca) {
-      const firstPart = placa.substr(0, 2);
-      const firstPartTest = regex.test(firstPart);
+        const firstPart = placa.substr(0, 2);
+        const firstPartTest = regex.test(firstPart);
 
-      if (firstPartTest) {
+    if (firstPartTest) {
         regex = /^[0-9][A-Za-z]/;
         const secondPart = placa.substr(3, 6);
         const secondPartTest = regex.test(secondPart);
         listaErros.push(secondPartTest);
         if (!secondPartTest) {
-          listValid.push('Placa');
-          setValidPlaca('#f00');
-          setPlaca('');
+            listValid.push('Placa');
+            setValidPlaca('#f00');
+            setPlaca('');
         }
-      }
+    }
     } else {
-      const firstPart = placa.substr(0, 2);
-      const firstPartTest = regex.test(firstPart);
-      if (firstPartTest) {
+        const firstPart = placa.substr(0, 2);
+        const firstPartTest = regex.test(firstPart);
+    if (firstPartTest) {
         regex = /^[0-9]/;
         const secondPart = placa.substr(4, 7);
         const secondPartTest = regex.test(secondPart);
         listaErros.push(secondPartTest);
         if (!secondPartTest) {
-          listValid.push('Placa');
-          setValidPlaca('#f00');
-          setPlaca('');
+            listValid.push('Placa');
+            setValidPlaca('#f00');
+            setPlaca('');
         }
-      }
+    }
     }
 
     const dataAtual = new Date();
     const anoAtual = dataAtual.getFullYear();
 
     if (ano < 2020 || ano > anoAtual) {
-      listaErros.push(false);
-      setAno('');
-      setValidAno('#f00');
-      listValid.push('Ano');
+        listaErros.push(false);
+        setAno('');
+        setValidAno('#f00');
+        listValid.push('Ano');
     }
 
     const verifyCountryExists = async countryName => {
-      const response = await fetch(
+        const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${countryName}&key=${apiKey}`,
-      );
-      const data = await response.json();
+    );
+    const data = await response.json();
 
-      if (data.status === 'OK' && data.results.length > 0) {
+    if (data.status === 'OK' && data.results.length > 0) {
         // Um ou mais resultados foram encontrados para o país
         listaErros.push(true);
-      } else {
+    } else {
         // Nenhum resultado foi encontrado para o país
         listaErros.push(false);
         setUf('');
         setValidUf('#f00');
         listValid.push('UF');
-      }
+        }
     };
 
     const verifyLocationExists = async (stateName, cityName) => {
-      const address = `${cityName}, ${stateName}`;
-      const response = await fetch(
+    const address = `${cityName}, ${stateName}`;
+    const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`,
-      );
-      const data = await response.json();
+    );
+    const data = await response.json();
 
-      if (data.status === 'OK' && data.results.length > 0) {
+    if (data.status === 'OK' && data.results.length > 0) {
         // Um ou mais resultados foram encontrados para a localização
         listaErros.push(true);
         setUf(`${cityName} - ${stateName}`);
-      } else {
+    } else {
         // Nenhum resultado foi encontrado para a localização
         listaErros.push(false);
         setUf('');
         setValidUf('#f00');
         listValid.push('UF');
-      }
+    }
     };
 
     if (tipoPlaca) {
-      verifyCountryExists(uf);
+        verifyCountryExists(uf);
     } else {
-      verifyLocationExists(selectedUf, uf);
+        verifyLocationExists(selectedUf, uf);
     }
 
     const verificarModelo = async modelo => {
-      try {
+        try {
         // Faz uma solicitação à API da NHTSA para obter informações sobre o modelo
         const response = await fetch(
-          `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${modelo}?format=json`,
-          {
+            `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${modelo}?format=json`,
+        {
             method: 'GET',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
-          },
+            },
         );
 
         if (response.ok) {
-          const data = await response.json();
+            const data = await response.json();
 
-          // Verifica se a resposta da API contém modelos de carros
-          if (data.Results && data.Results.length > 0) {
+            // Verifica se a resposta da API contém modelos de carros
+        if (data.Results && data.Results.length > 0) {
             listaErros.push(true);
-          } else {
+        } else {
             listaErros.push(false);
             setModelo('');
             setValidModelo('#f00');
             listValid.push('Modelo');
-          }
+            }
         } else {
-          console.error('Erro na solicitação à API da NHTSA:', response.status);
+            console.error('Erro na solicitação à API da NHTSA:', response.status);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Erro ao verificar o modelo do carro:', error);
-      }
+    }
     };
 
     verificarModelo(modelo);
 
     let teste = true;
     for (const dado of listaErros) {
-      if (!dado) {
+    if (!dado) {
         teste = false;
         setValidLista(listValid);
-      }
+        }
     }
 
-    return teste;
-  };
-
-  const add = async (ID, teste) => {
-      if (teste) {
+    if (teste) {
         const getTabUser = await tabelaUsuario.get();
 
         const listaUser = [];
 
         getTabUser.forEach(doc => {
-          listaUser.push({id: doc.id, ...doc.data()});
+        listaUser.push({id: doc.id, ...doc.data()});
         });
 
-        let dados = {
-          nomeUsuario: nome,
-          email: email,
-          senha: password,
-          imagemFundo: null,
-          imagemPerfil: null,
-          CEP: cep,
-          numero: numero,
-          tipoLogradouro: tipoLogradouro,
-        };
+    let dados = {
+        nomeUsuario: nome,
+        email: email,
+        senha: password,
+        imagemFundo: null,
+        imagemPerfil: null,
+        CEP: cep,
+    };
 
-        tabelaUsuario
-          .doc(`${ID}`)
-          .set(dados)
-          .catch(error => console.error(error));
+    tabelaUsuario
+        .doc(`${ID}`)
+        .set(dados)
+        .catch(error => console.error(error));
 
-        let countCarro = 0;
+    let countCarro = 0;
 
-        const getTabCarro = await tabelaCarro.get();
+    const getTabCarro = await tabelaCarro.get();
 
-        const listaCarro = [];
+    const listaCarro = [];
 
-        getTabCarro.forEach(doc => {
-          listaCarro.push({id: doc.id, ...doc.data()});
-        });
+    getTabCarro.forEach(doc => {
+        listaCarro.push({id: doc.id, ...doc.data()});
+    });
 
-        listaCarro.forEach(data => {
-          if (countCarro < parseInt(data.id)) {
+    listaCarro.forEach(data => {
+        if (countCarro < parseInt(data.id)) {
             countCarro = parseInt(data.id);
-          }
-        });
-
-        countCarro++;
-
-        dados = {
-          desc: desc,
-          ano: ano,
-          uf: uf,
-          cor: cor,
-          placa: placa,
-          IDTipoCarregador: carregador,
-          IDUsuario: `${ID}`,
-          modelo: modelo,
-        };
-
-        tabelaCarro
-          .doc(`${countCarro}`)
-          .set(dados)
-          .catch(error => console.error(error));
-
-        if (teste) {
-          navigation.navigate('LoginScreen');
-        } else {
-          setModal(false);
         }
-      }
-  };
+    });
 
-  //
+    countCarro++;
 
-  return (
+    dados = {
+        desc: desc,
+        ano: ano,
+        uf: uf,
+        cor: cor,
+        placa: placa,
+        IDTipoCarregador: carregador,
+        IDUsuario: `${ID}`,
+        modelo: modelo,
+    };
+
+    tabelaCarro
+        .doc(`${countCarro}`)
+        .set(dados)
+        .catch(error => console.error(error));
+
+
+    if(verif){
+        navigation.navigate('LoginScreen');
+    } else {
+        setModal(false);
+    }
+
+    }
+    }
+};
+
+    return (
     <ScrollView>
-
-
-
-      <Modal visible={termos}>
-        <Pressable
-          style={styles.containerTermoDeUso}
-          onPress={() => {
-            setTermos(!termos);
-          }}>
-          <ScrollView>
-            <Image
-              source={{
-                uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
-              }}
-              width={25}
-              height={25}
-              resizeMode="contain"
-              style={[
-                styles.imgSaidaTermoDeUso,
-                {
-                  transform: [{rotate: '45deg'}],
-                },
-              ]}
-            />
-            <View style={styles.termosContainerTexto}>
-              <Text style={styles.termosTitle}>TERMOS DE USO E CONDIÇÃO</Text>
-              <Text style={styles.textoTermo}>
-                Produzimos este aplicativo com o objetivo de expandir nossos
-                produtos e melhorar as qualidades de nossos serviços, assim,
-                proporcionando aos nossos clientes facilidades em suas compras
-              </Text>
-              <Text style={styles.textoTermo}>
-                A Stein não se responsabiliza por eventuais informações inexatas
-                ou imprecisas sobre seus serviços, bem como omissões do conteúdo
-                do seu site ou falha de equipamento
-              </Text>
-              <Text style={styles.textoTermo}>
-                O usuário tem total conhecimento e nada a se opor de que alguns
-                serviços inseridos no catalogo ou na própria página do site
-                poderão estar disponíveis em qualquer uma de nossas sedes ou
-                sediados. As cores apresentadas em nossos sites prezam pela
-                integridade e semelhança com o serviço, todavia, poderão sofrer
-                variações e não serem exatas, uma vez que dependem do monitor e
-                tecnologia utilizada por cada usuário, não podendo então a Stein
-                ser responsabilizada no caso de inexatidão de cores.
-              </Text>
-              <Text style={styles.textoTermo}>
-                Em nenhum momento o aplicativo e seus colaboradores poderão ser
-                responsabilizados por quaisquer danos, perdas, despesas, falhas
-                de desempenho, interrupção, defeito, vírus ou falhas no sistema
-                do aplicativo.
-              </Text>
-              <Text style={styles.textoTermo}>
-                Ao acessar esse aplicativo ou fornecer seus dados pessoais, o
-                usuário automaticamente declara conhecer e aceitar os Termos e
-                Condições de uso de Política de privacidade. Será de total
-                responsabilidade do usuário a garantir a exatidão dos seus dados
-                pessoais fornecidos, ficando certo que o usuário isenta a Stein
-                de quaisquer transtornos quanto a inexatidão de informações,
-                podendo ainda a mesma, suspender ou cancelar a conta de
-                cadastrado do usuário e recusar toda e qualquer utilização.
-              </Text>
-              <Text style={styles.textoTermo}>
-                Somos obrigados a transmitir seus dados a terceiros caso isto
-                seja necessário para cumprir regulamentações legais (por exemplo
-                da lei federal de proteção de dados).
-              </Text>
-              <Text style={styles.textoTermo}>
-                As informações sobre os preços e disponibilidades de serviços
-                estão sujeitos a alterações.{' '}
-              </Text>
-            </View>
-          </ScrollView>
-        </Pressable>
-      </Modal>
-
-
-
-
-
-
-
-
-
-
-
-      <View
+        <View
         style={styles.conteiner}
         //Container principal
-      >
+        >
         <KeyboardAvoidingView>
           <Pressable // Deixa a página clicável para desativar o teclado do usuário
             onPress={Keyboard.dismiss}>
             <View
-              style={styles.conteiner}
+                style={styles.conteiner}
               //Container para retirar bugs do Pressable
             >
               <TextInput //campo para escrever seu apelido no aplicativo
@@ -493,10 +438,7 @@ const SinginScreen = ({navigation}) => {
                 autoCapitalize="sentences"
                 onChangeText={text => setNome(text)}
                 value={nome}
-                onBlur={() => {
-                  verifNome(nome);
-                }}
-              />
+            />
               <TextInput // campo para colocar o email
                 placeholder="Email"
                 placeholderTextColor={'#000000'}
@@ -506,7 +448,7 @@ const SinginScreen = ({navigation}) => {
                 autoCapitalize="none"
                 onChangeText={text => setEmail(text)}
                 value={email}
-              />
+            />
               <TextInput // campo para colocar o senha
                 style={styles.textInputAll}
                 placeholder="Senha"
@@ -519,7 +461,7 @@ const SinginScreen = ({navigation}) => {
                 textContentType={'password'}
                 onChangeText={text => setPassword(text)}
                 value={password}
-              />
+            />
 
               <TextInput // campo para confirmar sua senha
                 style={styles.textInputAll}
@@ -533,179 +475,156 @@ const SinginScreen = ({navigation}) => {
                 textContentType={'password'}
                 onChangeText={text => setConfirmPassword(text)}
                 value={confirmPassword}
-              />
-              <View
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <TextInput
-                  style={[styles.textInputAll, {color: validCep, width: '70%'}]}
-                  placeholderTextColor={validCep}
-                  placeholder="CEP da sua Moradia"
-                  onChangeText={setCep}
-                  value={cep}
-                  keyboardType="numeric"
-                  onBlur={() => {
+            />
+            <TextInput
+                style={[styles.textInputAll, {color: validCep}]}
+                placeholderTextColor={validCep}
+                placeholder="CEP da sua Moradia"
+                onChangeText={setCep}
+                value={cep}
+                keyboardType="numeric"
+                onBlur={() => {
                     cepFunction();
-                  }}
-                  maxLength={8}
-                />
-                <TextInput
-                  style={[styles.textInputAll, {color: validCep, width: '25%'}]}
-                  placeholderTextColor={validNumero}
-                  placeholder="Número"
-                  onChangeText={setNumero}
-                  keyboardType="numeric"
-                  value={numero}
-                />
-              </View>
-              <View style={{marginVertical: 10}}>
-                <Text style={{color: '#f00', fontWeight: '900'}}>
-                  *VERIFIQUE O TIPO DO LOGRADOURO ABAIXO*
-                </Text>
-              </View>
-              <TabelaLogradouro
-                onTipoLograChange={getTipoLogradouro}
-                validar={tipoLogradouro}
-                branco={true}
-              />
-              <View
-                style={{
-                  width: '100%',
-                  marginTop: 5,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  flexDirection: 'row',
-                  height: 50,
-                }}>
-                <CheckBox
-                  value={toggleCheckBox}
-                  onValueChange={newValue => setToggleCheckBox(newValue)}
-                />
+                }}
+                maxLength={cep == "CEP INVÁLIDO!"?13:8}
+            />
+
+
+
+            {email === '' ||
+            password === '' ||
+            confirmPassword === '' ||
+            nome === '' ||
+            email === undefined ||
+            password === undefined ||
+            confirmPassword === undefined ||
+            nome === undefined ||
+            cep == undefined ||
+            cep == 'CEP INVÁLIDO!' ||
+            cep == '' ||
+            password.length < 8 ||
+            verificarLetrasMaiusculas() == false ||
+            verificarLetrasMinusculas() == false ||
+            verificarNumeros() == false ||
+            verificarCaracteresEspeciais() == false ? (
                 <TouchableOpacity
-                  onPress={() => {
-                    setTermos(!termos);
-                  }}>
-                  <Text>
-                    Você concorda com os{' '}
-                    <Text style={styles.termosDeUso}>
-                      Termos de Uso e Condição
-                    </Text>
-                    .
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              {email === '' ||
-              password === '' ||
-              confirmPassword === '' ||
-              nome === '' ||
-              email === undefined ||
-              password === undefined ||
-              confirmPassword === undefined ||
-              nome === undefined ||
-              cep == undefined ||
-              cep == 'CEP INVÁLIDO!' ||
-              cep == '' ||
-              !toggleCheckBox ||
-              numero == '' ||
-              numero == undefined ? (
-                <TouchableOpacity
-                  style={styles.buttons}
-                  disabled={true}
+                    style={styles.buttons}
+                    disabled={true}
                   //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
                 >
-                  <Text
+                <Text
                     style={styles.textButtons}
                     //Texto do botão
-                  >
+                >
                     Cadastrar
-                  </Text>
+                </Text>
                 </TouchableOpacity>
-              ) : confirmPassword != password ? (
+            ) : confirmPassword != password ? (
                 <>
-                  <View style={styles.error}>
-                    <Text style={styles.errorText}>Verificar senha</Text>
-                  </View>
-                  <TouchableOpacity
+                    <View style={styles.error}>
+                    <Text style={styles.errorText}>As senhas devem ser iguais</Text>
+                    </View>
+                <TouchableOpacity
                     style={styles.buttons}
                     disabled={true}
                     //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
-                  >
+                >
                     <Text
-                      style={styles.textButtons}
-                      //Texto do botão
+                        style={styles.textButtons}
+                        //Texto do botão
                     >
-                      Cadastrar
+                        Cadastrar
                     </Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 </>
-              ) : (
+            ) : (
                 <>
-                  {validNome ? (
+                    {validNome ? (
                     <View style={styles.error}>
-                      <Text style={styles.errorText}>
+                        <Text style={styles.errorText}>
                         Nome de usuário já usado
-                      </Text>
+                    </Text>
                     </View>
-                  ) : null}
-                  <TouchableOpacity
+                ) : null}
+                <TouchableOpacity
                     style={styles.buttons}
                     onPress={async () => {
-                      await verifNome();
-                      if (!validNome) {
+                        await verifNome();
+                        await cepFunction()
+                        if(!validNome && cep != "" && cep != undefined && cep != "CEP INVÁLIDO" && cep.length == 8){
                         setModal(true);
-                      }
+                    }
                     }}
                     //Botão para fativar a função de cadastrar e a função de navegação, caso os dados sejam preenchidos corretamente
-                  >
+                >
                     <Text
-                      style={styles.textButtons}
-                      //Texto do botão
+                        style={styles.textButtons}
+                        //Texto do botão
                     >
-                      Cadastrar
+                        Cadastrar
                     </Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 </>
-              )}
-              <View>
+            )}
+            <View>
                 {errorRegister === true ? (
-                  <View style={styles.error}>
+                    <View style={styles.error}>
                     <Text style={styles.errorText}>
-                      Email ou/e senha inválido(s)
+                        Email ou/e senha inválido(s)
                     </Text>
-                  </View>
-                ) : (
-                  <View />
+                </View>
+                ) : password.length < 8 && password.length > 0
+                    ? 
+                    <View style={styles.error}>
+                    <Text style={styles.errorText}>A sua senha deve conter 8 caracteres ou mais</Text>
+                    </View>
+                : verificarLetrasMaiusculas() == false && password.length >= 8
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter uma letra maiúscula</Text>
+                </View>
+                : verificarLetrasMinusculas() == false && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter uma letra minúscula</Text>
+                </View>
+                : verificarNumeros() == false && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter um número</Text>
+                </View>
+                : verificarCaracteresEspeciais() == false && verificarNumeros() == true && verificarLetrasMinusculas() == true && password.length >= 8 && verificarLetrasMaiusculas() == true
+                ? 
+                <View style={styles.error}>
+                <Text style={styles.errorText}>a sua senha deve conter um caractere especial</Text>
+                </View>
+                : (
+                    <View />
                 )}
-              </View>
-              <View
+            </View>
+            <View
                 style={styles.loginLink}
                 //Link para entrar na tela de login
-              >
+            >
                 <Text
-                  style={styles.textLogin}
-                  //Texto de explicação caso já possio cadastro
+                    style={styles.textLogin}
                 >
-                  {' '}
-                  Já possui cadastro?{' '}
+                    {' '}
+                    Já possui cadastro?{' '}
                 </Text>
                 <TouchableOpacity
-                  style={styles.loginButton}
-                  onPress={() => navigation.navigate('LoginScreen')}
-                  //Link para ir para tela de login
+                    style={styles.loginButton}
+                    onPress={() => navigation.navigate('LoginScreen')}
+                    //Link para ir para tela de login
                 >
-                  <Text
+                <Text
                     style={styles.textLoginButton}
                     //Text do link
-                  >
+                >
                     Entrar
-                  </Text>
+                </Text>
                 </TouchableOpacity>
-              </View>
+            </View>
             </View>
 
 
@@ -721,322 +640,314 @@ const SinginScreen = ({navigation}) => {
 
             
             {modal ? (
-              <Modal style={styles.modal}>
+                <Modal style={styles.modal}>
                 <ScrollView>
-                  <View style={styles.titleView}>
+                    <View style={styles.titleView}>
                     <TouchableOpacity
-                      style={styles.touchImg}
-                      onPress={() => {
+                        style={styles.touchImg}
+                        onPress={() => {
                         setModal(false);
-                      }}>
-                      <Image
+                    }}>
+                    <Image
                         source={{
-                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*36gn8l*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODc1ODMwOC4xNDQuMC4xNjk4NzU4MzA4LjYwLjAuMA..',
+                            uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*36gn8l*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODc1ODMwOC4xNDQuMC4xNjk4NzU4MzA4LjYwLjAuMA..',
                         }}
                         style={[styles.titleImg]}
-                      />
+                    />
                     </TouchableOpacity>
                     <Text style={styles.titleText}>Cadastrar Carros</Text>
-                  </View>
-                  <View style={styles.view}>
+                </View>
+                <View style={styles.view}>
                     <TextInput
-                      style={[styles.textCad1, {color: validDesc}]}
-                      placeholder="Descrição do Veículo"
-                      onChangeText={text => {
+                        style={[styles.textCad1, {color: validDesc}]}
+                        placeholder="Descrição do Veículo"
+                        onChangeText={text => {
                         setDesc(text);
                         setValidDesc('#000');
-                      }}
-                      value={desc}
-                      placeholderTextColor={validDesc}
+                    }}
+                    value={desc}
+                    placeholderTextColor={validDesc}
                     />
                     <View
-                      style={{
+                        style={{
                         width: '100%',
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginLeft: 10,
                         flexDirection: 'row',
-                      }}>
-                      <Text>Antigo Padrão</Text>
-                      <Switch
+                    }}>
+                    <Text>Antigo Padrão</Text>
+                    <Switch
                         onValueChange={() => {
-                          setTipoPlaca(!tipoPlaca);
-                          setPlaca('');
+                            setTipoPlaca(!tipoPlaca);
+                            setPlaca('');
                         }}
                         value={tipoPlaca}
-                      />
-                      <Text>Novo Padrão</Text>
+                    />
+                    <Text>Novo Padrão</Text>
                     </View>
                     <View>
-                      <View style={styles.row}>
+                    <View style={styles.row}>
                         <TextInput
-                          style={[styles.textCad2, {color: validPlaca}]}
-                          placeholder="Placa"
-                          onChangeText={text => {
+                            style={[styles.textCad2, {color: validPlaca}]}
+                            placeholder="Placa"
+                            onChangeText={text => {
                             if (!tipoPlaca) {
-                              if (text.length >= 3) {
+                                if (text.length >= 3) {
                                 const texto = text;
                                 const regex = /([A-Za-z]+)([0-9]+)/;
 
                                 const textoModificado = texto.replace(
-                                  regex,
-                                  '$1-$2',
+                                    regex,
+                                    '$1-$2',
                                 );
                                 setPlaca(
-                                  textoModificado.toString().toUpperCase(),
+                                    textoModificado.toString().toUpperCase(),
                                 );
-                              } else {
+                            } else {
                                 setPlaca(text.toString().toUpperCase());
                                 setValidPlaca('#000');
-                              }
+                            }
                             } else {
-                              setPlaca(text.toString().toUpperCase());
-                              setValidPlaca('#000');
+                                setPlaca(text.toString().toUpperCase());
+                                setValidPlaca('#000');
                             }
                             if (!tipoPlaca) {
-                              if (placa.length >= 2) {
+                                if (placa.length >= 2) {
                                 setKeyboardTipo('numeric');
-                              } else {
+                                } else {
                                 setKeyboardTipo('default');
-                              }
+                                }
                             } else {
-                              setKeyboardTipo('default');
+                                setKeyboardTipo('default');
                             }
-                          }}
-                          value={
+                        }}
+                        value={
                             placa.toString().toUpperCase() != 'FALSE'
-                              ? placa.toString().toUpperCase()
-                              : ''
-                          }
-                          placeholderTextColor={validPlaca}
-                          maxLength={tipoPlaca ? 7 : 8}
-                          keyboardType={keyboardTipo}
+                                ? placa.toString().toUpperCase()
+                                : ''
+                        }
+                        placeholderTextColor={validPlaca}
+                        maxLength={tipoPlaca ? 7 : 8}
+                        keyboardType={keyboardTipo}
                         />
                         <TextInput
-                          style={[styles.textCad2, {color: validCor}]}
-                          placeholder="Cor"
-                          onChangeText={text => {
+                            style={[styles.textCad2, {color: validCor}]}
+                            placeholder="Cor"
+                            onChangeText={text => {
                             setCor(text);
                             setValidCor('#000');
-                          }}
-                          value={cor}
-                          placeholderTextColor={validCor}
+                        }}
+                        value={cor}
+                        placeholderTextColor={validCor}
                         />
-                      </View>
-                      <View style={styles.row}>
+                        </View>
+                        <View style={styles.row}>
                         <TextInput
-                          style={[styles.textCad2, {color: validModelo}]}
-                          placeholder="Modelo"
-                          onChangeText={text => {
+                            style={[styles.textCad2, {color: validModelo}]}
+                            placeholder="Modelo"
+                            onChangeText={text => {
                             setModelo(text);
                             setValidModelo('#000');
-                          }}
-                          value={modelo}
-                          placeholderTextColor={validModelo}
+                        }}
+                        value={modelo}
+                        placeholderTextColor={validModelo}
                         />
                         <TextInput
-                          style={[styles.textCad2, {color: validAno}]}
-                          placeholder="Ano do Modelo"
-                          onChangeText={text => {
+                            style={[styles.textCad2, {color: validAno}]}
+                            placeholder="Ano do Modelo"
+                            onChangeText={text => {
                             setAno(text);
                             setValidAno('#000');
-                          }}
-                          value={ano}
-                          placeholderTextColor={validAno}
-                          maxLength={4}
-                          keyboardType="numeric"
+                        }}
+                            value={ano}
+                            placeholderTextColor={validAno}
+                            maxLength={4}
+                            keyboardType="numeric"
                         />
-                      </View>
-                      <View style={styles.row}>
+                    </View>
+                        <View style={styles.row}>
                         {tipoPlaca ? (
-                          <>
+                        <>
                             <TextInput
-                              style={[styles.textUf, {color: validUf}]}
-                              placeholder="País"
-                              onChangeText={text => {
+                                style={[styles.textUf, {color: validUf}]}
+                                placeholder="País"
+                                onChangeText={text => {
                                 setUf(text);
                                 setValidUf('#000');
-                              }}
-                              value={uf}
-                              placeholderTextColor={validUf}
+                            }}
+                                value={uf}
+                                placeholderTextColor={validUf}
                             />
-                          </>
+                        </>
                         ) : (
-                          <>
+                        <>
                             <View style={{width: '30%'}}>
-                              <SelectList
+                                <SelectList
                                 onUfChange={handleUfChange}
                                 validar={selectedUf}
-                              />
+                            />
                             </View>
                             <TextInput
-                              style={[styles.textUf, {color: validUf}]}
-                              placeholder="Cidade"
-                              onChangeText={text => {
+                                style={[styles.textUf, {color: validUf}]}
+                                placeholder="Cidade"
+                                onChangeText={text => {
                                 setUf(text);
                                 setValidUf('#000');
-                              }}
-                              value={uf}
-                              placeholderTextColor={validUf}
+                            }}
+                                value={uf}
+                                placeholderTextColor={validUf}
                             />
-                          </>
+                        </>
                         )}
-                      </View>
+                    </View>
                     </View>
                     <View style={styles.tableCarr}>
-                      <View style={styles.container}>
+                        <View style={styles.container}>
                         <Text
-                          style={[styles.textTab, {color: validCarregador}]}>
-                          Tipo de conector
+                            style={[styles.textTab, {color: validCarregador}]}>
+                            Tipo de conector
                         </Text>
                         <TouchableOpacity
-                          onPress={() => {
+                            onPress={() => {
                             setRotation(rotation + 180);
                             setTable(!table);
-                          }}>
-                          <Image
+                            }}>
+                            <Image
                             source={{
-                              uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*36gn8l*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODc1ODMwOC4xNDQuMC4xNjk4NzU4MzA4LjYwLjAuMA..',
+                                uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*36gn8l*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODc1ODMwOC4xNDQuMC4xNjk4NzU4MzA4LjYwLjAuMA..',
                             }}
                             style={[
-                              styles.imgSeta,
-                              {transform: [{rotate: `${rotation}deg`}]},
+                                styles.imgSeta,
+                                {transform: [{rotate: `${rotation}deg`}]},
                             ]}
-                          />
+                        />
                         </TouchableOpacity>
-                      </View>
-                      <View>
+                    </View>
+                    <View>
                         {table ? (
-                          <Table
+                            <Table
                             getInfo={select => {
-                              setCarregador(select);
+                                setCarregador(select);
                             }}
                             info={carregador}
-                          />
+                        />
                         ) : null}
-                      </View>
+                    </View>
                     </View>
                     <TouchableOpacity
-                      style={styles.buttons}
-                      onPress={() => {
+                        style={styles.buttons}
+                        onPress={() => {
                         if (
-                          desc &&
-                          placa &&
-                          uf &&
-                          modelo &&
-                          ano &&
-                          cor &&
-                          carregador &&
-                          cep
+                            desc &&
+                            placa &&
+                            uf &&
+                            modelo &&
+                            ano &&
+                            cor &&
+                            carregador &&
+                            cep
                         ) {
-                          const test = verificacaoDados();
-                          console.log(test);
-                          if (test) {
-                            register(test);
-                          }
+                            register();
                         } else {
-                          let lista = [];
-                          setValidAno(ano ? '#000' : '#f00');
-                          setValidCarregador(carregador ? '#000' : '#f00');
-                          setValidCor(cor ? '#000' : '#f00');
-                          setValidDesc(desc ? '#000' : '#f00');
-                          setValidModelo(modelo ? '#000' : '#f00');
-                          setValidPlaca(placa ? '#000' : '#f00');
-                          setValidUf(uf ? '#000' : '#f00');
-                          setValidCep(cep ? '#000' : '#f00');
-                          setValidNumero(numero ? '#000' : '#f00');
+                            let lista = [];
+                            setValidAno(ano ? '#000' : '#f00');
+                            setValidCarregador(carregador ? '#000' : '#f00');
+                            setValidCor(cor ? '#000' : '#f00');
+                            setValidDesc(desc ? '#000' : '#f00');
+                            setValidModelo(modelo ? '#000' : '#f00');
+                            setValidPlaca(placa ? '#000' : '#f00');
+                            setValidUf(uf ? '#000' : '#f00');
+                            setValidCep(cep ? '#000' : '#f00');
 
-                          if (!ano) {
+                        if (!ano) {
                             lista.push('Ano do Modelo');
-                          }
-                          if (!carregador) {
-                            lista.push('Carregador');
-                          }
-                          if (!cor) {
-                            lista.push('Cor');
-                          }
-                          if (!desc) {
-                            lista.push('Descrição');
-                          }
-                          if (!modelo) {
-                            lista.push('Modelo');
-                          }
-                          if (!placa) {
-                            lista.push('Placa');
-                          }
-                          if (!uf) {
-                            lista.push('UF');
-                          }
-                          if (cep) {
-                            lista.push('CEP');
-                          }
-                          if (numero) {
-                            lista.push('Número da residência');
-                          }
-
-                          setValidLista(lista);
                         }
-                      }}>
-                      <Text style={styles.textButtons}>Cadastrar Carro</Text>
+                        if (!carregador) {
+                            lista.push('Carregador');
+                        }
+                        if (!cor) {
+                            lista.push('Cor');
+                        }
+                        if (!desc) {
+                            lista.push('Descrição');
+                        }
+                        if (!modelo) {
+                            lista.push('Modelo');
+                        }
+                        if (!placa) {
+                            lista.push('Placa');
+                        }
+                        if (!uf) {
+                            lista.push('UF');
+                        }
+                        if (cep) {
+                            lista.push('CEP');
+                        }
+
+                            setValidLista(lista);
+                        }
+                    }}>
+                        <Text style={styles.textButtons}>Cadastrar Carro</Text>
                     </TouchableOpacity>
-                  </View>
-                  {validLista.length > 0 ? (
+                </View>
+                    {validLista.length > 0 ? (
                     <Modal transparent>
-                      <Pressable
+                        <Pressable
                         style={{
-                          width: '100%',
-                          height: '100%',
-                          justifyContent: 'center',
-                          alignItems: 'center',
+                            width: '100%',
+                            height: '100%',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
                         onPress={() => {
-                          setValidLista([]);
+                            setValidLista([]);
                         }}>
                         <View style={styles.aviso}>
-                          <Text
+                            <Text
                             style={{
-                              fontSize: 20,
-                              fontWeight: '900',
-                              color: '#f00',
+                                fontSize: 20,
+                                fontWeight: '900',
+                                color: '#f00',
                             }}>
                             Campos não preenchidos!
-                          </Text>
-                          <FlatList
+                        </Text>
+                        <FlatList
                             data={validLista}
                             keyExtractor={item => item.id}
                             renderItem={({item, index}) => {
-                              if (index + 1 != validLista.length) {
+                                if (index + 1 != validLista.length) {
                                 return (
-                                  <Text
+                                    <Text
                                     style={{
-                                      fontSize: 20,
+                                        fontSize: 20,
                                     }}>
                                     {item},
-                                  </Text>
+                                </Text>
                                 );
-                              } else {
+                            } else {
                                 return (
-                                  <Text
+                                    <Text
                                     style={{
-                                      fontSize: 20,
+                                        fontSize: 20,
                                     }}>
                                     {item}.
-                                  </Text>
+                                </Text>
                                 );
-                              }
+                            }
                             }}
-                          />
+                        />
                         </View>
-                      </Pressable>
+                    </Pressable>
                     </Modal>
-                  ) : null}
+                ) : null}
                 </ScrollView>
-              </Modal>
+            </Modal>
             ) : null}
-          </Pressable>
+        </Pressable>
         </KeyboardAvoidingView>
-      </View>
+    </View>
     </ScrollView>
-  );
+);
 };
 export default SinginScreen;
