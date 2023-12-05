@@ -147,7 +147,7 @@ export default function AddHome({navigation}) {
           console.log('ADICIONADO!');
         })
         .catch(error => {
-          console.log(error);
+          console.log("error");
         });
 
       //Código abaixo pegará a longitude e a latitude do local cadastrado

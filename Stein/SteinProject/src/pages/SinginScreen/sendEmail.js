@@ -73,7 +73,6 @@ const verificarCaracteresEspeciais = () => {
 
   const handleVerificarCaracteresEspeciais = () => {
     const contemEspeciais = verificarCaracteresEspeciais();
-    console.log(`Texto ${contemEspeciais ? 'contém' : 'não contém'} caracteres especiais.`);
   };
 
 const verificarNumeros = () => {
@@ -83,7 +82,6 @@ const verificarNumeros = () => {
 
   const handleVerificarNumeros = () => {
     const contemNumeros = verificarNumeros();
-    console.log(contemNumeros);
   };
 
 const verificarLetrasMaiusculas = () => {
@@ -114,7 +112,6 @@ const register = () => {
     auth
     .createUserWithEmailAndPassword(email, password)
     .then(userCredential => {
-        console.log("AQUI");
         let user = userCredential.user;
         setErrorEmail("");
         add(user.uid, true);
@@ -133,7 +130,6 @@ const register = () => {
         );
 
         console.error(errorMessage);
-        console.log(errorCode);
       });
 
   };

@@ -8,9 +8,7 @@ onMapReady={() => {
     ? PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ).then(() => {
-        console.log('Ganhomos familia');
       })
-    : console.log("NULO");
 }}
 >
   {destination && (

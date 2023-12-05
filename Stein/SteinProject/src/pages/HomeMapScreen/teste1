@@ -367,7 +367,6 @@ export default function Stein({navigation}) {
                       if (duration < minDuration) {
                         setMinDuration(duration);
                         count++;
-                        console.log(duration < minDuration);
                         if (markers.length == count) {
                           setLocMenorDuracao(destination);
                         }

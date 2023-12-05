@@ -47,7 +47,6 @@ app.post('/enviar-email-verificacao', (req, res) => {
       console.error('Erro ao enviar e-mail de verificação:', error);
       res.status(500).json({ error: 'Erro ao enviar e-mail de verificação.' });
     } else {
-      console.log('E-mail de verificação enviado:', info.response);
       res.json({ success: 'E-mail de verificação enviado com sucesso!' });
     }
   });

@@ -64,7 +64,6 @@ const App = () => {
             verif => {
             },
             error => {
-              console.log(error)
               Alert.alert(
                 'Localização desligada',
                 'Deseja ativar a localização?',

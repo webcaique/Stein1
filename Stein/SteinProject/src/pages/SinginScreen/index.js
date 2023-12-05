@@ -249,11 +249,6 @@ const SinginScreen = ({navigation}) => {
 
   const handleVerificarCaracteresEspeciais = () => {
     const contemEspeciais = verificarCaracteresEspeciais();
-    console.log(
-      `Texto ${
-        contemEspeciais ? 'contém' : 'não contém'
-      } caracteres especiais.`,
-    );
   };
 
    //verifica se a senha tem números
@@ -264,7 +259,6 @@ const SinginScreen = ({navigation}) => {
 
   const handleVerificarNumeros = () => {
     const contemNumeros = verificarNumeros();
-    console.log(contemNumeros);
   };
 
    //verifica se a senha tem letras maiusculas
@@ -304,7 +298,6 @@ const SinginScreen = ({navigation}) => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
-        console.log('AQUI');
         let user = userCredential.user;
         setErrorEmail('');
         add(user.uid, true);
@@ -323,7 +316,6 @@ const SinginScreen = ({navigation}) => {
         );
 
         console.error(errorMessage);
-        console.log(errorCode);
       });
   };
 

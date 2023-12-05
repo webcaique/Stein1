@@ -81,6 +81,8 @@ const UserScreen = ({navigation}) => {
       });
     });
     setLoading(false);
+    console.log(carroData);
+    console.log(loading);
   };
 
   //Função para pegar o caminho da imagem
@@ -113,7 +115,7 @@ const UserScreen = ({navigation}) => {
 
             getUserData();
           })
-          .catch(error => console.log(error));
+          .catch(error => console.log(""));
       } else {
         setLoading(false);
       }
@@ -125,7 +127,11 @@ const UserScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    getUserData();
+    tabelaCarro.onSnapshot(()=>{
+      tabelaUsuario.onSnapshot(()=>{
+        getUserData();
+      });
+    });
   }, []);
 
   return (
@@ -191,6 +197,7 @@ const UserScreen = ({navigation}) => {
                                 IDTipoCarregador: select,
                               });
                               setModal(false);
+                              setLoading(true);
                             },
                           },
                           {

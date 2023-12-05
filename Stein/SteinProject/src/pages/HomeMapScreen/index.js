@@ -25,16 +25,43 @@ import {Rating} from 'react-native-ratings';
 import {verticalScale} from 'react-native-size-matters';
 import {launchCamera} from 'react-native-image-picker';
 import { request, PERMISSIONS } from 'react-native-permissions';
+import Mailer from 'react-native-mail';
 
 const Img =
   'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmapa.jpeg?alt=media&token=4e747581-497c-46c6-bde2-67def3834eb6';
 
 const {width, height} = Dimensions.get('screen');
 export default function Stein({navigation}) {
+
+  const sendEmail = () => {
+    Mailer.mail(
+      {
+        subject: `${imagems[idCarregador]}`,
+        recipients: ['steinsuport@gmail.com'],
+        ccRecipients: ['steinsuport@gmail.com'],
+        bccRecipients: ['steinsuport@gmail.com'],
+        body: '',
+        isHTML: true,
+        attachment: {
+          path: '',
+          type: '',
+          name: '',
+        },
+      },
+      (error, event) => {
+        if (error) {
+          console.error('');
+        } else {
+          console.log('');
+        }
+      }
+    );
+  };
+
   const path = require("path");
   //Selecionar imagem
   const [dados, setDados] = useState();
-  const [idCarregador, setIdCarregador] = useState();
+  const [idCarregador, setIdCarregador] = useState(0);
   const [iconCarregadores, setIconCarregadores] = useState(); //Pega os tipos dos carregadores
   const [iconCarregadoresPonto, setIconCarregadoresPonto] = useState(); //Pega os tipos dos carregadores do ponto específico
   const [imagems, setImagems] = useState(); //Guardar todas as imagens do ponto
@@ -47,10 +74,10 @@ export default function Stein({navigation}) {
       const extencao = path.extname(imagem.assets[0].originalPath);
       let texto;
       if(imagem){
-        texto = `Pontos/${dados.cep}-${dados.numero}/Ponto-${dados.cep}-${dados.numero}${extencao}`,
+        texto = `Pontos/${dados.CEP}-${dados.numero}/Ponto-${dados.CEP}-${dados.numero}${extencao}`,
         await storage
         .ref(
-          `Pontos/${dados.cep}-${dados.numero}/Ponto-${dados.cep}-${dados.numero}${extencao}`,
+          `Pontos/${dados.CEP}-${dados.numero}/Ponto-${dados.CEP}-${dados.numero}${extencao}`,
         )
         .putFile(imagem.assets[0].originalPath)
         .then(()=>{
@@ -58,7 +85,7 @@ export default function Stein({navigation}) {
             imagem: texto,
           })
         })
-        .catch(error => console.log("AQUI:".error));
+        .catch(error => console.log("AQUI:"));
       }
     } else {
       console.log('Permissão de escrita no armazenamento externo negada');
@@ -79,27 +106,6 @@ export default function Stein({navigation}) {
     });
     setMenorDuracao('');
     return () => subscriber; // unsubscribe on unmount
-  }, []);
-
-  ///
-
-  const enviarEmailVerificacao = async () => {
-    console.log("TESTE");
-    console.log(user)
-    try {
-      if (user) {
-        await user.sendEmailVerification();
-        console.log('E-mail de verificação enviado com sucesso!');
-      } else {
-        console.log('Usuário não autenticado.');
-      }
-    } catch (error) {
-      console.error('Erro ao enviar e-mail de verificação:', error.message);
-    }
-  };
-
-  useEffect(() => {
-    enviarEmailVerificacao();
   }, []);
 
   //Dados para o Marker
@@ -123,7 +129,12 @@ export default function Stein({navigation}) {
   const [verificacaoDestination, setVerificacaoDestination] = useState(false);
   const [durac, setDurac] = useState(null);
   const [tabCarr, setTabCarr] = useState();
-  const [tabelaCarregador, setTabelaCarregador] = useState();
+  const [tabelaCarregador, setTabelaCarregador] = useState([{
+    qtdeCarregadores: 0,
+    horario:"24/7",
+    pagamentoNecessario: true,
+
+  }]);
   const [tabelaLogradouro, setTabelaLogradouro] = useState();
   const [tabelaCarro, setTabelaCarro] = useState();
 
@@ -210,7 +221,6 @@ export default function Stein({navigation}) {
                     });
                   }
                 });
-                console.log(listCarr);
                 setTabelaCarregador(listCarr);
                 setTabelaLogradouro(listaLogra);
               });
@@ -291,31 +301,14 @@ export default function Stein({navigation}) {
       listCarr.forEach(datas => {
         listaLogra.forEach(docs => {
           if (datas.id == docs.id) {
-            console.log('DATAS');
-            console.log(datas.nome);
             let nome = datas.nome;
             setNome(datas.nome);
-            console.log('DOCS');
-            console.log(docs.geolocalizacao);
-            console.log(nome);
             const novoPonto = {...docs.geolocalizacao, nome};
-            console.log('Novo ponto');
-            console.log(novoPonto);
             setMarkers(prevMarkers => [...prevMarkers, novoPonto]);
           }
         });
       });
     };
-
-    //   listaLogra.forEach(teste => {
-    //     console.log('DADOS');
-    //     console.log(teste.geolocalizacao);
-    //     setMarkers(prevMarkers => [
-    //       ...prevMarkers,
-    //       {...teste.geolocalizacao, nome: 'casa'},
-    //     ]);
-    //   });
-    // };
 
     fetchBd();
     getLocation();
@@ -324,8 +317,6 @@ export default function Stein({navigation}) {
   function getLocation() {
     Geolocation.getCurrentPosition(
       info => {
-        console.log('LAT', info.coords.latitude);
-        console.log('LON', info.coords.longitude);
         setRegion({
           latitude: info.coords.latitude,
           longitude: info.coords.longitude,
@@ -334,7 +325,7 @@ export default function Stein({navigation}) {
         });
       },
       error => {
-        console.log(error);
+        console.log("");
       },
       {
         enableHighAccuracy: true,
@@ -343,12 +334,25 @@ export default function Stein({navigation}) {
     );
   }
 
+  const [time, setTime] = useState(false);
+
  
   if (loading) {
     return <Text>Carregando</Text>;
   } else {
     return (
       <View style={estilos.superior}>
+        <Modal transparent visible={time}>
+          <Pressable
+            style={{...estilos.time}}
+            onPress={() => {
+              setTime(false);
+            }}>
+            <Text style={{...estilos.timeText}}>
+              Nenhum ponto encontrado com o Tipo do Carregador de seu carro{' '}
+            </Text>
+          </Pressable>
+        </Modal>
         <View style={{width: '100%'}}>
           <Modal
             transparent={true}
@@ -666,7 +670,11 @@ export default function Stein({navigation}) {
                 <Text style={estilos.textIcon}>Direção</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={estilos.iconsSpecs}>
+              <TouchableOpacity style={estilos.iconsSpecs}
+              onPress={()=>{
+                sendEmail();
+              }}
+              >
                 <Image
                   //Reportar
                   style={estilos.icon}
@@ -707,7 +715,7 @@ export default function Stein({navigation}) {
         uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fbufunfa.png?alt=media&token=e608fc97-e108-4180-ab19-97d66bfc1fcc',
       }}
     />
-    <Text style={estilos.textIcon1}>Grátis</Text>
+    <Text style={estilos.textIcon1}>{(tabelaCarregador)?((tabelaCarregador[idCarregador].pagamentoNecessario)?"Pagamento Necessário":"Grátis"):""}</Text>
   </View>
 
   <View style={estilos.iconsSpecs1}>
@@ -718,7 +726,7 @@ export default function Stein({navigation}) {
         uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Festacionamento.png?alt=media&token=a827952e-b37d-4383-8144-2c7c38ffe54d',
       }}
     />
-    <Text style={estilos.textIcon1}>Estacionamento: Grátis</Text>
+    <Text style={estilos.textIcon1}>Quantidade de bombas: {(tabelaCarregador)?((tabelaCarregador[idCarregador].qtdeCarregadores)?(tabelaCarregador[idCarregador].qtdeCarregadores):""):""}</Text>
   </View>
 
   <View style={estilos.iconsSpecs1}>
@@ -729,7 +737,7 @@ export default function Stein({navigation}) {
         uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Ftipo.png?alt=media&token=34abcf01-a2ac-4b54-92de-20a74a835ef6',
       }}
     />
-    <Text style={estilos.textIcon1}>Estacionamento para VE, Restaurante, Banheiros, Compras</Text>
+    <Text style={estilos.textIcon1}>Horário Aberto: {`${tabelaCarregador[idCarregador].horarioAberto}`}</Text>
   </View>
 
 {/* DIVIDINDO PARA NÃO FICAR CONFUSO */}
@@ -792,7 +800,9 @@ export default function Stein({navigation}) {
                       };
                       const url = await getImg();
                       setImagemDoCarregador(url);
+
                   }}
+                  
                 />
               );
             })}
@@ -802,7 +812,8 @@ export default function Stein({navigation}) {
           <TouchableOpacity
             style={estilos.iconBoltBg}
             onPressIn={() => {
-              if (tabCarr) {
+              
+              if (tabCarr.length>0) {
                 const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
                 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
                 let minDuration = Infinity;
@@ -816,6 +827,8 @@ export default function Stein({navigation}) {
                             longitude: location.longitude,
                           };
 
+                          console.log(origin);
+
                           // Solicitar as direções do Google Maps
                           fetch(
                             `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`,
@@ -825,15 +838,20 @@ export default function Stein({navigation}) {
                               if (data.routes && data.routes.length > 0) {
                                 const duration =
                                   data.routes[0].legs[0].duration.value;
-                                if (duration < minDuration) {
-                                  if(duration <= 30){
+                                  if (duration < minDuration) {
+                                    //compara qual é a menor
                                     minDuration = duration;
-                                    setDurac(minDuration);
-                                    setLocMenorDuracao(destination);
-                                  } else {
-
+                                    if (minDuration/60 <= 30) {
+                                      setDurac(minDuration);
+                                      setMenorDuracao(destination);
+                                    } else {
+                                      setTime(true);
+                                      const timeOut = setTimeout(() => {
+                                        setTime(false);
+                                      }, 5000);
+                                      clearTimeout(timeOut)
+                                    }
                                   }
-                                }
                               }
                             })
                             .catch(error => {
@@ -850,6 +868,16 @@ export default function Stein({navigation}) {
                 setMenorDuracao(locMenorDuracao);
                 setVerificacaoDestination(!verificacaoDestination);
                 setSeach(false);
+              } else {
+                setTime(true);
+                const timeOut = setTimeout(() => {
+                  setTime(false);
+                }, 5000);
+
+
+                return () => {
+                  clearTimeout(timeOut);
+                };
               }
             }}>
             <Image

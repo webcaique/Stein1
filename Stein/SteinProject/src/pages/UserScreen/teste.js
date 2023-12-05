@@ -115,7 +115,7 @@ const UserScreen = ({navigation}) => {
 
           getUserData();
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(""));
       } else {
         setLoading(false);
       }

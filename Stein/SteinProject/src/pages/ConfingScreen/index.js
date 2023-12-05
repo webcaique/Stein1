@@ -34,9 +34,9 @@ const ConfigScreen = ({navigation}) => {
         },
         (error, event) => {
           if (error) {
-            console.error('Erro ao enviar e-mail:', error);
+            console.error('');
           } else {
-            console.log('E-mail enviado com sucesso:', event);
+            console.log('');
           }
         }
       );
