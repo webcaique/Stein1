@@ -10,6 +10,7 @@ import {
   ScrollView,
   Dimensions,
   ImageBackground,
+  FlatList
 } from 'react-native';
 import estilos from './style';
 import {moderateScale} from 'react-native-size-matters';
@@ -34,12 +35,16 @@ export default function Stein({navigation}) {
   //Selecionar imagem
   const [dados, setDados] = useState();
   const [idCarregador, setIdCarregador] = useState();
+  const [iconCarregadores, setIconCarregadores] = useState(); //Pega os tipos dos carregadores
+  const [iconCarregadoresPonto, setIconCarregadoresPonto] = useState(); //Pega os tipos dos carregadores do ponto específico
+  const [imagems, setImagems] = useState(); //Guardar todas as imagens do ponto
+  const [imagemDoCarregador, setImagemDoCarregador] = useState(); //Guardar a imagem específica
   const selectImage = async () => {
     const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
 
     if (status === 'granted') {
       const imagem = await launchCamera();
-      const extencao = await path.extname(imagem.assets[0].originalPath);
+      const extencao = path.extname(imagem.assets[0].originalPath);
       let texto;
       if(imagem){
         texto = `Pontos/${dados.cep}-${dados.numero}/Ponto-${dados.cep}-${dados.numero}${extencao}`,
@@ -136,6 +141,10 @@ export default function Stein({navigation}) {
   };
 
   const fetchMarkersFromFirestore = async () => {
+    setDurac("");
+    setDuracao("");
+    setMenorDuracao("");
+    setDistancia("");
     try {
       const listaLogra = [];
       const listCarr = [];
@@ -172,6 +181,8 @@ export default function Stein({navigation}) {
               const newMarkers = [];
               const nearCarr = [];
               const listaEnd = [];
+              const listaImg = []; //Armazenará as imagens dos pontos
+              const listIconCarregadores = [];
 
               listCarr.forEach(datas => {
                 listaLogra.forEach(docs => {
@@ -182,6 +193,8 @@ export default function Stein({navigation}) {
                     newMarkers.push(novoPonto);
                     setCidade(docs.cidade);
                     listaEnd.push(endereco);
+                    listIconCarregadores.push(datas.IDTipoCarregador);
+                    listaImg.push(datas.imagem); //Coloca as imagens
 
                     listaCarro.forEach(carro => {
                       if (carro.IDUsuario == auth.currentUser.uid) {
@@ -204,6 +217,8 @@ export default function Stein({navigation}) {
               setTabCarr(nearCarr);
               setMarkers(newMarkers);
               setEndereco(listaEnd);
+              setImagems(listaImg);
+              setIconCarregadores(listIconCarregadores);
             });
           });
         });
@@ -238,7 +253,11 @@ export default function Stein({navigation}) {
   useEffect(() => {
     setDistancia('');
     setDuracao('');
-    fetchMarkersFromFirestore();
+    tabelaCarregadores.onSnapshot(()=>{
+      tabelaCarros.onSnapshot(()=>{
+        fetchMarkersFromFirestore();
+      });
+    });
     // Coloque aqui o código que deseja executar quando a tela receber foco.
   }, []);
 
@@ -301,20 +320,6 @@ export default function Stein({navigation}) {
     fetchBd();
     getLocation();
   }, []);
-
-  /*
-  logra.forEach((date)=>{
-      let dados = {
-        key: markers.length,
-        coords:{
-          latitude: parseFloat(date.geolocalizacao.latitude) ,
-          longitude: parseFloat(date.geolocalizacao.longitude)
-        },
-        pinColor: '#0000FF'
-      }
-      setMarkers(oldArray=>[...oldArray,dados])
-    });
-  */
 
   function getLocation() {
     Geolocation.getCurrentPosition(
@@ -573,24 +578,40 @@ export default function Stein({navigation}) {
         <ScrollView>
           <View>
             <View style={estilos.Img1}>
-              <ImageBackground
-                style={estilos.Img}
-                source={{
-                  uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11',
-                }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    setVisivel(false);
-                  }}>
-
-
-                  <Image
-                    style={estilos.seta}
+            <ImageBackground
+                    style={estilos.Img}
                     source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w',
-                    }}></Image>
-                </TouchableOpacity>
-              </ImageBackground>
+                      uri: !imagemDoCarregador
+                        ? 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11'
+                        : imagemDoCarregador,
+                    }}>
+                    <FlatList
+                    horizontal
+                      style={estilos.markerCarregadores}
+                      data={iconCarregadoresPonto}
+                      key={item => item.id}
+                      renderItem={dados => {
+                        return (
+                          <Image
+                            source={{
+                              uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/carregadores%2Fcarregador${dados.item}.png?alt=media&token=b4d7a185-b60b-45fb-87a4-f2742efbb177`,
+                            }}
+                            style={[estilos.iconPontoCarregador]}
+                          />
+                        );
+                      }}
+                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        setVisivel(false);
+                      }}>
+                      <Image
+                        style={estilos.seta}
+                        source={{
+                          uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=4ae62381-8bc8-450d-ad26-b1d525a3045c&_gl=1*3xj51w*_ga*MTYyODY1ODMzMy4xNjk0NTY0MTMz*_ga_CW55HF8NVT*MTY5NzA2Mzg5OS4xMi4xLjE2OTcwNjQ2MTguNDQuMC4w',
+                        }}></Image>
+                    </TouchableOpacity>
+                  </ImageBackground>
             </View>
 
             
@@ -628,7 +649,13 @@ export default function Stein({navigation}) {
                 <Text style={estilos.textIcon}>Adicionar Foto</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={estilos.iconsSpecs}>
+              <TouchableOpacity style={estilos.iconsSpecs}
+              onPressIn={()=>{
+                let teste = {...dados.geolocalizacao};
+                setMenorDuracao(teste);
+                setVisivel(!visivel)
+              }}
+              >
                 <Image
                   //ROTAS
                   style={estilos.icon}
@@ -735,7 +762,7 @@ export default function Stein({navigation}) {
                   icon={{
                     uri: `https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FpingCarregadores1.png?alt=media&token=769d4cfd-0682-4d23-99d5-4e51947f3196&_gl=1*1l5agxv*_ga*MTMzMzEzMzc2OS4xNjg1MDI3MDY4*_ga_CW55HF8NVT*MTY5ODQ0OTM1Ny4xNDIuMS4xNjk4NDUwMTM5LjU1LjAuMA..`,
                   }}
-                  onPress={() => {
+                  onPress={async () => {
                     setVisivel(true);
                     setEnd(endereco[index]);
                     setCidade(markers[index].nome);
@@ -750,6 +777,21 @@ export default function Stein({navigation}) {
                     }
                     enviarDado();
                     setIdCarregador(index);
+                    setIconCarregadoresPonto(iconCarregadores[index]);
+                      const getImg = async () => {
+                        if (imagems[index] == 'semImage') {
+                          //Caso a imagem não exista, puxa uma padrão
+                          return 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FeehBOMBA.png?alt=media&token=fc0da4ee-422f-4bd3-b4a1-225c44e3fb11';
+                        } else {
+                          //puxa a imagem do banco de dados
+                          const url = await storage
+                            .ref(`${imagems[index]}`)
+                            .getDownloadURL();
+                          return url;
+                        }
+                      };
+                      const url = await getImg();
+                      setImagemDoCarregador(url);
                   }}
                 />
               );
@@ -784,9 +826,13 @@ export default function Stein({navigation}) {
                                 const duration =
                                   data.routes[0].legs[0].duration.value;
                                 if (duration < minDuration) {
-                                  minDuration = duration;
-                                  setDurac(minDuration);
-                                  setLocMenorDuracao(destination);
+                                  if(duration <= 30){
+                                    minDuration = duration;
+                                    setDurac(minDuration);
+                                    setLocMenorDuracao(destination);
+                                  } else {
+
+                                  }
                                 }
                               }
                             })
