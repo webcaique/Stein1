@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
+import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale, } from "react-native-size-matters";
 
 
 const estilos=ScaledSheet.create({
@@ -176,7 +176,7 @@ const estilos=ScaledSheet.create({
     },
     Img:{
       height:moderateScale(200),
-      width: moderateVerticalScale(500),
+      width: '100%',
       resizeMode:'cover',
     },
     
@@ -212,19 +212,16 @@ const estilos=ScaledSheet.create({
      margin: moderateVerticalScale(20),
        resizeMode: 'contain',
        flexDirection:'row',
-       
+       alignSelf:'center'
     
       },
     
     textIcon:{
     fontSize:moderateScale(12),
     color: 'black',
-    paddingLeft:20,
-    paddingRight: 20,
+
     textAlign:'center',
-    flexDirection:'row'
-    
-    
+    flexDirection:'row',
     },
     responsividade:{
    height:'100%',
@@ -232,7 +229,9 @@ const estilos=ScaledSheet.create({
     iconsSpecs:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      width: moderateVerticalScale(100)
+      width: '25%',
+      height: moderateScale(100),
+      alignSelf:'center'
     },
     
     iconsSpecs1:{
@@ -241,7 +240,8 @@ const estilos=ScaledSheet.create({
       height: '25%',
       flexDirection:'row',
       alignItems:'center',
-    
+
+      
     },
     
     textIcon1:{
