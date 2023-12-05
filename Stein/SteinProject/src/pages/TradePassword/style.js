@@ -14,9 +14,8 @@ const styles = ScaledSheet.create({
     caixa:{
         marginTop: moderateVerticalScale(70),
         alignItems:'center',
-        backgroundColor: '#E2E2E2',
-        height: moderateVerticalScale(600),
-        borderTopWidth:1,
+          height: moderateVerticalScale(600),
+       
 
     },
     caixa2:{

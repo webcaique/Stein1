@@ -143,6 +143,11 @@ const estilos=ScaledSheet.create({
       height:RFValue(50),
       resizeMode:"contain",
     },
+    Strahd:{
+      flex:1,
+      display:'flex',
+      height:"100%",
+    },
     nomesCarregadores:{
       fontSize:8,
       maxWidth:RFValue(50),
@@ -165,8 +170,8 @@ const estilos=ScaledSheet.create({
       alignItems:"center"
     },
     Img:{
-      height:RFValue(200),
-      width: RFValue(500),
+      height:moderateScale(200),
+      width: '100%',
       resizeMode:'cover',
     },
     
@@ -178,8 +183,8 @@ const estilos=ScaledSheet.create({
       transform:[{ rotate: '-180deg' }]
     },
     estrela:{
-    height:RFValue(100),
-    width: RFValue(372),
+    height:moderateScale(100),
+    width: '100%',
     backgroundColor: '#584086',
     color: 'white'
     
@@ -188,8 +193,8 @@ const estilos=ScaledSheet.create({
     bff:{
       flexDirection:'row',
     justifyContent:'center',
-    maxHeight:RFValue(120),
-    width: RFValue(350)
+    maxHeight:moderateScale(120),
+    width: '100%'
     },
     iconsSpecs:{
       borderWidth:2,
@@ -202,34 +207,36 @@ const estilos=ScaledSheet.create({
      margin: RFValue(20),
        resizeMode: 'contain',
        flexDirection:'row',
-       
+       alignSelf:'center'
     
       },
     
     textIcon:{
     fontSize:RFValue(12),
     color: 'black',
-    paddingLeft:20,
-    paddingRight: 20,
+
     textAlign:'center',
-    flexDirection:'row'
-    
-    
+    flexDirection:'row',
     },
-    
+    responsividade:{
+   height:'100%',
+    },
     iconsSpecs:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      width: RFValue(100)
+      width: '25%',
+      height: moderateScale(100),
+      alignSelf:'center'
     },
     
     iconsSpecs1:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      height:RFValue(57),
+      height: '25%',
       flexDirection:'row',
       alignItems:'center',
-    
+
+      
     },
     
     textIcon1:{
