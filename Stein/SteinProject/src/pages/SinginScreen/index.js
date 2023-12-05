@@ -43,38 +43,42 @@ const cores = {
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
 const SinginScreen = ({navigation}) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [tipoLogradouro, setTipoLogradouro] = useState('');
+  const [toggleCheckBox, setToggleCheckBox] = useState(false); // para verificar se leu os termos de uso
+  const [tipoLogradouro, setTipoLogradouro] = useState(''); // pegar o logradouro do tipo do logradouro
 
+  //Seta o dado do tipo do logradouro
   const getTipoLogradouro = texto => {
     setTipoLogradouro(texto);
   };
 
-  const [modal, setModal] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nome, setNome] = useState('');
-  const [errorRegister, setErrorRegister] = useState('');
-  const [validNome, setValidNome] = useState();
-  const [selectedUf, setSelectedUf] = useState();
-  const [tipoPlaca, setTipoPlaca] = useState(true);
-  const [cep, setCep] = useState('');
-  const [keyboardTipo, setKeyboardTipo] = useState('default');
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorPassaword, setErrorPassword] = useState('');
-  const [letraMaiuscula, setLetraMaiuscula] = useState();
-  const [validNumero, setValidNumero] = useState('#000');
-  const [numero, setNumero] = useState('');
-  const [termos, setTermos] = useState('');
+  const [modal, setModal] = useState(false); // seta o modal para cadastrar o carro
+  const [email, setEmail] = useState(''); // guardar o email
+  const [password, setPassword] = useState('');// guardar o email
+  const [confirmPassword, setConfirmPassword] = useState(''); // Guardar a confirmação da senha
+  const [nome, setNome] = useState(''); // Guardar o nome do usuário
+  const [errorRegister, setErrorRegister] = useState(''); // Guardar o erro do register
+  const [validNome, setValidNome] = useState(); // Guardar o erro do nome do usuário
+  const [selectedUf, setSelectedUf] = useState(); // Guardar o uf selecionado
+  const [tipoPlaca, setTipoPlaca] = useState(true); // Guardar o tipo da placa
+  const [cep, setCep] = useState(''); // Guardar o cep
+  const [keyboardTipo, setKeyboardTipo] = useState('default'); // Guardar keyboardTipo
+  const [errorEmail, setErrorEmail] = useState(''); // Guardar o erro do email do usuário
+  const [validNumero, setValidNumero] = useState('#000'); // Validar o número
+  const [numero, setNumero] = useState(''); // Guardar setar o número
+  const [termos, setTermos] = useState(''); // Ativar e desativar o modal dos termos
 
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarSenha, setMostrarSenha] = useState(false); // Ativar para mostrar a senha
 
-  const verificacaoDados = () => {
-    const listaErros = [];
-    const listValid = [];
 
-    function isColorValid(color) {
+  //VERIFICA OS DADOS DIGITADOS
+  //SERÁ COLOCADO NO LISTA ERRO TRUE, PARA OS DADOS VALIDOS, E FALSA, PARA OS INVÁLIDOS
+  //SERÁ COLOCADO NA LISTVALID OS NOMES DOS CAMPOS INVÁLIDOS
+
+  const verificacaoDados = () => {//verifica os dados
+    const listaErros = []; // Lista de erros
+    const listValid = []; //lista para validar, e entrar os nomes dos campos inváidos
+
+    function isColorValid(color) { // verificar a cor digitado
       let ingColor = cores[color];
       // Verifique se a cor é um nome de cor CSS válido
       if (colorName[ingColor.toLowerCase()]) {
@@ -82,6 +86,7 @@ const SinginScreen = ({navigation}) => {
       }
     }
 
+    //Verifica se é apenas letras
     let regex = /^[A-Za-z]+/;
     if (isColorValid(cor)) {
       listaErros.push(true);
@@ -91,22 +96,25 @@ const SinginScreen = ({navigation}) => {
       setValidLista(['Cor']);
       setCor('');
     }
-    if (tipoPlaca) {
-      const firstPart = placa.substr(0, 2);
-      const firstPartTest = regex.test(firstPart);
+
+    //Verifica a placa se é válida
+    if (tipoPlaca) { // verifica o tipo da placa, sendo a autal ou a antiga
+      const firstPart = placa.substr(0, 2); //Separar em duas partes
+      const firstPartTest = regex.test(firstPart); // Verifica sa a primeira parte está de acordo
 
       if (firstPartTest) {
         regex = /^[0-9][A-Za-z]/;
         const secondPart = placa.substr(3, 6);
         const secondPartTest = regex.test(secondPart);
         listaErros.push(secondPartTest);
-        if (!secondPartTest) {
+        if (!secondPartTest) { // Verifica sa a segunda parte está de acordo
           listValid.push('Placa');
           setValidPlaca('#f00');
           setPlaca('');
         }
       }
     } else {
+        //Verifica se a placa se está adequada
       const firstPart = placa.substr(0, 2);
       const firstPartTest = regex.test(firstPart);
       if (firstPartTest) {
@@ -122,9 +130,11 @@ const SinginScreen = ({navigation}) => {
       }
     }
 
+    //Pega a data do sitema
     const dataAtual = new Date();
     const anoAtual = dataAtual.getFullYear();
 
+    //Verifica se o ano digitado é válido
     if (ano < 2020 || ano > anoAtual) {
       listaErros.push(false);
       setAno('');
@@ -132,6 +142,7 @@ const SinginScreen = ({navigation}) => {
       listValid.push('Ano');
     }
 
+    //Veirifica se o país existe
     const verifyCountryExists = async countryName => {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${countryName}&key=${apiKey}`,
@@ -150,6 +161,7 @@ const SinginScreen = ({navigation}) => {
       }
     };
 
+    //Veririca se a cidade e o estado existe
     const verifyLocationExists = async (stateName, cityName) => {
       const address = `${cityName}, ${stateName}`;
       const response = await fetch(
@@ -176,6 +188,7 @@ const SinginScreen = ({navigation}) => {
       verifyLocationExists(selectedUf, uf);
     }
 
+    //Verifica se o modelo do carro existe
     const verificarModelo = async modelo => {
       try {
         // Faz uma solicitação à API da NHTSA para obter informações sobre o modelo
@@ -211,6 +224,7 @@ const SinginScreen = ({navigation}) => {
 
     verificarModelo(modelo);
 
+    //Caso algum campo seja inválido, ele mostra as mensagem de erros
     let teste = true;
     for (const dado of listaErros) {
       if (!dado) {
@@ -223,9 +237,11 @@ const SinginScreen = ({navigation}) => {
   };
 
   const handleUfChange = uf => {
+    //SETA O UF SELECIONADO
     setSelectedUf(uf);
   };
 
+  //verifica se a senha tem carecteres especiais
   const verificarCaracteresEspeciais = () => {
     const regex = /[!@#$%^&*(),.?":{}|<>]/;
     return regex.test(password);
@@ -240,6 +256,7 @@ const SinginScreen = ({navigation}) => {
     );
   };
 
+   //verifica se a senha tem números
   const verificarNumeros = () => {
     const regex = /\d/;
     return regex.test(password);
@@ -250,6 +267,7 @@ const SinginScreen = ({navigation}) => {
     console.log(contemNumeros);
   };
 
+   //verifica se a senha tem letras maiusculas
   const verificarLetrasMaiusculas = () => {
     for (let i = 0; i < password.length; i++) {
       if (
@@ -265,6 +283,7 @@ const SinginScreen = ({navigation}) => {
     return false;
   };
 
+  //verifica se a senha tem letras minusculas
   const verificarLetrasMinusculas = () => {
     for (let i = 0; i < password.length; i++) {
       if (
@@ -280,6 +299,7 @@ const SinginScreen = ({navigation}) => {
     return false;
   };
 
+  
   const register = () => {
     auth
       .createUserWithEmailAndPassword(email, password)
@@ -308,7 +328,6 @@ const SinginScreen = ({navigation}) => {
   };
 
   //Cadastrar o carro//
-
   const [rotation, setRotation] = useState(90);
   const [table, setTable] = useState(false);
   const [carregador, setCarregador] = useState(false);
@@ -330,9 +349,10 @@ const SinginScreen = ({navigation}) => {
   const [validLista, setValidLista] = useState([]);
   const [validCep, setValidCep] = useState('#000');
 
-  const tabelaCarro = firestore.collection('carro');
-  const tabelaUsuario = firestore.collection('usuario');
+  const tabelaCarro = firestore.collection('carro');//tabela do carro
+  const tabelaUsuario = firestore.collection('usuario');//tabela de usuario
 
+  //verifica se o nome do usuário já existe
   const verifNome = async () => {
     const listaUsuario = [];
 
@@ -351,6 +371,7 @@ const SinginScreen = ({navigation}) => {
     }
   };
 
+  //Verifica se o CEP digitado existe
   const cepFunction = async () => {
     try {
       // Fazer uma solicitação para um serviço de geocodificação (por exemplo, Google Geocoding API)
@@ -371,6 +392,7 @@ const SinginScreen = ({navigation}) => {
     }
   };
 
+  //Adiciona os dados para o banco de dados
   const add = async (ID, verif) => {
     if (verif) {
       const listaErros = [];
