@@ -132,6 +132,7 @@ const estilos=ScaledSheet.create({
      },
      textLink:{
       fontSize:RFValue(18),
+      color:"#000"
      },
      containerLink:{
       flexDirection:"row",

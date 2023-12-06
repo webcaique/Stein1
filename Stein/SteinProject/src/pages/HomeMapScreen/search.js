@@ -51,17 +51,26 @@ export default class Search extends Component {
           elevation:5,
       },
       textInputContainer:{
+        borderWidth:1,
+        borderColor:"#000",
+        padding:5,
+        borderRadius:10,
       },
       textInput:{
         fontSize:RFValue(18),
+        color:"#000"
       },
       listView:{
           elevation:5,
+          borderWidth:1,
+          marginTop:5,
       },
       description:{
         fontSize:RFValue(18),
-
+        color:"#000",
+        
       },
+
 
       }}
       />

@@ -8,13 +8,11 @@ const ShareToAFriendScreen = () => {
   // O comando abaixo deixará compartilhar o link do projeto para alguém
   const handleShare = async () => {
     try {
-      const imageUri = 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2FlogoStein.png?alt=media&token=e84c9536-ff29-4e40-865c-56e3af072121'; // Substitua pelo caminho real da sua imagem
       const message = 'Abaixe nosso aplicativo para encontra um posto para recarregar seu carro! Sem nenhuma dificuldade e dor de cabeça!\nhttps://drive.google.com/drive/folders/1d9q7HU5Mom5nKRSV4vfP6WNVq8gSLxGo?usp=drive_link';
 
       const options = {
         title: 'Quer conhecer Stein, o melhor app de rotas para ponto de recargas de carros?',
         message: message,
-        url: `${imageUri}`,
         subject: 'Com Stein você sai das situações de desespero quando seu carro está descarregando!', // Somente para Android
       };
 

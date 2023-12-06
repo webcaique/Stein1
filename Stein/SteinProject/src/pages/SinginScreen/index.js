@@ -53,7 +53,7 @@ const SinginScreen = ({navigation}) => {
 
   const [modal, setModal] = useState(false); // seta o modal para cadastrar o carro
   const [email, setEmail] = useState(''); // guardar o email
-  const [password, setPassword] = useState('');// guardar o email
+  const [password, setPassword] = useState(''); // guardar o email
   const [confirmPassword, setConfirmPassword] = useState(''); // Guardar a confirmação da senha
   const [nome, setNome] = useState(''); // Guardar o nome do usuário
   const [errorRegister, setErrorRegister] = useState(''); // Guardar o erro do register
@@ -69,16 +69,17 @@ const SinginScreen = ({navigation}) => {
 
   const [mostrarSenha, setMostrarSenha] = useState(false); // Ativar para mostrar a senha
 
-
   //VERIFICA OS DADOS DIGITADOS
   //SERÁ COLOCADO NO LISTA ERRO TRUE, PARA OS DADOS VALIDOS, E FALSA, PARA OS INVÁLIDOS
   //SERÁ COLOCADO NA LISTVALID OS NOMES DOS CAMPOS INVÁLIDOS
 
-  const verificacaoDados = () => {//verifica os dados
+  const verificacaoDados = () => {
+    //verifica os dados
     const listaErros = []; // Lista de erros
     const listValid = []; //lista para validar, e entrar os nomes dos campos inváidos
 
-    function isColorValid(color) { // verificar a cor digitado
+    function isColorValid(color) {
+      // verificar a cor digitado
       let ingColor = cores[color];
       // Verifique se a cor é um nome de cor CSS válido
       if (colorName[ingColor.toLowerCase()]) {
@@ -98,7 +99,8 @@ const SinginScreen = ({navigation}) => {
     }
 
     //Verifica a placa se é válida
-    if (tipoPlaca) { // verifica o tipo da placa, sendo a autal ou a antiga
+    if (tipoPlaca) {
+      // verifica o tipo da placa, sendo a autal ou a antiga
       const firstPart = placa.substr(0, 2); //Separar em duas partes
       const firstPartTest = regex.test(firstPart); // Verifica sa a primeira parte está de acordo
 
@@ -107,14 +109,15 @@ const SinginScreen = ({navigation}) => {
         const secondPart = placa.substr(3, 6);
         const secondPartTest = regex.test(secondPart);
         listaErros.push(secondPartTest);
-        if (!secondPartTest) { // Verifica sa a segunda parte está de acordo
+        if (!secondPartTest) {
+          // Verifica sa a segunda parte está de acordo
           listValid.push('Placa');
           setValidPlaca('#f00');
           setPlaca('');
         }
       }
     } else {
-        //Verifica se a placa se está adequada
+      //Verifica se a placa se está adequada
       const firstPart = placa.substr(0, 2);
       const firstPartTest = regex.test(firstPart);
       if (firstPartTest) {
@@ -190,10 +193,15 @@ const SinginScreen = ({navigation}) => {
 
     //Verifica se o modelo do carro existe
     const verificarModelo = async modelo => {
+      //Deixar a primeira letra em maiuscula
+      const firstLetter = modelo.charAt(0);
+      const firstLetterCap = firstLetter.toUpperCase();
+      const remainingLetters = modelo.slice(1);
+      const capitalizedWord = firstLetterCap + remainingLetters;
       try {
         // Faz uma solicitação à API da NHTSA para obter informações sobre o modelo
         const response = await fetch(
-          `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${modelo}?format=json`,
+          `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/${encodeURI(capitalizedWord)}?format=json`,
           {
             method: 'GET',
             headers: {
@@ -243,7 +251,7 @@ const SinginScreen = ({navigation}) => {
 
   //verifica se a senha tem carecteres especiais
   const verificarCaracteresEspeciais = () => {
-    const regex = /[!@#$%^&*(),.?":{}|<>]/;
+    const regex = /[!@#$%^&*(),.?":{}|<>_-°ºª=+~¬¨§]/;
     return regex.test(password);
   };
 
@@ -251,7 +259,7 @@ const SinginScreen = ({navigation}) => {
     const contemEspeciais = verificarCaracteresEspeciais();
   };
 
-   //verifica se a senha tem números
+  //verifica se a senha tem números
   const verificarNumeros = () => {
     const regex = /\d/;
     return regex.test(password);
@@ -261,7 +269,7 @@ const SinginScreen = ({navigation}) => {
     const contemNumeros = verificarNumeros();
   };
 
-   //verifica se a senha tem letras maiusculas
+  //verifica se a senha tem letras maiusculas
   const verificarLetrasMaiusculas = () => {
     for (let i = 0; i < password.length; i++) {
       if (
@@ -293,13 +301,13 @@ const SinginScreen = ({navigation}) => {
     return false;
   };
 
-  
   const register = () => {
     auth
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         let user = userCredential.user;
         setErrorEmail('');
+        auth.currentUser.sendEmailVerification();
         add(user.uid, true);
       })
       .catch(error => {
@@ -341,8 +349,8 @@ const SinginScreen = ({navigation}) => {
   const [validLista, setValidLista] = useState([]);
   const [validCep, setValidCep] = useState('#000');
 
-  const tabelaCarro = firestore.collection('carro');//tabela do carro
-  const tabelaUsuario = firestore.collection('usuario');//tabela de usuario
+  const tabelaCarro = firestore.collection('carro'); //tabela do carro
+  const tabelaUsuario = firestore.collection('usuario'); //tabela de usuario
 
   //verifica se o nome do usuário já existe
   const verifNome = async () => {
@@ -407,22 +415,31 @@ const SinginScreen = ({navigation}) => {
         setValidLista(['Cor']);
         setCor('');
       }
+
+      // Se o tipo de placa for verdadeiro (placa nova)
       if (tipoPlaca) {
         const firstPart = placa.substr(0, 2);
         const firstPartTest = regex.test(firstPart);
 
         if (firstPartTest) {
+          // Expressão regular inicial para verificar a primeira parte da placa
           regex = /^[0-9][A-Za-z]/;
           const secondPart = placa.substr(3, 6);
           const secondPartTest = regex.test(secondPart);
           listaErros.push(secondPartTest);
+          // Se a primeira parte da placa passar na verificação
           if (!secondPartTest) {
+            //caso a segunda parte não está de acordo
+            // Adiciona 'Placa' à lista de itens inválidos
             listValid.push('Placa');
+            // Define a cor da borda da caixa de texto para vermelho (#f00)
             setValidPlaca('#f00');
+            // Limpa o campo da placa
             setPlaca('');
           }
         }
       } else {
+        //veirfica a primeira parte da placa
         const firstPart = placa.substr(0, 2);
         const firstPartTest = regex.test(firstPart);
         if (firstPartTest) {
@@ -430,14 +447,20 @@ const SinginScreen = ({navigation}) => {
           const secondPart = placa.substr(4, 7);
           const secondPartTest = regex.test(secondPart);
           listaErros.push(secondPartTest);
+          //caso a primeira parte da placa estja válida
           if (!secondPartTest) {
+            //caso a segunda parte não está de acordo
+            // Adiciona 'Placa' à lista de itens inválidos
             listValid.push('Placa');
+            // Define a cor da borda da caixa de texto para vermelho (#f00)
             setValidPlaca('#f00');
+            // Limpa o campo da placa
             setPlaca('');
           }
         }
       }
 
+      //Faz a verificação do ano digitado com o ano atual
       const dataAtual = new Date();
       const anoAtual = dataAtual.getFullYear();
 
@@ -449,6 +472,7 @@ const SinginScreen = ({navigation}) => {
       }
 
       const verifyCountryExists = async countryName => {
+        //Verifica se existe o país
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${countryName}&key=${apiKey}`,
         );
@@ -467,6 +491,7 @@ const SinginScreen = ({navigation}) => {
       };
 
       const verifyLocationExists = async (stateName, cityName) => {
+        //verifica se a localização digitada existe
         const address = `${cityName}, ${stateName}`;
         const response = await fetch(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`,
@@ -486,12 +511,14 @@ const SinginScreen = ({navigation}) => {
         }
       };
 
+      //Depende da placa que o usuário digitou, por causa do acordo do Mercosul
       if (tipoPlaca) {
         verifyCountryExists(uf);
       } else {
         verifyLocationExists(selectedUf, uf);
       }
 
+      //Veifica se o modelo existe
       const verificarModelo = async modelo => {
         try {
           // Faz uma solicitação à API da NHTSA para obter informações sobre o modelo
@@ -528,8 +555,10 @@ const SinginScreen = ({navigation}) => {
         }
       };
 
+      //Veifica se o modelo existe
       verificarModelo(modelo);
 
+      //Veirifca se alguma das verificações retornou falsa.
       let teste = true;
       for (const dado of listaErros) {
         if (!dado) {
@@ -538,7 +567,9 @@ const SinginScreen = ({navigation}) => {
         }
       }
 
+      //Caso não tenha erro, ele adiciona na tabela
       if (teste) {
+        //Os dados são colocados em uma lista para verifica qual é o novo id do dado que vai entrar no banco de dado. Isso que acontece no código abaixo, além de enviar para o banco de dados
         const getTabUser = await tabelaUsuario.get();
 
         const listaUser = [];
@@ -597,7 +628,7 @@ const SinginScreen = ({navigation}) => {
           .catch(error => console.error(error));
 
         if (verif) {
-            setModal(false);
+          setModal(false);
           navigation.navigate('LoginScreen');
         } else {
           setModal(false);
@@ -744,6 +775,7 @@ const SinginScreen = ({navigation}) => {
                 <CheckBox
                   value={mostrarSenha}
                   onValueChange={newValue => setMostrarSenha(newValue)}
+                  tintColors={{true: '#000000'}}
                 />
                 <Text style={styles.txtTermos}>Mostrar senha</Text>
               </View>
@@ -793,6 +825,7 @@ const SinginScreen = ({navigation}) => {
                 <CheckBox
                   value={toggleCheckBox}
                   onValueChange={newValue => setToggleCheckBox(newValue)}
+                  tintColors={{true: '#000000'}}
                 />
                 <TouchableOpacity
                   onPress={() => {
@@ -1015,8 +1048,9 @@ const SinginScreen = ({navigation}) => {
                       <View style={styles.row}>
                         <TextInput
                           style={[styles.textCad2, {color: validPlaca}]}
-                          placeholder="Placa"
+                          placeholder={`Placa. Ex: ${tipoPlaca? "AAA1A11":"AAA1111"}`}
                           onChangeText={text => {
+                            //Será editado a placa enquanto o usuário digita
                             if (!tipoPlaca) {
                               if (text.length >= 3) {
                                 const texto = text;
@@ -1070,7 +1104,7 @@ const SinginScreen = ({navigation}) => {
                       <View style={styles.row}>
                         <TextInput
                           style={[styles.textCad2, {color: validModelo}]}
-                          placeholder="Modelo"
+                          placeholder="Modelo. EX: Honda"
                           onChangeText={text => {
                             setModelo(text);
                             setValidModelo('#000');
@@ -1080,7 +1114,7 @@ const SinginScreen = ({navigation}) => {
                         />
                         <TextInput
                           style={[styles.textCad2, {color: validAno}]}
-                          placeholder="Ano do Modelo"
+                          placeholder="Ano do Modelo. Min: 2020"
                           onChangeText={text => {
                             setAno(text);
                             setValidAno('#000');
@@ -1163,6 +1197,7 @@ const SinginScreen = ({navigation}) => {
                     <TouchableOpacity
                       style={styles.buttons}
                       onPress={() => {
+                        //Verifica se algum campo está vazio
                         if (
                           desc &&
                           placa &&

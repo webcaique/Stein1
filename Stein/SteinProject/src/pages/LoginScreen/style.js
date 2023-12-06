@@ -22,6 +22,7 @@ const style = ScaledSheet.create({
         fontSize: RFValue(16),
         paddingLeft: RFValue(5),
         height: RFValue(50),
+        color:"#000"
     },
     linhas:{
         marginTop:RFValue(40),
@@ -43,7 +44,8 @@ const style = ScaledSheet.create({
     },
     textBetweenLines:{
       fontSize: RFValue(12),
-      marginHorizontal: RFValue(10)
+      marginHorizontal: RFValue(10),
+      color: "#000"
     },
     textInput2:{
         borderStyle: 'solid',
@@ -55,7 +57,8 @@ const style = ScaledSheet.create({
         width:"100%",
         height: RFValue(50),
         paddingLeft: RFValue(5),
-        fontSize: RFValue(16)
+        fontSize: RFValue(16),
+        color:"#000"
     },
     checkBox:{
         marginTop:RFValue(20),
@@ -65,7 +68,8 @@ const style = ScaledSheet.create({
         justifyContent:"center",
     },
     textCheckbox:{
-      fontSize: RFValue(18)
+      fontSize: RFValue(18),
+      color: "#000"
     },
     logos:{
         display:"flex",

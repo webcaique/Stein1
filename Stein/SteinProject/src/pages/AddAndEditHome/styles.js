@@ -22,6 +22,7 @@ const styles = ScaledSheet.create({
         fontSize:RFValue(16),
         alignItems:"center",
         justifyContent:"center",
+        color:"#000"
     },
     row2:{
         width:"100%",
@@ -48,6 +49,7 @@ const styles = ScaledSheet.create({
     textIsInput:{
         fontSize:RFValue(16),
         fontWeight:"700",
+        color:"#000"
     },
     column1:{
         width:"100%",
@@ -77,7 +79,8 @@ const styles = ScaledSheet.create({
         borderRadius:10,
         width:"100%",
         height:RFValue(50),
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
 
     },
@@ -88,7 +91,8 @@ const styles = ScaledSheet.create({
         borderRadius:10,
         width:"100%",
         height:RFValue(50),
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
     },
 
     row4:{
@@ -112,7 +116,8 @@ const styles = ScaledSheet.create({
         borderRadius:10,
         height:RFValue(50),
         width:"100%",
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
 
     },
@@ -123,7 +128,8 @@ const styles = ScaledSheet.create({
         borderRadius:10,
         width:RFValue(200),
         height:RFValue(50),
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
 
     },
@@ -139,7 +145,8 @@ const styles = ScaledSheet.create({
         marginVertical:10,
         borderRadius:10,
         height:RFValue(50),
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
         
 
@@ -161,7 +168,8 @@ const styles = ScaledSheet.create({
         marginVertical:10,
         borderRadius:10,
         height:RFValue(50),
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
 
         
@@ -189,7 +197,8 @@ const styles = ScaledSheet.create({
         flexDirection:"column",
         justifyContent:"space-between",
         alignItems:"center",
-        fontSize:RFValue(15)
+        fontSize:RFValue(15),
+        color:"#000"
 
     },
     row7:{

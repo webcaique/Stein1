@@ -198,6 +198,7 @@ const styles = ScaledSheet.create({
         flexDirection:"column",
         justifyContent:"space-between",
         alignItems:"center",
+        color:"#000"
 
     },
     row7:{

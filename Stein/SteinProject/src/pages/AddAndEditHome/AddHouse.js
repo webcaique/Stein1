@@ -419,7 +419,7 @@ export default function AddHome({navigation}) {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : '#000'}]}
               // Campo para pegar o apelido
             >
               Nome da casa:
@@ -438,7 +438,7 @@ export default function AddHome({navigation}) {
                 // Campo para pegar o CEP
               }>
               <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
                 CEP:
               </Text>
               <TextInput
@@ -446,12 +446,13 @@ export default function AddHome({navigation}) {
                 onChangeText={setCep}
                 value={cepInput}
                 keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
+                placeholderTextColor={validCep ? 'red' : '#000'}
                 onBlur={() => {
                   if (cepInput.length == 8 && !validcaoLogradouro) {
                     handleGeocode();
                   }
                 }}
+                maxLength={8}
               />
             </View>
             <View
@@ -459,14 +460,14 @@ export default function AddHome({navigation}) {
               // Campo para pegar o bairro
             >
               <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
                 Bairro:
               </Text>
               <TextInput
                 style={styles.textInputBairro}
                 onChangeText={setBairro}
                 value={bairro}
-                placeholderTextColor={validBairro ? 'red' : ''}
+                placeholderTextColor={validBairro ? 'red' : '#000'}
                 onBlur={() => {
                   semCep();
                 }}
@@ -476,7 +477,7 @@ export default function AddHome({navigation}) {
 
           <View style={styles.row3}>
             <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
               Logradouro:
             </Text>
             <View
@@ -490,7 +491,7 @@ export default function AddHome({navigation}) {
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
+                  placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
                   onBlur={() => {
@@ -511,13 +512,13 @@ export default function AddHome({navigation}) {
                   style={[
                     styles.textIsInput,
                     ,
-                    {color: validNumero ? 'red' : ''},
+                    {color: validNumero ? 'red' : '#000'},
                   ]}>
                   Número:
                 </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
+                  placeholderTextColor={validNumero ? 'red' : '#000'}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
@@ -534,7 +535,7 @@ export default function AddHome({navigation}) {
                 <Text
                   style={[
                     styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
+                    {color: validSelectCarregadores ? 'red' : '#000'},
                   ]}>
                   Carregadores
                 </Text>
@@ -553,6 +554,36 @@ export default function AddHome({navigation}) {
             </View>
           </View>
 
+          
+
+          <View style={styles.row6}>
+            <View
+              style={styles.column6}
+              // Campo para pegar o município
+            >
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
+                Município:
+              </Text>
+              <TextInput
+                style={styles.textInputMunicipio}
+                onChangeText={setCidade}
+                value={cidade}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+            <View
+              style={styles.column5}
+              // Campo para pegar o estado
+            >
+              <Text style={styles.textIsInputEstado}>Estado:</Text>
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
+            </View>
+          </View>
+
           <View
             style={styles.row4}
             // Campo para pegar o complemento
@@ -568,33 +599,6 @@ export default function AddHome({navigation}) {
             />
           </View>
 
-          <View style={styles.row6}>
-            <View
-              style={styles.column6}
-              // Campo para pegar o município
-            >
-              <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
-                Município:
-              </Text>
-              <TextInput
-                style={styles.textInputMunicipio}
-                onChangeText={setCidade}
-                value={cidade}
-                placeholderTextColor={validCidade ? 'red' : ''}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-            <View
-              style={styles.column5}
-              // Campo para pegar o estado
-            >
-              <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
-            </View>
-          </View>
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={handlePress}

@@ -10,14 +10,16 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Alert,
+  Modal,
 } from 'react-native';
 import styles from './style.js';
 import CheckBox from '@react-native-community/checkbox';
 import {auth} from '../../config/configFirebase.js';
-import { useRoute } from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 export default function LoginScreen({navigation}) {
-
   const [checked, setChecked] = useState(true);
   const toggleCheckbox = () => setChecked(!checked);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -25,14 +27,15 @@ export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorLogin, setErrorLogin] = useState('');
+  const [visible, setVisible] = useState(false);
 
   const loginFirebase = () => {
-      // Agora crie a conta de usuário ou faça login
-      auth
+    // Loga na conta, além de terminar a verificação do email
+    auth
       .signInWithEmailAndPassword(email, password)
       .then(userCredential => {
         let user = userCredential.user;
-        
+
         navigation.navigate('QuemSomos');
         // navigation.navigate("teste", {idUser: user.uid})
       })
@@ -41,15 +44,22 @@ export default function LoginScreen({navigation}) {
         let errorCode = error.code;
         let errorMessage = error.message;
       });
-    
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged(authUser => {
       // authUser será null se o usuário não estiver autenticado
       // ou será um objeto contendo informações sobre o usuário autenticado
     });
 
+    if (auth.currentUser) {
+      if (!auth.currentUser.emailVerified) {
+        Alert.alert('Verifique seu email', '', [{text: 'Fechar'}], {
+          cancelable: true,
+        });
+        auth.currentUser.sendEmailVerification();
+      }
+    }
     // Essa função de retorno será chamada quando o componente for desmontado
     return () => unsubscribe();
   }, []);
@@ -185,9 +195,11 @@ export default function LoginScreen({navigation}) {
 
                 <TouchableOpacity
                   style={styles.siginButton}
-                  onPress={() => navigation.navigate('SinginScreen', {
-                    verif: true,
-                  })}>
+                  onPress={() =>
+                    navigation.navigate('SinginScreen', {
+                      verif: true,
+                    })
+                  }>
                   <Text style={styles.textSiginButton}>Cadastrar-se</Text>
                 </TouchableOpacity>
               </View>

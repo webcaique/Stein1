@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import styles from './style';
 import {firestore} from '../../config/configFirebase';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export default function (props) {
 
@@ -93,14 +94,14 @@ export default function (props) {
             setValidDeletar(false)
           }}
           >
-            <View style={{width:300, height:200, padding:20, backgroundColor:"#fff", borderRadius:10,}}>
-              <Text style={{marginBottom:10, fontSize:26, fontWeight:"900",}}>Tem certeza que quer deletar {props.name}?</Text>
+            <View style={{width:(RFValue(300)), height:RFValue(200), padding:20, backgroundColor:"#fff", borderRadius:10,}}>
+              <Text style={{marginBottom:10, fontSize:RFValue(26), fontWeight:"900",color:"#000"}}>Tem certeza que quer deletar {props.name}?</Text>
               <View style={{flexDirection:"row", justifyContent:"space-between"}}>
                 <TouchableOpacity
                 style={{
-                  width:125,
+                  width:RFValue(125),
                   backgroundColor:"red",
-                  height:62.5,
+                  height:RFValue(62.5),
                   borderRadius:20,
                   justifyContent:"center",
                   alignItems:"center",
@@ -111,16 +112,16 @@ export default function (props) {
                 }}
                 >
                   <Text style={{
-                    fontSize:16,
+                    fontSize:RFValue(16),
                     fontWeight:"900",
                     color:"white",
                   }}>SIM</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                 style={{
-                  width:125,
+                  width:RFValue(125),
                   backgroundColor:"blue",
-                  height:62.5,
+                  height:RFValue(62.5),
                   borderRadius:20,
                   justifyContent:"center",
                   alignItems:"center",
@@ -130,7 +131,7 @@ export default function (props) {
                 }}
                 >
                   <Text style={{
-                    fontSize:16,
+                    fontSize:RFValue(16),
                     fontWeight:"900",
                     color:"white",
                   }}>NÃO</Text>
@@ -169,8 +170,8 @@ export default function (props) {
             source={{
               uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Feditar.png?alt=media&token=be2ed7a6-393d-4877-87bc-10e72190bf78',
             }}
-            width={20}
-            height={20}
+            width={RFValue(20)}
+            height={RFValue(20)}
             resizeMode="contain"
           />
           <Text style={styles.txtEditar}>EDITAR</Text>

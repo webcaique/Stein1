@@ -19,10 +19,12 @@ const styles = ScaledSheet.create({
     fontWeight:"700",
     marginVertical:10,
     marginBottom:20,
+    color:"#000"
   },
   textTitleTable:{
     fontSize:RFValue(25),
     fontWeight:"900",
+    color:"#000"
   },
   table:{
     width:"100%",
@@ -48,10 +50,12 @@ const styles = ScaledSheet.create({
   },
   textFix:{
     fontSize:RFValue(16),
+    color:"#000"
   },
   textDinamic:{
     fontSize:RFValue(10),
     textAlign:"center",
+    color:"#000"
   },
   imgs:{
     width:RFValue(25),
@@ -95,11 +99,13 @@ const styles = ScaledSheet.create({
     alignItems:"center",
     marginTop:10,
     paddingHorizontal:10,
+    color:"#000"
     
   },
   textoCampo:{
     fontWeight:"900",
-    fontSize:RFValue(15)
+    fontSize:RFValue(15),
+    color:"#000"
   },
 });
 

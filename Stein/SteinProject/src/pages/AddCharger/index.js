@@ -12,6 +12,7 @@ import {
   Modal,
   useAnimatedValue,
   TurboModuleRegistry,
+  Alert
 } from 'react-native';
 import styles from './styles';
 import TabelaCarregadores from '../componenteTabelaCarregadores.js';
@@ -19,7 +20,7 @@ import SelectList from '../selectList';
 import TipoLogradouro from '../tipoLogradouro.js';
 import {firestore, storage} from '../../config/configFirebase';
 import {request, PERMISSIONS} from 'react-native-permissions';
-import {launchCamera} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
@@ -517,6 +518,18 @@ const AddCharger = ({navigation}) => {
     }
   };
 
+  const selecionar = async () => {
+    const status = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+    if (status === 'granted') {
+      const imagem = await launchImageLibrary();
+      const extencao = await path.extname(imagem.assets[0].originalPath);
+      await setImg([imagem.assets[0].originalPath, extencao]);
+    } else {
+      console.log('Permissão de escrita no armazenamento externo negada');
+    }
+  };
+
   return (
     <Pressable
       style={styles.container}
@@ -741,7 +754,26 @@ const AddCharger = ({navigation}) => {
             >Aberto 24/7</Text>
           </View>
           <TouchableOpacity
-            onPress={() => selectImage()}
+            onPress={() => {
+              Alert.alert(
+                "Foto ou imagem já salva?",
+                "Selecione o estilo de envio da imagem",
+                [
+                  {
+                    text: "Foto",
+                    onPress:()=>{
+                      selectImage()
+                    }
+                  },
+                  {
+                    text:"Imagem salva",
+                    onPress: ()=>{
+                      selecionar()
+                    }
+                  }
+                ]
+              )
+            }}
             style={styles.charger}>
             <Text style={[styles.placeholder, {color: '#000'}]}>
               Selecionar imagem

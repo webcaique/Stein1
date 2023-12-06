@@ -4,6 +4,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 const styles = ScaledSheet.create({
     fontList:{
         fontSize:RFValue(16),
+        color:"#000"
     },
     list:{
         width:"100%",
@@ -13,6 +14,7 @@ const styles = ScaledSheet.create({
         height:RFValue(50),
         marginTop:RFValue(10),
         borderWidth:1,
+        color:"#000"
     },
 })
 

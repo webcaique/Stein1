@@ -109,7 +109,7 @@ const EditingHouse = () => {
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={() => navigation.navigate('AddHome')}>
-            <Text style={styles.textButton}>Adicionar</Text>
+            <Text style={styles.textButton}>Adicionar casa</Text>
           </TouchableOpacity>
         </View>
 
@@ -142,7 +142,7 @@ const EditingHouse = () => {
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={() => navigation.navigate('AddWork')}>
-            <Text style={styles.textButton}>Adicionar</Text>
+            <Text style={styles.textButton}>Adicionar empresa</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

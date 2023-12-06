@@ -466,6 +466,8 @@ export default function AddHome() {
                     handleGeocode();
                   }
                 }}
+                maxLength={8}
+                editable={false}
               />
             </View>
             <View
@@ -481,6 +483,7 @@ export default function AddHome() {
                 onChangeText={setBairro}
                 value={bairro}
                 placeholderTextColor={validBairro ? 'red' : '#000'}
+                editable={false}
               />
             </View>
           </View>
@@ -498,12 +501,14 @@ export default function AddHome() {
                 <TipoLogradouro
                   onTipoLograChange={handleTipoLograChange}
                   validar={selectedTipoLogra}
+                  onEdit={true}
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
                   placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
+                  editable={false}
                 />
               </View>
             </View>
@@ -523,6 +528,7 @@ export default function AddHome() {
                 onChangeText={setCidade}
                 value={cidade}
                 placeholderTextColor={validCidade ? 'red' : '#000'}
+                editable={false}
               />
             </View>
             <View
@@ -530,7 +536,7 @@ export default function AddHome() {
               // Campo para pegar o estado
             >
               <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList onUfChange={handleUfChange} validar={selectedUf} />
+              <SelectList onUfChange={handleUfChange} validar={selectedUf} onEdit={true}/>
             </View>
           </View>
 
@@ -554,6 +560,7 @@ export default function AddHome() {
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
+                  editable={false}
                 />
               </View>
               <TouchableOpacity
@@ -600,7 +607,7 @@ export default function AddHome() {
             onPressIn={handlePress}
             // Direcionar para página de Casa e Trabalho
           >
-            <Text style={styles.textButton}>Adicionar</Text>
+            <Text style={styles.textButton}>Editar</Text>
           </TouchableOpacity>
         </Pressable>
       </ScrollView>

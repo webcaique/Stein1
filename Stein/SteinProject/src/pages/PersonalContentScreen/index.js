@@ -17,7 +17,7 @@ import { RFValue } from 'react-native-responsive-fontsize';
 
 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ';
 
-const PersonalContentScreen = () => {
+const PersonalContentScreen = ({navigation}) => {
   // Variáveis para guardas os dados para ser exibido pelos usuários
   const [carregador, setCarregador] = useState([]);
   const [nomeUser, setNomeUser] = useState('');
@@ -116,9 +116,28 @@ const PersonalContentScreen = () => {
           });
         })
         .catch(error => {
-          Alert.alert('EMAIL INVÁLIDO', 'O email digitado é inválido.', [], {
-            cancelable: true,
-          });
+          if(error == "[Error: [auth/requires-recent-login] This operation is sensitive and requires recent authentication. Log in again before retrying this request.]"){
+            Alert.alert(
+              "NÃO É POSSÍVEL REALIZAR A TROCA DE EMAIL",
+              "Você precisa relogar na sua conta para realizar a ação. Deseja desconectar da conta?",
+              [
+                {
+                  text:"Sim",
+                  onPress: async ()=>{
+                    await auth.signOut()
+                  }
+                },
+                {
+                  text:"Não"
+                }
+              ]
+            )
+          } else {
+            Alert.alert('EMAIL INVÁLIDO', 'O email digitado é inválido.', [], {
+              cancelable: true,
+            });
+          }
+          
         });
     } else if (nomeCampo.toUpperCase() == 'NOME DO USUÁRIO') { // Atualizar o nome do usuário
       tabelaUsuario.doc(`${auth.currentUser.uid}`).update({
@@ -188,7 +207,7 @@ const PersonalContentScreen = () => {
                 }>
                 {nomeCampo.toUpperCase() != 'CARREGADORES' ? (
                   <TextInput
-                  style={{fontSize:RFValue(15)}}
+                  style={{fontSize:RFValue(15), color:"#000"}}
                     autoFocus
                     keyboardType={
                       nomeCampo.toUpperCase() == 'CEP'
@@ -230,7 +249,8 @@ const PersonalContentScreen = () => {
                       borderLeftColor: '#000',
                       borderLeftWidth: 1,
                       paddingLeft:10,
-                      fontSize:RFValue(15)
+                      fontSize:RFValue(15),
+                      color:"#000"
                     }}
                     onChangeText={setNumero}
                     value={numero}

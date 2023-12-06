@@ -85,10 +85,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: RFValue(10),
-    textAlign:"center"
+    textAlign:"center",
+    color:"#000"
   },
   selectedText: {
     fontSize: RFValue(10),
+    color:"#000"
   },
   imgCarr:{
     width:RFValue(50),

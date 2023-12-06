@@ -451,6 +451,7 @@ export default function AddHome({navigation}) {
                     handleGeocode();
                   }
                 }}
+                maxLength={8}
               />
             </View>
             <View

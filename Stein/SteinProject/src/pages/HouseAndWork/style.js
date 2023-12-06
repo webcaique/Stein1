@@ -1,3 +1,4 @@
+import { RFValue } from "react-native-responsive-fontsize";
 import { verticalScale, scale, ScaledSheet, moderateScale, moderateVerticalScale } from "react-native-size-matters";
 
 const styles = ScaledSheet.create({
@@ -8,7 +9,7 @@ const styles = ScaledSheet.create({
         padding:10,
     },
     titleContainer:{
-        fontSize:moderateScale(16),
+        fontSize:RFValue(16),
         marginBottom:44,
         color:"black",
     },
@@ -18,7 +19,7 @@ const styles = ScaledSheet.create({
         marginBottom:25,
     },
     titleBox:{
-        fontSize:moderateScale(25),
+        fontSize:RFValue(25),
         marginBottom:30,
         color:"black",
         fontWeight:"800",
@@ -28,11 +29,11 @@ const styles = ScaledSheet.create({
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
-        height:moderateScale(30),
+        height:RFValue(30),
         marginBottom:11,
     },
     titleLine:{
-        fontSize:moderateScale(20),
+        fontSize:RFValue(20),
         color:"black",
         fontWeight:"600",
     },
@@ -42,16 +43,16 @@ const styles = ScaledSheet.create({
         alignItems:"center",
     },
     textLink:{
-        fontSize:moderateScale(10),
+        fontSize:RFValue(10),
         color:"black",
     },
     iconLinkView:{
-        width:moderateScale(22),
-        height:moderateScale(22),
+        width:RFValue(22),
+        height:RFValue(22),
     },
     iconLink:{
-        width:moderateScale(22),
-        height:moderateScale(22),
+        width:RFValue(22),
+        height:RFValue(22),
         resizeMode:"contain",
         marginLeft:5,
     },
@@ -60,8 +61,8 @@ const styles = ScaledSheet.create({
         flexDirection:"row",
     },
     editionButton:{
-        width:moderateScale(200),
-        height:moderateScale(75),
+        width:RFValue(200),
+        height:RFValue(75),
         justifyContent:"center",
         alignItems:"center",
         backgroundColor:"#8429AE",
@@ -69,7 +70,7 @@ const styles = ScaledSheet.create({
         borderWidth:2,
     },
     textButton:{
-        fontSize:moderateScale(25),
+        fontSize:RFValue(25),
         fontWeight:"900",
         color:"#ffffff",
     },
@@ -79,7 +80,8 @@ const styles = ScaledSheet.create({
         marginBottom:25,
     },
     textLink:{
-        fontSize: moderateVerticalScale(12),
+        fontSize: RFValue(12),
+        color:"#000"
     },
     topBottom:{
         flexDirection:"row-reverse",
@@ -93,6 +95,8 @@ const styles = ScaledSheet.create({
     txtEditar:{
         marginLeft:5,
         fontWeight:"900",
+        color:"#000",
+        fontSize:RFValue(15)
     },
     btnExcluir:{
         flexDirection:"row",
@@ -103,6 +107,7 @@ const styles = ScaledSheet.create({
         marginRight:10,
         fontWeight:"900",
         color:"#f00",
+        fontSize:RFValue(16)
     },
     /*textLinkView:{
         width:100,

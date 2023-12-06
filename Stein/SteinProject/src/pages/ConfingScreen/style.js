@@ -48,9 +48,11 @@ const styles = ScaledSheet.create({
   },
   textTitle: {
     fontSize: RFValue(30),
+    color:"#000"
   },
   textContent: {
     fontSize: RFValue(16),
+    color:"#000",
     fontWeight: '600',
     marginVertical: 5,
   },
@@ -61,6 +63,7 @@ const styles = ScaledSheet.create({
   },
   subtitle: {
     fontSize: RFValue(10),
+    color:"#000"
   },
   input: {
     position: 'absolute',
@@ -89,12 +92,14 @@ const styles = ScaledSheet.create({
   textoTermo: {
     marginTop: 20,
     textAlign: 'justify',
-    fontSize: RFValue(15)
+    fontSize: RFValue(15),
+    color:"#000"
   },
   termosTitle: {
     textAlign: 'center',
     fontWeight: '900',
     fontSize: RFValue(18),
+    color:"#000"
   },
 });
 

@@ -13,6 +13,7 @@ const estilos=ScaledSheet.create({
       maxWidth:RFValue(50),
       maxHeight:RFValue(20),
       textAlign:"center",
+      color:"#000"
       
 
           
@@ -39,10 +40,13 @@ const estilos=ScaledSheet.create({
     tituloFiltros:{
       fontSize: RFValue(16),
       fontWeight: "600",
+      color:"#000"
     },
     textParaFiltos:{
       marginBottom:10,
       fontSize:RFValue(14),
+      color:"#000"
+
     },
 
 

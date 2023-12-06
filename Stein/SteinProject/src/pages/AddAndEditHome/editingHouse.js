@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  Keyboard
 } from 'react-native';
 import styles from './styles';
 import SelectList from '../selectList';
@@ -416,7 +417,7 @@ export default function AddHome() {
           onPress={() => {
             semCep();
             Keyboard.dismiss();
-            if (cep.length == 8 && !c) {
+            if (cep.length == 8 && !validcaoLogradouro) {
               handleGeocode();
             }
           }}
@@ -436,7 +437,7 @@ export default function AddHome() {
             // Campo para pegar o apelido
           >
             <Text
-              style={[styles.textIsInput, {color: validName ? 'red' : ''}]}
+              style={[styles.textIsInput, {color: validName ? 'red' : '#000'}]}
               // Campo para pegar o apelido
             >
               Nome da residência:
@@ -455,20 +456,22 @@ export default function AddHome() {
                 // Campo para pegar o CEP
               }>
               <Text
-                style={[styles.textIsInput, {color: validCep ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validCep ? 'red' : '#000'}]}>
                 CEP:
               </Text>
               <TextInput
+              editable={false}
                 style={styles.textInputCep}
                 onChangeText={setCep}
                 value={cep}
                 keyboardType="number-pad"
-                placeholderTextColor={validCep ? 'red' : ''}
+                placeholderTextColor={validCep ? 'red' : '#000'}
                 onBlur={() => {
                   if (cep.length == 8 && !validcaoLogradouro) {
                     handleGeocode();
                   }
                 }}
+                maxLength={8}
               />
             </View>
             <View
@@ -476,10 +479,11 @@ export default function AddHome() {
               // Campo para pegar o bairro
             >
               <Text
-                style={[styles.textIsInput, {color: validBairro ? 'red' : ''}]}>
+                style={[styles.textIsInput, {color: validBairro ? 'red' : '#000'}]}>
                 Bairro:
               </Text>
               <TextInput
+              editable={false}
                 style={styles.textInputBairro}
                 onChangeText={setBairro}
                 value={bairro}
@@ -487,13 +491,14 @@ export default function AddHome() {
                 onBlur={() => {
                   semCep();
                 }}
+                
               />
             </View>
           </View>
 
           <View style={styles.row3}>
             <Text
-              style={[styles.textIsInput, {color: validLogra ? 'red' : ''}]}>
+              style={[styles.textIsInput, {color: validLogra ? 'red' : '#000'}]}>
               Logradouro:
             </Text>
             <View
@@ -504,15 +509,17 @@ export default function AddHome() {
                 <TipoLogradouro
                   onTipoLograChange={handleTipoLograChange}
                   validar={selectedTipoLogra}
+                  onEdit={true}
                 />
                 <TextInput
                   style={styles.textInputLogradouro}
-                  placeholderTextColor={validLogra ? 'red' : ''}
+                  placeholderTextColor={validLogra ? 'red' : '#000'}
                   onChangeText={setLogra}
                   value={logra}
                   onBlur={() => {
                     semCep();
                   }}
+                  editable={false}
                 />
               </View>
             </View>
@@ -528,19 +535,20 @@ export default function AddHome() {
                   style={[
                     styles.textIsInput,
                     ,
-                    {color: validNumero ? 'red' : ''},
+                    {color: validNumero ? 'red' : '#000'},
                   ]}>
                   Número:
                 </Text>
                 <TextInput
                   style={styles.textInputNumber}
-                  placeholderTextColor={validNumero ? 'red' : ''}
+                  placeholderTextColor={validNumero ? 'red' : '#000'}
                   onChangeText={setNumero}
                   value={numero}
                   keyboardType="number-pad"
                   onBlur={() => {
                     semCep();
                   }}
+                  editable={false}
                 />
               </View>
               <TouchableOpacity
@@ -551,7 +559,7 @@ export default function AddHome() {
                 <Text
                   style={[
                     styles.textIsInput,
-                    {color: validSelectCarregadores ? 'red' : ''},
+                    {color: validSelectCarregadores ? 'red' : '#000'},
                   ]}>
                   Carregadores
                 </Text>
@@ -570,6 +578,45 @@ export default function AddHome() {
             </View>
           </View>
 
+
+          <View style={styles.row6}>
+            <View
+              style={styles.column6}
+              // Campo para pegar o município
+            >
+              <Text
+                style={[styles.textIsInput, {color: validCidade ? 'red' : '#000'}]}>
+                Município:
+              </Text>
+              <TextInput
+              editable={false}
+                style={styles.textInputMunicipio}
+                onChangeText={setCidade}
+                value={cidade}
+                placeholderTextColor={validCidade ? 'red' : '#000'}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+            <View
+              style={styles.column5}
+              // Campo para pegar o estado
+            >
+              <Text style={styles.textIsInputEstado}>Estado:</Text>
+              <SelectList
+              onEdit={true}
+                onUfChange={dado => {
+                  handleUfChange(dado);
+                }}
+                validar={selectedUf}
+                onBlur={() => {
+                  semCep();
+                }}
+              />
+            </View>
+          </View>
+
           <View
             style={styles.row4}
             // Campo para pegar o complemento
@@ -585,47 +632,12 @@ export default function AddHome() {
             />
           </View>
 
-          <View style={styles.row6}>
-            <View
-              style={styles.column6}
-              // Campo para pegar o município
-            >
-              <Text
-                style={[styles.textIsInput, {color: validCidade ? 'red' : ''}]}>
-                Município:
-              </Text>
-              <TextInput
-                style={styles.textInputMunicipio}
-                onChangeText={setCidade}
-                value={cidade}
-                placeholderTextColor={validCidade ? 'red' : ''}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-            <View
-              style={styles.column5}
-              // Campo para pegar o estado
-            >
-              <Text style={styles.textIsInputEstado}>Estado:</Text>
-              <SelectList
-                onUfChange={dado => {
-                  handleUfChange(dado);
-                }}
-                validar={selectedUf}
-                onBlur={() => {
-                  semCep();
-                }}
-              />
-            </View>
-          </View>
           <TouchableOpacity
             style={styles.editionButton}
             onPressIn={handlePress}
             // Direcionar para página de Casa e Trabalho
           >
-            <Text style={styles.textButton}>Adicionar</Text>
+            <Text style={styles.textButton}>Editar</Text>
           </TouchableOpacity>
         </Pressable>
       </ScrollView>

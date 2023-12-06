@@ -175,7 +175,8 @@ const styles = ScaledSheet.create({
   },
   errorText: {
     color: 'red',
-    alignSelf:"center"
+    alignSelf:"center",
+    fontSize:RFValue(15),
   },
   termosDeUso: {
     color: '#00a',
@@ -269,6 +270,7 @@ const styles = ScaledSheet.create({
   },
   txtTermos:{
     fontSize:RFValue(14),
+    color:"#000"
   },
   tipoLogradouroVerif:{
     color: '#f00',
@@ -281,6 +283,7 @@ const styles = ScaledSheet.create({
   },
   txtPlaca:{
     fontSize:RFValue(14),
+    color:"#000"
   },
   uf:{
     width:"100%",
