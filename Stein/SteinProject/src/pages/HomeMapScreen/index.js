@@ -286,7 +286,24 @@ export default function Stein({navigation}) {
 
   useEffect(() => {
     //Recolhe a localização do usuário
-    Geolocation.getCurrentPosition(
+    // Geolocation.getCurrentPosition(
+    //   position => {
+    //     let location;
+    //     location = {
+    //       latitude: position.coords.latitude,
+    //       longitude: position.coords.longitude,
+    //       latitudeDelta: 0.0922,
+    //       longitudeDelta: 0.0421,
+    //     };
+    //     setRegion(location);
+    //   },
+    //   erro => console.error(erro),
+    //   {
+    //     enableHighAccuracy: false,
+    //     timeout: 3000,
+    //   },
+    // );
+    Geolocation.watchPosition(
       position => {
         let location;
         location = {
@@ -296,11 +313,12 @@ export default function Stein({navigation}) {
           longitudeDelta: 0.0421,
         };
         setRegion(location);
+        console.log(location)
       },
       erro => console.error(erro),
       {
         enableHighAccuracy: true,
-        timeout: 10000,
+        timeout: 3000,
       },
     );
   }, []);
@@ -451,7 +469,7 @@ export default function Stein({navigation}) {
                       </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={estilos.links}>
+                    {/* <TouchableOpacity style={estilos.links}>
                       <View
                         style={{
                           flexDirection: 'row',
@@ -476,7 +494,7 @@ export default function Stein({navigation}) {
                           }}
                         />
                       </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     <TouchableOpacity
                       style={estilos.links}
@@ -624,7 +642,7 @@ export default function Stein({navigation}) {
                 </View>
 
                 <View style={estilos.bff}>
-                  <TouchableOpacity style={estilos.iconsSpecs}>
+                  {/* <TouchableOpacity style={estilos.iconsSpecs}>
                     <Image
                       //Favoritos
                       style={estilos.icon}
@@ -633,7 +651,7 @@ export default function Stein({navigation}) {
                       }}
                     />
                     <Text style={estilos.textIcon}>Favorito</Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
 
                   <TouchableOpacity
                     style={estilos.iconsSpecs}
@@ -646,17 +664,21 @@ export default function Stein({navigation}) {
                             text: 'Foto',
                             onPress: () => {
                               selectImage();
+                              setVisivel(!visivel);
                             },
                           },
                           {
                             text: 'Imagem salva',
                             onPress: () => {
                               selecionarImagem();
+                              setVisivel(!visivel);
                             },
                           },
                         ],
+                        {
+                          cancelable:true,
+                        }
                       );
-                      setVisivel(!visivel);
                     }}>
                     <Image
                       //Galeria
@@ -841,6 +863,7 @@ export default function Stein({navigation}) {
           <TouchableOpacity
             style={estilos.iconBoltBg}
             onPressIn={() => {
+              console.log(region)
               if (tabCarr.length > 0) {
                 const origin = region; // Substitua pelas coordenadas da localização atual do usuário.
                 const apiKey = 'AIzaSyAdVbhYEhx50Y8TS7tulpNCkj8yMZPYiSQ'; // Substitua pela sua chave de API do Google Maps.
@@ -855,7 +878,6 @@ export default function Stein({navigation}) {
                             longitude: location.longitude,
                           };
 
-                          console.log(origin);
 
                           // Solicitar as direções do Google Maps
                           fetch(

@@ -287,7 +287,7 @@ export default function Stein({navigation}) {
         console.log('Erro ao obter a localização:', error);
       },
       {
-        enableHighAccuracy: true,
+        enableHighAccuracy: false,
         timeout: 2000,
         maximumAge: 1000,
       },

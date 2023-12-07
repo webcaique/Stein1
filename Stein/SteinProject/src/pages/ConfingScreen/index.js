@@ -12,6 +12,9 @@ import {
 import styles from './style';
 import { auth } from '../../config/configFirebase';
 import Mailer from 'react-native-mail';
+import Share from 'react-native-share';
+
+//navigation.navigate('ShareToAFriendScreen')
 
 const ConfigScreen = ({navigation}) => {
   const [modal, setModal] = useState(false);
@@ -42,6 +45,22 @@ const ConfigScreen = ({navigation}) => {
       );
     };
 
+    const handleShare = async () => {
+      try {
+        const message = 'Abaixe nosso aplicativo para encontra um posto para recarregar seu carro! Sem nenhuma dificuldade e dor de cabeça!\nhttps://drive.google.com/drive/folders/1d9q7HU5Mom5nKRSV4vfP6WNVq8gSLxGo?usp=drive_link';
+  
+        const options = {
+          title: 'Quer conhecer Stein, o melhor app de rotas para ponto de recargas de carros?',
+          message: message,
+          subject: 'Com Stein você sai das situações de desespero quando seu carro está descarregando!', // Somente para Android
+        };
+  
+        await Share.open(options);
+      } catch (error) {
+        console.error('Erro ao compartilhar:', error);
+      }
+    };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -50,12 +69,16 @@ const ConfigScreen = ({navigation}) => {
         <Modal visible={modal}>
           <Pressable
             style={styles.containerTermoDeUso}
-            onPress={() => {
-              setModal(!modal);
-            }}>
+            >
             <ScrollView
             showsVerticalScrollIndicator={false}
             >
+              <TouchableOpacity style={{...styles.imgSaidaTermoDeUso,}}
+              onPress={() => {
+                setModal(!modal);
+              }}
+
+              >
               <Image
                 source={{
                   uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
@@ -67,6 +90,7 @@ const ConfigScreen = ({navigation}) => {
                   },
                 ]}
               />
+              </TouchableOpacity>
               <View style={styles.termosContainerTexto}>
                 <Text style={styles.termosTitle}>TERMOS DE USO E CONDIÇÃO</Text>
                 <Text style={styles.textoTermo}>
@@ -124,7 +148,7 @@ const ConfigScreen = ({navigation}) => {
         <Text style={styles.textTitle}>Configurações</Text>
         <View style={styles.confing}>
           <View>
-            <View style={styles.rowText1}>
+            {/* <View style={styles.rowText1}>
               <Text style={styles.textContent}>Modo Escuro</Text>
               <Switch style={styles.input} />
             </View>
@@ -142,12 +166,12 @@ const ConfigScreen = ({navigation}) => {
                   style={styles.icons}
                 />
               </TouchableOpacity>
-            </View>
-            <View style={styles.line} />
+            </View> */}
+            {/* <View style={styles.line} /> */}
             <View style={styles.rowText}>
               <Text style={styles.textContent}>Convide um amigo</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('ShareToAFriendScreen')}>
+                onPress={() => handleShare()}>
                 <Image
                   source={{
                     uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fseta-direita.png?alt=media&token=c10be2a4-3f24-46f6-8368-7d40016bbe48',
@@ -156,18 +180,18 @@ const ConfigScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            <View style={styles.line} />
+            {/* <View style={styles.line} /> */}
           </View>
         </View>
 
         <Text style={styles.textTitle}>Configurações da conta</Text>
         <View style={styles.confing}>
           <View>
-            <View style={styles.rowText}>
+            {/* <View style={styles.rowText}>
               <Text style={styles.textContent}>Notificações</Text>
               <Switch style={styles.input} />
-            </View>
-            <View style={styles.line} />
+            </View> */}
+            {/* <View style={styles.line} /> */}
             <View style={styles.rowText}>
               <Text style={styles.textContent}>Conteúdo pessoal</Text>
               <TouchableOpacity
@@ -216,7 +240,7 @@ const ConfigScreen = ({navigation}) => {
             <View style={styles.line} />
             <View style={styles.rowText}>
               <Text style={styles.textContent}>
-                Sobre, termos e privacidade
+                Sobre nós, termos e privacidade
               </Text>
               <TouchableOpacity
               onPress={()=>{setModal(true)}}

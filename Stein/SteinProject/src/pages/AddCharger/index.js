@@ -554,6 +554,15 @@ const AddCharger = ({navigation}) => {
             onBlur={() => {
               if (cepInput.length == 8 && !validcaoLogradouro) {
                 handleGeocode();
+              } else {
+                setCep("Inválido!");
+                setValidCep(true)
+                const timer = setTimeout(() => {
+                  setCep();
+                  setValidCep(false)
+                }, 2000);
+            
+                return () => clearTimeout(timer);
               }
             }}
           />
@@ -663,14 +672,30 @@ const AddCharger = ({navigation}) => {
             <Text></Text>
           )}
           <TextInput
-            placeholder="Quantidades de carregadores"
+            placeholder="Quantidade de carregadores"
             keyboardType="number-pad"
-            style={styles.textInput}
+            style={{...styles.textInput, color:validQtdeCarregadores? "red": "#000"}}
             onChangeText={text => {
               setQtdeCarregadores(text);
             }}
             value={qtdeCarregadores}
             placeholderTextColor={validQtdeCarregadores ? 'red' : '#000'}
+            onBlur={()=>{
+              if(qtdeCarregadores < selectCarregadores.length){
+                setQtdeCarregadores(`Deve ter pelo menos ${selectCarregadores.length} carregadores.`)
+              setValidQtdeCarregadores(true);
+              const timer = setTimeout(() => {
+                setValidQtdeCarregadores(false);
+                setQtdeCarregadores(``)
+              }, 3000);
+          
+              return () => clearTimeout(timer);
+              }
+
+            }}
+            onFocus={()=>{
+              setCarregadores(false);
+            }}
           />
           <View style={styles.acceptPay}>
             <Switch
@@ -771,7 +796,10 @@ const AddCharger = ({navigation}) => {
                       selecionar()
                     }
                   }
-                ]
+                ],
+                {
+                  cancelable:true,
+                }
               )
             }}
             style={styles.charger}>

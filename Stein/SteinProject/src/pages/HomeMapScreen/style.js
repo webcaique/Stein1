@@ -200,7 +200,6 @@ const estilos=ScaledSheet.create({
     iconsSpecs:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      width: RFValue(100)
     },
     icon:{
       width:RFValue(65), 
@@ -225,9 +224,9 @@ const estilos=ScaledSheet.create({
     iconsSpecs:{
       borderWidth:2,
       backgroundColor:'#D9D9D9',
-      width: '25%',
+      width: '33.33%',
       height: moderateScale(100),
-      alignSelf:'center'
+      alignSelf:'center',
     },
     
     iconsSpecs1:{
@@ -263,6 +262,7 @@ const estilos=ScaledSheet.create({
       fontWeight:"900",
       textAlign:"center",
       borderRadius:10,
+      color:"#000"
     },
     markerCarregadores:{
       position:"absolute",
@@ -271,9 +271,10 @@ const estilos=ScaledSheet.create({
       marginRight:10,
     },
     iconPontoCarregador:{
-      width:50,
-      height:50,
+      width:RFValue(50),
+      height:RFValue(50),
       resizeMode:"contain",
+      marginRight:10
     }
 
 

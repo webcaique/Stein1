@@ -51,7 +51,7 @@ const FaqScreen = () => {
               </Text>
             </View>
           ) : (
-            console.log('HI')
+            console.log('')
           )}
         </View>
 
@@ -110,13 +110,13 @@ const FaqScreen = () => {
               </View>
             </View>
           ) : (
-            console.log('HI')
+            console.log('')
           )}
         </View>
 
         <View style={styles.spaceBetweenBoxes}>
           <View style={styles.boxes}>
-            <Text style={styles.txt}>Quais são os benéficios do Stein</Text>
+            <Text style={styles.txt}>Contatos</Text>
             <TouchableOpacity style={styles}
             onPress={()=>{setTexto3(!texto3)}}
             >
@@ -138,7 +138,7 @@ const FaqScreen = () => {
               <View style={styles.boxTexto2}>
                 <View style={styles.spot} />
                 <Text style={styles.texto2}>
-                <Text style={styles.fontBold}>Ligue para nós:</Text> +55 (11) 2130-2615
+                <Text style={styles.fontBold}>Ligue para nós:</Text> +55 (11) 98709-9061
                 </Text>
               </View>
               <View style={styles.boxTexto2}>
@@ -155,7 +155,7 @@ const FaqScreen = () => {
               </View>
             </View>
           ) : (
-            console.log('HI')
+            console.log('')
           )}
 
         </View>
@@ -197,7 +197,7 @@ const FaqScreen = () => {
               </View>
             </View>
           ) : (
-            console.log('HI')
+            console.log('')
           )}
         </View>
       </ScrollView>

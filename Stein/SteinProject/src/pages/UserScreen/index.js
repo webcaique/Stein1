@@ -81,8 +81,6 @@ const UserScreen = ({navigation}) => {
       });
     });
     setLoading(false);
-    console.log(carroData);
-    console.log(loading);
   };
 
   //Função para pegar o caminho da imagem
@@ -130,6 +128,8 @@ const UserScreen = ({navigation}) => {
     tabelaCarro.onSnapshot(()=>{
       tabelaUsuario.onSnapshot(()=>{
         getUserData();
+        console.log(carroData);
+
       });
     });
   }, []);

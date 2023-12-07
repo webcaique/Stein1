@@ -14,7 +14,7 @@ const Objetivo=({navigation})=>{
             >Recarregue o seu carro!</Text>
             <Text style={styles.paragrafo}
             //Texto em baixo do título
-            >Revolucionaremos as aplicativos de mapeamento de pontos de recarga para carros elétricos.</Text>
+            >Revolucionaremos os aplicativos de mapeamento de pontos de recarga para carros elétricos.</Text>
         </View>
         <View style={styles.centralizar}
         //Image no meio da tela

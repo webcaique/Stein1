@@ -94,12 +94,14 @@ const styles = ScaledSheet.create({
   },
   pagamento:{
     fontSize:RFValue(15),
+    color:"#000",
   },
   switch:{
     transform: [{ scaleX: RFValue(1) }, { scaleY: RFValue(1) }],
   },
   horarioTXT:{
     fontSize:RFValue(15),
+    color:"#000"
   }
 
 });

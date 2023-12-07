@@ -641,22 +641,26 @@ const SinginScreen = ({navigation}) => {
     <ScrollView>
       <Modal visible={termos}>
         <Pressable
-          style={styles.containerTermoDeUso}
-          onPress={() => {
-            setTermos(!termos);
-          }}>
+          style={styles.containerTermoDeUso}>
           <ScrollView>
-            <Image
-              source={{
-                uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
+          <TouchableOpacity style={{...styles.imgSaidaTermoDeUso,}}
+              onPress={() => {
+                setTermos(false);
               }}
-              style={[
-                styles.imgSaidaTermoDeUso,
-                {
-                  transform: [{rotate: '45deg'}],
-                },
-              ]}
-            />
+
+              >
+              <Image
+                source={{
+                  uri: 'https://firebasestorage.googleapis.com/v0/b/stein-182fa.appspot.com/o/Icons%2Fmais.png?alt=media&token=f29b19c6-efb8-4f11-b1b4-ed9c8a95fbd6',
+                }}
+                style={[
+                  styles.imgSaidaTermoDeUso,
+                  {
+                    transform: [{rotate: '45deg'}],
+                  },
+                ]}
+              />
+              </TouchableOpacity>
             <View style={styles.termosContainerTexto}>
               <Text style={styles.termosTitle}>TERMOS DE USO E CONDIÇÃO</Text>
               <Text style={styles.textoTermo}>

@@ -115,7 +115,7 @@ export default function LoginScreen({navigation}) {
                 />
                 <Text style={styles.textCheckbox}>Mostrar senha</Text>
               </View>
-              <View style={styles.linhas}>
+              {/* <View style={styles.linhas}>
                 <View
                   style={styles.linha1}
                   //Linhas para centralizar o ou na tela
@@ -130,8 +130,8 @@ export default function LoginScreen({navigation}) {
                   style={styles.linha2}
                   //Linhas para centralizar o ou na tela
                 ></View>
-              </View>
-              <View style={styles.logos}>
+              </View> */}
+              {/* <View style={styles.logos}>
                 <TouchableOpacity
                 // Botão para logar com o Facebook
                 >
@@ -153,7 +153,7 @@ export default function LoginScreen({navigation}) {
                     style={styles.img2}
                   />
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
               {email === '' || password === '' ? (
                 <TouchableOpacity
